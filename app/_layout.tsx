@@ -1,6 +1,5 @@
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import 'react-native-reanimated';
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -13,13 +12,11 @@ export default function RootLayout() {
   }
 
   return (
-    <>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="index" options={{ title: "Home",}} />
-        <Stack.Screen name="about" options={{ title: "About",}} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </>
+    <Stack>
+      <Stack.Screen name="LoginScreen" options={{ headerShown: false }} />
+      <Stack.Screen name="RegisterScreen" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="+not-found" />
+    </Stack>
   );
 }
