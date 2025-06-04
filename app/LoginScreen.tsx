@@ -25,7 +25,7 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="light"></StatusBar>
+      <StatusBar style="dark"></StatusBar>
       <View style={styles.titleContainer}>
         <Text style={styles.title}>CozyKitch</Text>
         <Text style={{color: colors.primaryAccent500}}>A place to store your favorite recipes!</Text>

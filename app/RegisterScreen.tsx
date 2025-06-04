@@ -8,6 +8,21 @@ import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-nativ
 // import colors
 import colors from './constants/colors';
 
+//import api function to register user
+import { useMutation } from '@tanstack/react-query';
+import { registerUser } from './api/userAuth';
+
+//define form types 
+type FormErrors = {
+    firstName: string | null;
+    lastName: string | null;
+    email: string | null;
+    password: string | null;
+    confirmPassword: string | null;
+};
+
+export type UserData = FormErrors;
+
 const RegisterScreen = () => {
     const [formInputs, setFormInputs] = useState({
         firstName: "",
@@ -17,13 +32,91 @@ const RegisterScreen = () => {
         confirmPassword: "",
     });
 
+    const [formErrors, setFormErrors] = useState<FormErrors>({
+        firstName: null,
+        lastName: null,
+        email: null,
+        password: null,
+        confirmPassword: null,
+    });
+
     const {firstName, lastName, email, password, confirmPassword} = formInputs;
 
+    const registerUserMutation = useMutation({
+        mutationFn: registerUser,
+        onSuccess: (data) => {
+            console.log("User created:", data)
+        },
+        onError: (error) => {
+            console.error("Error:", error)
+        }
+    })
+
+    // function to handle input changes on form
     const handleInputChange = (field: string, value: string): void => {
         setFormInputs((previousState) => ({
             ...previousState,
             [field]: value,
         }));
+    };
+
+    //function to handle form submission + perform validation
+    const handleFormSubmission = () => {
+        const validationErrors: FormErrors = {
+            firstName: null,
+            lastName: null,
+            email: null,
+            password: null,
+            confirmPassword: null,
+        };
+
+        if(!firstName.trim()){
+            validationErrors.firstName = "First name is required!";
+        };
+
+        if(firstName.length < 2 || firstName.length > 24){
+            validationErrors.firstName = "First name must be between 2 and 24  characters!";
+        }
+
+        if(!lastName.trim()){
+            validationErrors.lastName = "Last name is required!";
+        };
+
+        if(lastName.length < 2 || lastName.length > 24){
+            validationErrors.lastName = "Last name must be between 2 and 24 characters!";
+        };
+
+        if(!email.trim()){
+            validationErrors.email = "Email address is required!";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+            validationErrors.email = "Invalid email address!";
+        };
+
+        if(password.length < 8 || password.length > 32){
+            validationErrors.password = "Password must be between 8 and 32 characters long!";
+        };
+
+        if(confirmPassword.length < 8 || confirmPassword.length > 32){
+            validationErrors.password = "Password must be between 8 and 32 characters long!";
+        };
+
+        if(password !== confirmPassword){
+            validationErrors.password = "Passwords do not match!";
+            validationErrors.confirmPassword = "Passwords do not match!";
+        };
+
+        setFormErrors(validationErrors);
+
+        //check to see if there were any validation errors. If no errors, then try registering the user
+        const hasErrors = Object.values(formErrors).some((value) => value !== null);
+
+        if(!hasErrors){
+            try {
+                registerUserMutation.mutate({...formInputs});
+            } catch(error){
+                console.error(error);
+            }
+        };
     };
 
   return (
@@ -82,6 +175,7 @@ const RegisterScreen = () => {
             <Pressable 
                 style={({pressed}) => pressed ? [styles.pressable, styles.pressed] : styles.pressable} 
                 android_ripple={{color: colors.primaryAccent600}}
+                onPress={handleFormSubmission}
             >
                 <Text style={{color: "#fff"}}>Register</Text>
             </Pressable>
