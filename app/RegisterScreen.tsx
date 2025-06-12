@@ -15,11 +15,11 @@ import { registerUser } from './api/userAuth';
 
 //define form types 
 type FormErrors = {
-    firstName: string | null;
-    lastName: string | null;
-    email: string | null;
-    password: string | null;
-    confirmPassword: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    email?: string | null;
+    password?: string | null;
+    confirmPassword?: string | null;
 };
 
 export type UserData = FormErrors;
@@ -27,7 +27,7 @@ export type UserData = FormErrors;
 const RegisterScreen = () => {
 
   const router = useRouter();
-  const [navigationReady, setNavigationReady] = useState(false);
+  const [navigationReady, setNavigationReady] = useState<boolean>(false);
   useEffect(() => {
     if(navigationReady){
       router.replace("/HomeScreen");

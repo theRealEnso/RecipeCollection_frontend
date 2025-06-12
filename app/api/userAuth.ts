@@ -18,5 +18,14 @@ export const registerUser = async (userData: UserData) => {
         } else {
           console.error("ERROR:", error);
         }
-    }  
+    };  
+};
+
+export const loginUser = async (userData: UserData) => {
+  try {
+    const {data} = await axios.post(`${AUTH_ENDPOINT}/login`, userData);
+    return data;
+  } catch(error){
+    console.error(`ERROR: ${error}`)
+  }
 };

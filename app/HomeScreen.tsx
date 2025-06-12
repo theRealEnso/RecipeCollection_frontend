@@ -6,17 +6,21 @@ import { UserContext } from "./context/UserContext";
 
 const HomeScreen = () => {
     const router = useRouter();
-    const {currentUser, setCurrentUser} = useContext(UserContext);
+    const {currentUser, setCurrentUser, token, setToken} = useContext(UserContext);
 
     const logOut = () => {
         setCurrentUser(null);
+        setToken("");
     };
 
     useEffect(() => {
-        if(!currentUser || currentUser === null){
+        if(
+            (!currentUser || currentUser === null) ||
+            (!token || !token.length)
+        ){
           router.replace("/LoginScreen");  
         }  
-    }, [router, currentUser])
+    }, [router, currentUser, token]);
 
     return (
         <View style={styles.container}>

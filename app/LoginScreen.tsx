@@ -1,27 +1,95 @@
-import { Link } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useContext, useEffect, useState } from 'react';
+import { UserContext } from './context/UserContext';
 
-// import components
+import { Link, useRouter } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { ActivityIndicator, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+
+// import api function to login user
+import { useMutation } from '@tanstack/react-query';
+import { loginUser } from './api/userAuth';
 
 // import colors
 import colors from './constants/colors';
 
+// define types
+type FormErrors = {
+  email: string | null;
+  password: string | null
+};
+
 export default function LoginScreen() {
-    const [formInputs, setFormInputs] = useState({
-        email: "",
-        password: "",
-    });
+  const router = useRouter();
 
-    const {email, password} = formInputs;
+  const [navigationReady, setNavigationReady] = useState<boolean>(false);
+  useEffect(() => {
+    if(navigationReady){
+      router.replace("/HomeScreen");
+    }
+  }, [router, navigationReady]);
 
-    const handleInputChange = (field: string, value: string): void => {
-        setFormInputs((previousState) => ({
-            ...previousState,
-            [field]: value,
-        }));
+  const {setCurrentUser, setToken} = useContext(UserContext);
+
+  const [formErrors, setFormErrors] = useState<FormErrors>({
+    email: null,
+    password: null,
+  });
+
+  const [formInputs, setFormInputs] = useState({
+      email: "",
+      password: "",
+  });
+
+  const {email, password} = formInputs;
+
+  const handleInputChange = (field: string, value: string): void => {
+      setFormInputs((previousState) => ({
+          ...previousState,
+          [field]: value,
+      }));
+  };
+
+  const loginUserMutation = useMutation({
+    mutationFn: loginUser,
+    onSuccess: (data) => {
+      setCurrentUser(data.user);
+      setToken(data.user.access_token);
+      setNavigationReady(true);
+    },
+
+    onError: (error) => {
+      console.error(`Error: ${error}`)
+    }
+  });
+
+  const handleLoginSubmit = async () => {
+    const validationErrors: FormErrors = {
+      email: null,
+      password: null,
     };
+
+    if(!email.trim()){
+      validationErrors.email = "Email address is required!";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      validationErrors.email = "Invalid email address!";
+    };
+
+    if(!password.trim()){
+      validationErrors.password = "Password is required!"
+    };
+
+    setFormErrors(validationErrors);
+
+    // if any of the properties inside of formErrors has a value other than null. If values contain anything else besides null, then the form has an error somewhere
+    let hasErrors = Object.values(formErrors).some((value) => value !== null);
+    if(!hasErrors){
+      try {
+        loginUserMutation.mutate({...formInputs})
+      } catch(error){
+        console.error(`Error: ${error}`)
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -36,29 +104,46 @@ export default function LoginScreen() {
       </View>
 
       <View style={styles.loginContainer}>
-        <TextInput 
+        <View style={styles.inputContainer}>
+          {
+            formErrors.email && <Text style={styles.errorText}>{formErrors.email}</Text>
+          }
+          <TextInput 
             style={styles.text} 
             placeholder="Email" 
             value={email} 
             onChangeText={(value) => handleInputChange("email", value)}
             keyboardType='default'
-        />
+          />
+        </View>
 
-        <TextInput 
+        <View style={styles.inputContainer}>
+          {
+            formErrors.password && <Text style={styles.errorText}></Text>
+          }
+          <TextInput 
             style={styles.text} 
             placeholder="Password" 
             value={password} 
             onChangeText={(value) => handleInputChange("password", value)}
             secureTextEntry={true} // equivalent of type="password" for input elements in web dev
             keyboardType="default"
-        />
+          />
+        </View>
+
+
 
         <View style={styles.buttonOuterContainer}>
             <Pressable 
                 style={({pressed}) => pressed ? [styles.pressable, styles.pressed] : styles.pressable} 
                 android_ripple={{color: colors.primaryAccent600}}
+                onPress={handleLoginSubmit}
             >
-                <Text style={{color: "#fff"}}>Login</Text>
+              {
+                loginUserMutation.isPending
+                  ? <ActivityIndicator color="#fff"></ActivityIndicator>
+                  : <Text style={{color: "#fff"}}>Login</Text>
+              } 
             </Pressable>
         </View>
       </View>
@@ -110,6 +195,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
+  inputContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 5,
+  },
+
   buttonOuterContainer: {
     overflow: "hidden",
     borderRadius: 12,
@@ -145,7 +236,6 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    color: '#fff',
     width: 250,
     borderWidth: 2,
     marginVertical: 5,
@@ -163,5 +253,9 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
     fontWeight: "bold",
     marginVertical: 5,
+  },
+
+  errorText: {
+    color: "red",
   }
 });
