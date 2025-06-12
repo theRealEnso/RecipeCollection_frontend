@@ -148,44 +148,72 @@ const RegisterScreen = () => {
       </View>
 
       <View style={styles.loginContainer}>
-        <TextInput 
-            style={styles.text} 
-            placeholder="First Name" 
-            value={firstName} 
-            onChangeText={(value) => handleInputChange("firstName", value)}
-            keyboardType='default'
-        />
+        <View style={styles.inputContainer}>
+          {
+            formErrors.firstName && <Text style={styles.errorText}>{formErrors.firstName}</Text>
+          }
+          <TextInput 
+              style={styles.text} 
+              placeholder="First Name" 
+              value={firstName} 
+              onChangeText={(value) => handleInputChange("firstName", value)}
+              keyboardType='default'
+          />
+        </View>
 
-        <TextInput 
+        <View style={styles.inputContainer}>
+          {
+            formErrors.lastName && <Text style={styles.errorText}>{formErrors.lastName}</Text>
+          }
+          <TextInput 
             style={styles.text} 
             placeholder="Last Name" 
             value={lastName} 
             onChangeText={(value) => handleInputChange("lastName", value)}
             keyboardType="default"
-        />
-        <TextInput 
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          {
+            formErrors.email && <Text style={styles.errorText}>{formErrors.email}</Text>
+          }
+          <TextInput 
             style={styles.text} 
             placeholder="Email" 
             value={email} 
             onChangeText={(value) => handleInputChange("email", value)}
             keyboardType="default"
-        />
-        <TextInput 
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          {
+            formErrors.password && <Text style={styles.errorText}>{formErrors.password}</Text>
+          }
+          <TextInput 
             style={styles.text} 
             placeholder="Password" 
             value={password} 
             onChangeText={(value) => handleInputChange("password", value)}
             secureTextEntry={true} // equivalent of type="password" for input elements in web dev
             keyboardType="default"
-        />
-        <TextInput 
+          />
+        </View>
+
+        <View>
+          {
+            formErrors.confirmPassword && <Text style={styles.errorText}>{formErrors.confirmPassword}</Text>
+          }
+          <TextInput 
             style={styles.text} 
             placeholder="Confirm Password" 
             value={confirmPassword} 
             onChangeText={(value) => handleInputChange("confirmPassword", value)}
             secureTextEntry={true} // equivalent of type="password" for input elements in web dev
             keyboardType="default"
-        />
+          />
+        </View>
 
         <View style={styles.buttonOuterContainer}>
             <Pressable 
@@ -251,6 +279,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
+  inputContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 5,
+  },
+
   buttonOuterContainer: {
     overflow: "hidden",
     borderRadius: 12,
@@ -304,5 +338,10 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
     fontWeight: "bold",
     marginVertical: 5,
+  },
+
+  errorText: {
+    color: "red",
   }
+
 });
