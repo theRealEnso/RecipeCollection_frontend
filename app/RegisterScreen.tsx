@@ -1,9 +1,10 @@
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useContext, useEffect, useState } from 'react';
+import { ActivityIndicator, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
-// import components
+//import user context
+import { UserContext } from './context/UserContext';
 
 // import colors
 import colors from './constants/colors';
@@ -24,100 +25,115 @@ type FormErrors = {
 export type UserData = FormErrors;
 
 const RegisterScreen = () => {
-    const [formInputs, setFormInputs] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-    });
 
-    const [formErrors, setFormErrors] = useState<FormErrors>({
-        firstName: null,
-        lastName: null,
-        email: null,
-        password: null,
-        confirmPassword: null,
-    });
+  const router = useRouter();
+  const [navigationReady, setNavigationReady] = useState(false);
+  useEffect(() => {
+    if(navigationReady){
+      router.replace("/HomeScreen");
+    }
+  }, [navigationReady, router])
 
-    const {firstName, lastName, email, password, confirmPassword} = formInputs;
+  const {setCurrentUser, setToken, setIsTokenVerified} = useContext(UserContext);
 
-    const registerUserMutation = useMutation({
-        mutationFn: registerUser,
-        onSuccess: (data) => {
-            console.log("User created:", data)
-        },
-        onError: (error) => {
-            console.error("Error:", error)
-        }
-    })
+  const [formInputs, setFormInputs] = useState({
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+  });
 
-    // function to handle input changes on form
-    const handleInputChange = (field: string, value: string): void => {
-        setFormInputs((previousState) => ({
-            ...previousState,
-            [field]: value,
-        }));
-    };
+  const [formErrors, setFormErrors] = useState<FormErrors>({
+      firstName: null,
+      lastName: null,
+      email: null,
+      password: null,
+      confirmPassword: null,
+  });
 
-    //function to handle form submission + perform validation
-    const handleFormSubmission = () => {
-        const validationErrors: FormErrors = {
-            firstName: null,
-            lastName: null,
-            email: null,
-            password: null,
-            confirmPassword: null,
-        };
+  const {firstName, lastName, email, password, confirmPassword} = formInputs;
 
-        if(!firstName.trim()){
-            validationErrors.firstName = "First name is required!";
-        };
+  const registerUserMutation = useMutation({
+      mutationFn: registerUser,
+      onSuccess: (data) => {
+          console.log("User created:", data);
+          setCurrentUser(data.user);
+          setIsTokenVerified(true);
+          setToken(data.user.access_token);
+          setNavigationReady(true);
+      },
+      onError: (error) => {
+          console.error("Error:", error)
+      }
+  });
 
-        if(firstName.length < 2 || firstName.length > 24){
-            validationErrors.firstName = "First name must be between 2 and 24  characters!";
-        }
+  // function to handle input changes on form
+  const handleInputChange = (field: string, value: string): void => {
+      setFormInputs((previousState) => ({
+          ...previousState,
+          [field]: value,
+      }));
+  };
 
-        if(!lastName.trim()){
-            validationErrors.lastName = "Last name is required!";
-        };
+  //function to handle form submission + perform validation
+  const handleFormSubmission = () => {
+      const validationErrors: FormErrors = {
+          firstName: null,
+          lastName: null,
+          email: null,
+          password: null,
+          confirmPassword: null,
+      };
 
-        if(lastName.length < 2 || lastName.length > 24){
-            validationErrors.lastName = "Last name must be between 2 and 24 characters!";
-        };
+      if(!firstName.trim()){
+          validationErrors.firstName = "First name is required!";
+      };
 
-        if(!email.trim()){
-            validationErrors.email = "Email address is required!";
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-            validationErrors.email = "Invalid email address!";
-        };
+      if(firstName.length < 2 || firstName.length > 24){
+          validationErrors.firstName = "First name must be between 2 and 24  characters!";
+      }
 
-        if(password.length < 8 || password.length > 32){
-            validationErrors.password = "Password must be between 8 and 32 characters long!";
-        };
+      if(!lastName.trim()){
+          validationErrors.lastName = "Last name is required!";
+      };
 
-        if(confirmPassword.length < 8 || confirmPassword.length > 32){
-            validationErrors.password = "Password must be between 8 and 32 characters long!";
-        };
+      if(lastName.length < 2 || lastName.length > 24){
+          validationErrors.lastName = "Last name must be between 2 and 24 characters!";
+      };
 
-        if(password !== confirmPassword){
-            validationErrors.password = "Passwords do not match!";
-            validationErrors.confirmPassword = "Passwords do not match!";
-        };
+      if(!email.trim()){
+          validationErrors.email = "Email address is required!";
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+          validationErrors.email = "Invalid email address!";
+      };
 
-        setFormErrors(validationErrors);
+      if(password.length < 8 || password.length > 32){
+          validationErrors.password = "Password must be between 8 and 32 characters long!";
+      };
 
-        //check to see if there were any validation errors. If no errors, then try registering the user
-        const hasErrors = Object.values(formErrors).some((value) => value !== null);
+      if(confirmPassword.length < 8 || confirmPassword.length > 32){
+          validationErrors.password = "Password must be between 8 and 32 characters long!";
+      };
 
-        if(!hasErrors){
-            try {
-                registerUserMutation.mutate({...formInputs});
-            } catch(error){
-                console.error(error);
-            }
-        };
-    };
+      if(password !== confirmPassword){
+          validationErrors.password = "Passwords do not match!";
+          validationErrors.confirmPassword = "Passwords do not match!";
+      };
+
+      setFormErrors(validationErrors);
+
+      //check to see if there were any validation errors. If no errors, then try registering the user
+      const hasErrors = Object.values(formErrors).some((value) => value !== null);
+
+      if(!hasErrors){
+          try {
+              registerUserMutation.mutate({...formInputs});
+          } catch(error){
+              console.error(error);
+          }
+      };
+  };
 
   return (
     <View style={styles.container}>
@@ -177,7 +193,11 @@ const RegisterScreen = () => {
                 android_ripple={{color: colors.primaryAccent600}}
                 onPress={handleFormSubmission}
             >
-                <Text style={{color: "#fff"}}>Register</Text>
+              {
+                registerUserMutation.isPending
+                  ? <ActivityIndicator color="#fff"></ActivityIndicator>
+                  : <Text style={{color: "#fff"}}>Register</Text>
+              }
             </Pressable>
         </View>
       </View>
@@ -195,7 +215,7 @@ export default RegisterScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ebe4df',
+    backgroundColor: colors.backgroundPrimary,
     alignItems: 'center',
     justifyContent: 'center',
     // borderWidth: 5,

@@ -2,10 +2,6 @@ import { Link } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
-// import { RECIPE_COLLECTION_ENDPOINT_3 } from "@env";
-
-// console.log(RECIPE_COLLECTION_ENDPOINT_3);
-
 export default function Index() {
   return (
     <View style={styles.container}>

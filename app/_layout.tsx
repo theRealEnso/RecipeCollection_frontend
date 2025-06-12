@@ -3,6 +3,8 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { useState } from 'react';
 
+import { UserProvider } from './context/UserContext';
+
 export default function RootLayout() {
   const [queryClient] = useState(() => new QueryClient());
 
@@ -17,12 +19,15 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Stack>
-        <Stack.Screen name="LoginScreen" options={{ headerShown: false }} />
-        <Stack.Screen name="RegisterScreen" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
+      <UserProvider>
+        <Stack>
+          <Stack.Screen name="LoginScreen" options={{ headerShown: false }} />
+          <Stack.Screen name="RegisterScreen" options={{ headerShown: false }} />
+          <Stack.Screen name="HomeScreen" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+      </UserProvider>
     </QueryClientProvider>
   );
-}
+};
