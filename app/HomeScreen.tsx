@@ -4,6 +4,8 @@ import { Button, StyleSheet, Text, View } from "react-native";
 
 import { UserContext } from "./context/UserContext";
 
+import colors from "./constants/colors";
+
 const HomeScreen = () => {
     const router = useRouter();
     const {currentUser, setCurrentUser, token, setToken} = useContext(UserContext);
@@ -36,5 +38,6 @@ const styles = StyleSheet.create({
     container: {
         alignItems: "center",
         flex: 1,
+        backgroundColor: colors.backgroundPrimary
     }
 });

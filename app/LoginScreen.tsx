@@ -58,7 +58,7 @@ export default function LoginScreen() {
     },
 
     onError: (error) => {
-      console.error(`Error: ${error}`)
+      console.error(`Error: ${error}`);
     }
   });
 
@@ -80,7 +80,7 @@ export default function LoginScreen() {
 
     setFormErrors(validationErrors);
 
-    // if any of the properties inside of formErrors has a value other than null. If values contain anything else besides null, then the form has an error somewhere
+    // if any of the properties inside of formErrors has a value other than null, then the form has an error somewhere
     let hasErrors = Object.values(formErrors).some((value) => value !== null);
     if(!hasErrors){
       try {
@@ -130,8 +130,6 @@ export default function LoginScreen() {
             keyboardType="default"
           />
         </View>
-
-
 
         <View style={styles.buttonOuterContainer}>
             <Pressable 
