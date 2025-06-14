@@ -1,13 +1,16 @@
 import { useContext, useEffect, useState } from 'react';
-import { UserContext } from './context/UserContext';
+import { UserContext } from '../context/UserContext';
 
 import { Link, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { ActivityIndicator, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, StyleSheet, Text, TextInput, View } from 'react-native';
 
 // import api function to login user
 import { useMutation } from '@tanstack/react-query';
-import { loginUser } from './api/userAuth';
+import { loginUser } from '../api/userAuth';
+
+// import component(s)
+import CustomButton from './components/CustomButton';
 
 // import colors
 import colors from './constants/colors';
@@ -84,7 +87,7 @@ export default function LoginScreen() {
     let hasErrors = Object.values(formErrors).some((value) => value !== null);
     if(!hasErrors){
       try {
-        loginUserMutation.mutate({...formInputs})
+        loginUserMutation.mutate({...formInputs});
       } catch(error){
         console.error(`Error: ${error}`)
       }
@@ -132,17 +135,11 @@ export default function LoginScreen() {
         </View>
 
         <View style={styles.buttonOuterContainer}>
-            <Pressable 
-                style={({pressed}) => pressed ? [styles.pressable, styles.pressed] : styles.pressable} 
-                android_ripple={{color: colors.primaryAccent600}}
-                onPress={handleLoginSubmit}
-            >
-              {
-                loginUserMutation.isPending
-                  ? <ActivityIndicator color="#fff"></ActivityIndicator>
-                  : <Text style={{color: "#fff"}}>Login</Text>
-              } 
-            </Pressable>
+          <CustomButton 
+            value="Login" 
+            mutationPending={loginUserMutation.isPending} 
+            onButtonPress={handleLoginSubmit}>
+          </CustomButton>
         </View>
       </View>
 
@@ -205,20 +202,20 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 
-  pressable: {
-    backgroundColor: "#D6654F",
-    borderColor: "#D6654F",
-    borderWidth: 2,
-    padding: 4,
-    width: 250,
-    alignItems: "center",
-    justifyContent: "center",
-    // borderRadius: 12,
-  },
+  // pressable: {
+  //   backgroundColor: "#D6654F",
+  //   borderColor: "#D6654F",
+  //   borderWidth: 2,
+  //   padding: 4,
+  //   width: 250,
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  //   // borderRadius: 12,
+  // },
 
-  pressed: {
-    opacity: 0.75,
-  },
+  // pressed: {
+  //   opacity: 0.75,
+  // },
 
   subTextContainer: {
     paddingVertical: 5,

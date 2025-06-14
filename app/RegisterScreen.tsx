@@ -1,17 +1,20 @@
 import { Link, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, StyleSheet, Text, TextInput, View } from 'react-native';
 
 //import user context
-import { UserContext } from './context/UserContext';
+import { UserContext } from '../context/UserContext';
 
 // import colors
 import colors from './constants/colors';
 
+// import component(s)
+import CustomButton from './components/CustomButton';
+
 //import api function to register user
 import { useMutation } from '@tanstack/react-query';
-import { registerUser } from './api/userAuth';
+import { registerUser } from '../api/userAuth';
 
 //define form types 
 type FormErrors = {
@@ -216,17 +219,11 @@ const RegisterScreen = () => {
         </View>
 
         <View style={styles.buttonOuterContainer}>
-            <Pressable 
-                style={({pressed}) => pressed ? [styles.pressable, styles.pressed] : styles.pressable} 
-                android_ripple={{color: colors.primaryAccent600}}
-                onPress={handleFormSubmission}
-            >
-              {
-                registerUserMutation.isPending
-                  ? <ActivityIndicator color="#fff"></ActivityIndicator>
-                  : <Text style={{color: "#fff"}}>Register</Text>
-              }
-            </Pressable>
+          <CustomButton 
+            value="Register" 
+            mutationPending={registerUserMutation.isPending} 
+            onButtonPress={handleFormSubmission}>
+          </CustomButton>
         </View>
       </View>
 

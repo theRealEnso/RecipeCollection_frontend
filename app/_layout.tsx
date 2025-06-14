@@ -3,7 +3,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { useState } from 'react';
 
-import { UserProvider } from './context/UserContext';
+import { UserProvider } from '../context/UserContext';
 
 export default function RootLayout() {
   const [queryClient] = useState(() => new QueryClient());
@@ -15,7 +15,7 @@ export default function RootLayout() {
   if (!loaded) {
     // Async font loading only occurs in development.
     return null;
-  }
+  };
 
   return (
     <QueryClientProvider client={queryClient}>

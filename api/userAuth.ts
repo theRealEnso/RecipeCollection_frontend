@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { UserData } from "../RegisterScreen";
+import { UserData } from "../app/RegisterScreen";
 
 // import env variable for server endpoint
  
