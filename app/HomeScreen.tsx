@@ -2,7 +2,11 @@ import { useRouter } from "expo-router";
 import { useContext, useEffect } from "react";
 import { ActivityIndicator, Button, StyleSheet, Text, View } from "react-native";
 
+//import context
 import { UserContext } from "../context/UserContext";
+
+//import components
+import CuisineList from "./components/CuisineList";
 
 //import api function to fetch categories of cuisines belonging to the user
 import { useQuery } from "@tanstack/react-query";
@@ -31,27 +35,38 @@ const HomeScreen = () => {
 
     const {data, isLoading, error} = useQuery({
         queryKey: ["userCategories"],
-        queryFn: getAllCategories(token),
+        queryFn: () => getAllCategories(token),
     });
+
+    // useEffect(() => {
+    //     if (data) {
+    //         console.log("Fetched categories data:", data);
+    //     }
+    // }, [data]);
+
 
     // if(isLoading) return <ActivityIndicator size="large"></ActivityIndicator>;
     // if(error) return <Text>Error fetching categories</Text>;
 
     return (
         <View style={styles.container}>
-            <View>
+            <View style={styles.mainContent}>
                 {
                     isLoading
                         ? <ActivityIndicator size="large"></ActivityIndicator>
                         : error ? <Text>Error fetching user categories!</Text>
-                        : !data.length ? (
-                            <Text>You currently don&apos;t have any categories that you&apos;ve added.</Text>
+                        : data && data.categories && Array.isArray(data.categories) && data.categories.length ? (
+                            <View>
+                                <CuisineList categoriesData={data.categories}></CuisineList>
+                                <View>
+                                    <Text>I AM THE HOME SCREEN!</Text>
+                                    <Button title="Sign out" onPress={logOut}></Button>
+                                </View>   
+
+                            </View>
                         )
                         : (
-                            <>
-                                <Text>I AM THE HOME SCREEN!</Text>
-                                <Button title="Sign out" onPress={logOut}></Button>
-                            </>
+                            <Text>You currently do not have any cuisines added. Start adding!</Text>
                         )            
                 }
             </View>
