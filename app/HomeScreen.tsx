@@ -16,11 +16,11 @@ import colors from "./constants/colors";
 
 const HomeScreen = () => {
     const router = useRouter();
-    const {currentUser, setCurrentUser, token, setToken} = useContext(UserContext);
+    const {currentUser, handleSetUser, token, handleSetAccessToken} = useContext(UserContext);
     
     const logOut = () => {
-        setCurrentUser(null);
-        setToken("");
+        handleSetUser(null);
+        handleSetAccessToken("");
     };
 
     // useEffect to handle signing out and re-directing to the login screen
@@ -86,5 +86,6 @@ const styles = StyleSheet.create({
     mainContent: {
         alignItems: "center",
         justifyContent: "center",
+        marginVertical: 20,
     }
 });

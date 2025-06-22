@@ -26,8 +26,8 @@ export default CategoryTile;
 
 const styles = StyleSheet.create({
     tileContainer: {
-        width: 120,
-        height: 120,
+        width: 150,
+        height: 150,
         backgroundColor: colors.primaryAccent500,
         borderRadius: 10,
         padding: 20,

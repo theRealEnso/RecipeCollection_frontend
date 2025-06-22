@@ -74,7 +74,7 @@ export const UserProvider: FC<UserProviderProps> = ({children}) => {
         } else {
             await SecureStore.deleteItemAsync("accessToken");
         }
-    }
+    };
 
     const value = {
         currentUser,
