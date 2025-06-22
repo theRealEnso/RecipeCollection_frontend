@@ -1,4 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
+// import {BlurView} from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
+
+import colors from "../constants/colors";
 
 // import types
 import { Cuisine } from "@/api/categories";
@@ -12,9 +16,9 @@ const CategoryTile = ({cuisineData}: CuisineCategoryProps) => {
     if(!cuisineData) return null;
 
     return (
-        <View style={styles.tileContainer}>
-            <Text style={styles.textColor}>{cuisineData.cuisineName}</Text>
-        </View>
+        <LinearGradient colors={[colors.primaryAccent500, colors.primaryAccent700]}style={styles.tileContainer}>
+            <Text style={styles.tileText}>{cuisineData.cuisineName}</Text>
+        </LinearGradient>
     )
 };
 
@@ -22,11 +26,24 @@ export default CategoryTile;
 
 const styles = StyleSheet.create({
     tileContainer: {
-        width: 100,
-        height: 100,
+        width: 120,
+        height: 120,
+        backgroundColor: colors.primaryAccent500,
+        borderRadius: 10,
+        padding: 20,
+        alignItems: "center",
+        justifyContent: "center",
+        shadowColor: "#000",
+        shadowOffset: {width: 0, height: 4},
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 5,
+        margin: 10,
     },
 
-    textColor: {
-        color: "red"
+    tileText: {
+        color: "#fff",
+        fontWeight: "600",
+        fontSize: 10,
     },
-})
+});

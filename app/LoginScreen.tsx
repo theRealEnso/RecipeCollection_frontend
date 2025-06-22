@@ -31,7 +31,7 @@ export default function LoginScreen() {
     }
   }, [router, navigationReady]);
 
-  const {setCurrentUser, setToken} = useContext(UserContext);
+  const {handleSetUser, handleSetAccessToken} = useContext(UserContext);
 
   const [formErrors, setFormErrors] = useState<FormErrors>({
     email: null,
@@ -55,8 +55,8 @@ export default function LoginScreen() {
   const loginUserMutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
-      setCurrentUser(data.user);
-      setToken(data.user.access_token);
+      handleSetUser(data.user);
+      handleSetAccessToken(data.user.access_token);
       setNavigationReady(true);
     },
 
