@@ -1,4 +1,4 @@
-import { StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 // import {BlurView} from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -16,21 +16,42 @@ const CategoryTile = ({cuisineData}: CuisineCategoryProps) => {
     if(!cuisineData) return null;
 
     return (
-        <LinearGradient colors={[colors.primaryAccent500, colors.primaryAccent700]}style={styles.tileContainer}>
-            <Text style={styles.tileText}>{cuisineData.cuisineName}</Text>
-        </LinearGradient>
+        <View style={styles.tileOuterContainer}>
+            <Pressable 
+                android_ripple={{ color: colors.primaryAccent500 }}
+                style={styles.pressable}
+            >
+                {({ pressed }) => (
+                    <LinearGradient
+                        colors={[colors.primaryAccent500, colors.primaryAccent700]}
+                        style={[styles.tileInnerContainer, pressed && styles.pressed]}
+                    >
+                        <Text style={styles.tileText}>{cuisineData.cuisineName}</Text>
+                    </LinearGradient>
+                )}
+            </Pressable>
+        </View>
     )
 };
 
 export default CategoryTile;
 
 const styles = StyleSheet.create({
-    tileContainer: {
+    tileOuterContainer: {
+        margin: 10,
+        overflow: "hidden",
+        borderRadius: 10,
+    },
+
+    pressable: {
+        borderRadius: 10,
+    },
+
+    tileInnerContainer: {
+        backgroundColor: colors.primaryAccent500,
+        padding: 20,
         width: 150,
         height: 150,
-        backgroundColor: colors.primaryAccent500,
-        borderRadius: 10,
-        padding: 20,
         alignItems: "center",
         justifyContent: "center",
         shadowColor: "#000",
@@ -38,12 +59,18 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 8,
         elevation: 5,
-        margin: 10,
+        borderColor: colors.primaryAccent500,
+        borderWidth: 1
     },
 
     tileText: {
         color: "#fff",
         fontWeight: "600",
         fontSize: 10,
+    },
+
+    pressed: {
+        opacity: 0.75,
+        transform: [{ scale: 0.98 }],
     },
 });
