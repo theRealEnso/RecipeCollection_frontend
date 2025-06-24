@@ -1,6 +1,11 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View, } from "react-native";
 // import {BlurView} from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
+
+// import component(s)
+import CustomButton from "./CustomButton";
+
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 import colors from "../constants/colors";
 
@@ -8,11 +13,13 @@ import colors from "../constants/colors";
 import { Cuisine } from "@/api/categories";
 
 type CuisineCategoryProps = {
-    cuisineData: Cuisine
+    cuisineData: Cuisine,
+    onLongPress: (id: string) => void;
+    isSelected: boolean;
 };
 
-const CategoryTile = ({cuisineData}: CuisineCategoryProps) => {
-    console.log(cuisineData);
+const CategoryTile = ({cuisineData, onLongPress, isSelected}: CuisineCategoryProps) => {
+    // console.log(cuisineData);
     if(!cuisineData) return null;
 
     return (
@@ -20,6 +27,8 @@ const CategoryTile = ({cuisineData}: CuisineCategoryProps) => {
             <Pressable 
                 android_ripple={{ color: colors.primaryAccent500 }}
                 style={styles.pressable}
+                onLongPress={() => onLongPress(cuisineData._id)}
+                delayLongPress={1000}
             >
                 {({ pressed }) => (
                     <LinearGradient
@@ -30,6 +39,18 @@ const CategoryTile = ({cuisineData}: CuisineCategoryProps) => {
                     </LinearGradient>
                 )}
             </Pressable>
+
+            {
+                isSelected && (
+                    <View style={styles.buttonOuterContainer}>
+                        <CustomButton
+                            value={<Ionicons name="trash" size={24}></Ionicons>}
+                            width={40}
+                        >
+                        </CustomButton>
+                    </View>
+                )
+            }
         </View>
     )
 };
@@ -41,6 +62,7 @@ const styles = StyleSheet.create({
         margin: 10,
         overflow: "hidden",
         borderRadius: 10,
+        position: "relative",
     },
 
     pressable: {
@@ -73,4 +95,12 @@ const styles = StyleSheet.create({
         opacity: 0.75,
         transform: [{ scale: 0.98 }],
     },
+
+    buttonOuterContainer: {
+        borderRadius: 12,
+        position: "absolute",
+        right: 5,
+        top: 5,
+        // backgroundColor: "black"
+    }
 });

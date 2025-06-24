@@ -136,7 +136,8 @@ export default function LoginScreen() {
 
         <View style={styles.buttonOuterContainer}>
           <CustomButton 
-            value="Login" 
+            value="Login"
+            width={250} 
             mutationPending={loginUserMutation.isPending} 
             onButtonPress={handleLoginSubmit}>
           </CustomButton>

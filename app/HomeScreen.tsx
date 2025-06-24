@@ -50,26 +50,25 @@ const HomeScreen = () => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.mainContent}>
-                {
-                    isLoading
-                        ? <ActivityIndicator size="large"></ActivityIndicator>
-                        : error ? <Text>Error fetching user categories!</Text>
-                        : data && data.categories && Array.isArray(data.categories) && data.categories.length ? (
+            
+            {
+                isLoading
+                    ? <ActivityIndicator size="large"></ActivityIndicator>
+                    : error ? <Text>Error fetching user categories!</Text>
+                    : data && data.categories && Array.isArray(data.categories) && data.categories.length ? (
+                        <View>
+                            <CuisineList categoriesData={data.categories}></CuisineList>
                             <View>
-                                <CuisineList categoriesData={data.categories}></CuisineList>
-                                <View>
-                                    <Text>I AM THE HOME SCREEN!</Text>
-                                    <Button title="Sign out" onPress={logOut}></Button>
-                                </View>   
-
-                            </View>
-                        )
-                        : (
-                            <Text>You currently do not have any cuisines added. Start adding!</Text>
-                        )            
-                }
-            </View>
+                                <Text>I AM THE HOME SCREEN!</Text>
+                                <Button title="Sign out" onPress={logOut}></Button>
+                            </View>   
+                        </View>
+                    )
+                    : (
+                        <Text>You currently do not have any cuisines added. Start adding!</Text>
+                    )            
+            }
+            
         </View>
     );
 };
@@ -78,14 +77,10 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
     container: {
-        alignItems: "center",
-        flex: 1,
         backgroundColor: colors.backgroundPrimary,
-    },
-
-    mainContent: {
         alignItems: "center",
         justifyContent: "center",
-        marginVertical: 20,
-    }
+        flex: 1,
+        paddingVertical: 15,
+    },
 });

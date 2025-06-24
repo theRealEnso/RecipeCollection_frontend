@@ -37,7 +37,7 @@ const RegisterScreen = () => {
     }
   }, [navigationReady, router])
 
-  const {setCurrentUser, setToken, setIsTokenVerified} = useContext(UserContext);
+  const {handleSetUser, handleSetAccessToken, setIsTokenVerified} = useContext(UserContext);
 
   const [formInputs, setFormInputs] = useState({
       firstName: "",
@@ -61,9 +61,9 @@ const RegisterScreen = () => {
       mutationFn: registerUser,
       onSuccess: (data) => {
           console.log("User created:", data);
-          setCurrentUser(data.user);
+          handleSetUser(data.user);
           setIsTokenVerified(true);
-          setToken(data.user.access_token);
+          handleSetAccessToken(data.user.access_token);
           setNavigationReady(true);
       },
       onError: (error) => {
@@ -220,7 +220,8 @@ const RegisterScreen = () => {
 
         <View style={styles.buttonOuterContainer}>
           <CustomButton 
-            value="Register" 
+            value="Register"
+            width={250} 
             mutationPending={registerUserMutation.isPending} 
             onButtonPress={handleFormSubmission}>
           </CustomButton>
@@ -286,21 +287,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderRadius: 12,
     marginTop: 5,
-  },
-
-  pressable: {
-    backgroundColor: "#D6654F",
-    borderColor: "#D6654F",
-    borderWidth: 2,
-    padding: 4,
-    width: 250,
-    alignItems: "center",
-    justifyContent: "center",
-    // borderRadius: 12,
-  },
-
-  pressed: {
-    opacity: 0.75,
   },
 
   subTextContainer: {

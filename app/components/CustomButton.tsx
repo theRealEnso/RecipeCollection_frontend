@@ -1,16 +1,20 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native";
+
+import { ReactNode } from "react";
+
 import colors from "../constants/colors";
 
 type CustomButtonProps = {
-    value: string;
-    onButtonPress: () => void;
-    mutationPending?: boolean; 
+    value: string | ReactNode;
+    width: number;
+    onButtonPress?: () => void;
+    mutationPending?: boolean;
 };
 
-const CustomButton = ({value, onButtonPress, mutationPending}: CustomButtonProps) => {
+const CustomButton = ({value, width, onButtonPress, mutationPending}: CustomButtonProps) => {
     return (
         <Pressable 
-            style={({pressed}) => pressed ? [styles.pressable, styles.pressed] : styles.pressable} 
+            style={({pressed}) => pressed ? [styles.pressable, styles.pressed, {width: width}] : [styles.pressable, {width: width}]} 
             android_ripple={{color: colors.primaryAccent600}}
             onPress={onButtonPress}
         >
@@ -31,10 +35,9 @@ const styles = StyleSheet.create({
         borderColor: colors.primaryAccent500,
         borderWidth: 2,
         padding: 4,
-        width: 250,
         alignItems: "center",
         justifyContent: "center",
-        // borderRadius: 12,
+        borderRadius: 12,
       },
     
     pressed: {
