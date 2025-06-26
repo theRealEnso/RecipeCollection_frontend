@@ -4,6 +4,7 @@ import { FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, View }
 
 //import component(s)
 import CategoryTile from "./CategoryTile";
+import ConfirmDeletionModal from "./ConfirmDeletionModal";
 
 import { Cuisine } from "@/api/categories";
 
@@ -13,9 +14,12 @@ type CategoriesData = {
 
 const CuisineList = ({categoriesData}: CategoriesData) => {
     const [selectedTileId, setSelectedTileId] = useState<string | null>(null);
+    const [categoryName, setCategoryName] = useState<string | null>(null);
+    const [showWarningModal, setShowWarningModal] = useState<boolean>(false);
 
-    const handleLongPress = (id: string) => {
+    const handleLongPress = (id: string, categoryName: string) => {
         setSelectedTileId((previous) => previous === id ? null : id);
+        setCategoryName(categoryName);
     };
 
     console.log(selectedTileId);
@@ -25,7 +29,10 @@ const CuisineList = ({categoriesData}: CategoriesData) => {
             behavior={Platform.OS === "ios" ? "padding" : undefined}
             style={styles.listContainer}
         >
-            <Pressable onPress={() => setSelectedTileId(null)} style={styles.pressable}>
+            <Pressable 
+                onPress={() => setSelectedTileId(null)} 
+                style={styles.pressable}
+            >
                 <FlatList
                     data={categoriesData}
                     numColumns={2}
@@ -35,6 +42,7 @@ const CuisineList = ({categoriesData}: CategoriesData) => {
                                 cuisineData={item} 
                                 onLongPress={handleLongPress}
                                 isSelected={item._id === selectedTileId}
+                                setShowWarningModal={setShowWarningModal}
                             >
                             </CategoryTile>
                         </View>
@@ -45,6 +53,16 @@ const CuisineList = ({categoriesData}: CategoriesData) => {
                 >
                 </FlatList>
             </Pressable>
+
+            {
+                showWarningModal && (
+                    <ConfirmDeletionModal 
+                        categoryName={categoryName}
+                        setShowWarningModal={setShowWarningModal}
+                    >
+                    </ConfirmDeletionModal>
+                )
+            }
         </KeyboardAvoidingView>
     );
 };

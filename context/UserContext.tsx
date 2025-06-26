@@ -15,13 +15,13 @@ type UserProviderProps = {
 
 type UserContextTypes = {
     currentUser: null | User;
-    // setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
     handleSetUser: (user: User | null) => Promise<void>;
     isTokenVerified: boolean;
     setIsTokenVerified: React.Dispatch<React.SetStateAction<boolean>>;
     token: string;
-    // setToken: React.Dispatch<React.SetStateAction<string | null>>;
     handleSetAccessToken: (token: string) => Promise<void>;
+    isHydrated: boolean;
+    setIsHydrated: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const UserContext = createContext<UserContextTypes>({
@@ -31,12 +31,15 @@ export const UserContext = createContext<UserContextTypes>({
     setIsTokenVerified: () => {},
     token: "",
     handleSetAccessToken: async () => {},
+    isHydrated: false,
+    setIsHydrated: () => {},
 });
 
 export const UserProvider: FC<UserProviderProps> = ({children}) => {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [isTokenVerified, setIsTokenVerified] = useState<boolean>(false);
     const [token, setToken] = useState<string>("");
+    const [isHydrated, setIsHydrated] = useState<boolean>(false);
 
     useEffect(() => {
         const loadUserFromStorage = async () => {
@@ -50,6 +53,8 @@ export const UserProvider: FC<UserProviderProps> = ({children}) => {
                 }
             } catch(error){
                 console.error(`Failed to load user from storage, ${error}`)
+            } finally {
+                setIsHydrated(true);
             }
         }
 
@@ -83,6 +88,8 @@ export const UserProvider: FC<UserProviderProps> = ({children}) => {
         setIsTokenVerified,
         token,
         handleSetAccessToken,
+        isHydrated,
+        setIsHydrated,
     };
 
     return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

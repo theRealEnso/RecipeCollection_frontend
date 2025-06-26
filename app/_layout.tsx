@@ -13,21 +13,14 @@ export default function RootLayout() {
   });
 
   if (!loaded) {
-    // Async font loading only occurs in development.
     return null;
-  };
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
       <UserProvider>
-        <Stack>
-          <Stack.Screen name="LoginScreen" options={{ headerShown: false }} />
-          <Stack.Screen name="RegisterScreen" options={{ headerShown: false }} />
-          <Stack.Screen name="HomeScreen" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
+        <Stack screenOptions={{ headerShown: false }} />
       </UserProvider>
     </QueryClientProvider>
   );
-};
+}

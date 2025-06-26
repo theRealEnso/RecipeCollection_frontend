@@ -14,20 +14,25 @@ import { Cuisine } from "@/api/categories";
 
 type CuisineCategoryProps = {
     cuisineData: Cuisine,
-    onLongPress: (id: string) => void;
+    onLongPress: (id: string, categoryName: string) => void;
     isSelected: boolean;
+    setShowWarningModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const CategoryTile = ({cuisineData, onLongPress, isSelected}: CuisineCategoryProps) => {
+const CategoryTile = ({cuisineData, onLongPress, isSelected, setShowWarningModal}: CuisineCategoryProps) => {
     // console.log(cuisineData);
     if(!cuisineData) return null;
+
+    const displayWarning = () => {
+        setShowWarningModal(true);
+    };
 
     return (
         <View style={styles.tileOuterContainer}>
             <Pressable 
                 android_ripple={{ color: colors.primaryAccent500 }}
                 style={styles.pressable}
-                onLongPress={() => onLongPress(cuisineData._id)}
+                onLongPress={() => onLongPress(cuisineData._id, cuisineData.cuisineName)}
                 delayLongPress={1000}
             >
                 {({ pressed }) => (
@@ -46,6 +51,7 @@ const CategoryTile = ({cuisineData, onLongPress, isSelected}: CuisineCategoryPro
                         <CustomButton
                             value={<Ionicons name="trash" size={24}></Ionicons>}
                             width={40}
+                            onButtonPress={displayWarning}
                         >
                         </CustomButton>
                     </View>
