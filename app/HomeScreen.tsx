@@ -36,6 +36,7 @@ const HomeScreen = () => {
     const {data, isLoading, error} = useQuery({
         queryKey: ["userCategories"],
         queryFn: () => getAllCategories(token),
+        refetchOnMount: "always",
     });
 
     // useEffect(() => {
@@ -47,6 +48,8 @@ const HomeScreen = () => {
 
     // if(isLoading) return <ActivityIndicator size="large"></ActivityIndicator>;
     // if(error) return <Text>Error fetching categories</Text>;
+
+    if(token) console.log(token);
 
     return (
         <View style={styles.container}>

@@ -10,7 +10,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import colors from "../constants/colors";
 
 // import types
-import { Cuisine } from "@/api/categories";
+import { Cuisine } from "@/types/Category";
 
 type CuisineCategoryProps = {
     cuisineData: Cuisine,

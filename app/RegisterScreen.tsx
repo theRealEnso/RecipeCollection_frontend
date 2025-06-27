@@ -60,11 +60,13 @@ const RegisterScreen = () => {
   const registerUserMutation = useMutation({
       mutationFn: registerUser,
       onSuccess: (data) => {
+        if(data){
           console.log("User created:", data);
           handleSetUser(data.user);
           setIsTokenVerified(true);
           handleSetAccessToken(data.user.access_token);
           setNavigationReady(true);
+        }
       },
       onError: (error) => {
           console.error("Error:", error)
@@ -158,7 +160,7 @@ const RegisterScreen = () => {
           <TextInput 
               style={styles.text} 
               placeholder="First Name" 
-              value={firstName} 
+              value={firstName}
               onChangeText={(value) => handleInputChange("firstName", value)}
               keyboardType='default'
           />

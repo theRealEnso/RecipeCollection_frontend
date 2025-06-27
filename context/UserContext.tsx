@@ -1,13 +1,8 @@
 import * as SecureStore from "expo-secure-store";
 import { createContext, FC, ReactNode, useEffect, useState, } from "react";
 
-export type User = {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    access_token: string;
-};
+//import types
+import { User } from "@/types/User";
 
 type UserProviderProps = {
     children: ReactNode;
@@ -56,7 +51,7 @@ export const UserProvider: FC<UserProviderProps> = ({children}) => {
             } finally {
                 setIsHydrated(true);
             }
-        }
+        };
 
         loadUserFromStorage();
     }, []);

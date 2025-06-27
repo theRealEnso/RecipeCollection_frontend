@@ -1,19 +1,62 @@
+import { UserContext } from "@/context/UserContext";
+import { useContext } from "react";
 import { Modal, StyleSheet, Text, View } from "react-native";
+
+import { deleteCuisineCategory } from "@/api/categories";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // import component(s)
 import CustomButton from "./CustomButton";
 
 import colors from "../constants/colors";
 
+// import types
+
 type DeletionModalProps = {
     categoryName?: string | null;
     setShowWarningModal: React.Dispatch<React.SetStateAction<boolean>>;
+    selectedTileId: string | null;
 };
 
-const ConfirmDeletionModal = ({categoryName, setShowWarningModal}: DeletionModalProps) => {
+const ConfirmDeletionModal = (
+    {
+        categoryName, 
+        setShowWarningModal, 
+        selectedTileId, 
+    }: DeletionModalProps
+) => {
+
+    // console.log("Confirm deletion modal mounted!");
+
+    const queryClient = useQueryClient();
+    
+    const { token } = useContext(UserContext);
 
     const hideWarning = () => {
         setShowWarningModal(false);
+    };
+
+    const deleteCategoryMutation = useMutation({
+        mutationFn: deleteCuisineCategory,
+        onSuccess: async (data) => {
+            console.log(`Category successfully deleted: ${data}`);
+            queryClient.invalidateQueries({queryKey: ["userCategories"]});
+            setShowWarningModal(false);
+        },
+        onError: (error) => {
+            console.error(`Error deleting category: ${error}`)
+        },
+    });
+
+    const handleDeleteCategory = () => {
+        console.log("Confirm button pressed!");
+
+        if(!token || ! selectedTileId) return;
+
+        deleteCategoryMutation.mutate({
+            accessToken: token,
+            categoryId: selectedTileId,
+        })
     };
 
     return (
@@ -35,7 +78,12 @@ const ConfirmDeletionModal = ({categoryName, setShowWarningModal}: DeletionModal
                         </View>
 
                         <View style={styles.buttonOuterContainer}>
-                            <CustomButton width={100} value="Confirm"></CustomButton>
+                            <CustomButton 
+                                width={100} 
+                                value="Confirm" 
+                                onButtonPress={handleDeleteCategory}
+                                mutationPending={deleteCategoryMutation.isPending}
+                            />
                         </View>
                     </View>
 

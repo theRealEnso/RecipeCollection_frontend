@@ -6,7 +6,8 @@ import { FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, View }
 import CategoryTile from "./CategoryTile";
 import ConfirmDeletionModal from "./ConfirmDeletionModal";
 
-import { Cuisine } from "@/api/categories";
+// import types
+import { Cuisine } from "@/types/Category";
 
 type CategoriesData = {
     categoriesData: Cuisine[];
@@ -53,11 +54,13 @@ const CuisineList = ({categoriesData}: CategoriesData) => {
                 >
                 </FlatList>
             </Pressable>
+            
 
             {
                 showWarningModal && (
                     <ConfirmDeletionModal 
                         categoryName={categoryName}
+                        selectedTileId={selectedTileId}
                         setShowWarningModal={setShowWarningModal}
                     >
                     </ConfirmDeletionModal>

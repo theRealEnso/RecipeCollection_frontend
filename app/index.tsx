@@ -7,11 +7,11 @@ export default function Index() {
 
   if (!isHydrated) {
     return null; // or show splash
-  }
+  };
 
   if (!currentUser) {
     return <Redirect href="/LoginScreen" />;
-  }
+  };
 
   return <Redirect href="/HomeScreen" />;
-}
+};

@@ -1,19 +1,18 @@
 import axios from "axios";
 
+//import types
+import { Cuisine } from "@/types/Category";
+
 const RECIPE_COLLECTION_ENDPOINT = process.env.EXPO_PUBLIC_RECIPE_COLLECTION_ENDPOINT_3;
 const CATEGORIES_ENDPOINT = `${RECIPE_COLLECTION_ENDPOINT}/categories`;
 
-export type Cuisine = {
-    _id: string;
-    user: string;
-    cuisineName: string;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-};
-
 type Categories = {
     categories: Cuisine[]
+};
+
+type DeleteCategoryProps = {
+  accessToken: string;
+  categoryId: string;
 };
 
 export const getAllCategories = async (accessToken: string): Promise<Categories | undefined> => {
@@ -23,8 +22,23 @@ export const getAllCategories = async (accessToken: string): Promise<Categories 
                 Authorization: `Bearer ${accessToken}`
             },
         });
+
         return data;
     } catch(error){
         console.error(`Error: ${error}`);
-    }
+    };
+};
+
+export const deleteCuisineCategory = async ({accessToken, categoryId}: DeleteCategoryProps) => {
+    try {
+        const {data} = await axios.delete(`${CATEGORIES_ENDPOINT}/delete-category/${categoryId}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+        });
+
+        return data;
+    } catch(error){
+        console.error(`Error: ${error}`)
+    };
 };
