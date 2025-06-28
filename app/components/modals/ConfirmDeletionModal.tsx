@@ -6,9 +6,9 @@ import { deleteCuisineCategory } from "@/api/categories";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // import component(s)
-import CustomButton from "./CustomButton";
+import CustomButton from "../CustomButton";
 
-import colors from "../constants/colors";
+import colors from "../../constants/colors";
 
 // import types
 
