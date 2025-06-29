@@ -9,6 +9,7 @@ import CustomButton from "./CustomButton";
 //import Modal component(s)
 import AddCategoryModal from "./modals/AddCategoryModal";
 import ConfirmDeletionModal from "./modals/ConfirmDeletionModal";
+import EditCategoryModal from "./modals/EditCategoryModal";
 
 // import icons
 import Entypo from '@expo/vector-icons/Entypo';
@@ -24,6 +25,7 @@ const CuisineList = ({categoriesData}: CategoriesData) => {
     const [selectedTileId, setSelectedTileId] = useState<string | null>(null);
     const [categoryName, setCategoryName] = useState<string | null>(null);
     const [showWarningModal, setShowWarningModal] = useState<boolean>(false);
+    const [showEditModal, setShowEditModal] = useState<boolean>(false);
     const [showAddCategoryModal, setShowAddCategoryModal] = useState<boolean>(false);
 
     const handleLongPress = (id: string, categoryName: string) => {
@@ -54,6 +56,7 @@ const CuisineList = ({categoriesData}: CategoriesData) => {
                                 onLongPress={handleLongPress}
                                 isSelected={item._id === selectedTileId}
                                 setShowWarningModal={setShowWarningModal}
+                                setShowEditModal={setShowEditModal}
                             >
                             </CategoryTile>
                         </View>
@@ -73,6 +76,17 @@ const CuisineList = ({categoriesData}: CategoriesData) => {
                     </CustomButton>
                 </View>
             </Pressable>
+
+            {
+                showEditModal && (
+                    <EditCategoryModal
+                        categoryName={categoryName}
+                        selectedTileId={selectedTileId}
+                        setShowEditModal={setShowEditModal}
+                    >
+                    </EditCategoryModal>
+                )
+            }
             
             {
                 showWarningModal && (
@@ -90,7 +104,6 @@ const CuisineList = ({categoriesData}: CategoriesData) => {
                     <AddCategoryModal
                         setShowAddCategoryModal={setShowAddCategoryModal}
                     >
-
                     </AddCategoryModal>
                 )
             }
@@ -123,5 +136,8 @@ const styles = StyleSheet.create({
     addButtonContainer: {
         borderRadius: 12,
         overflow: "hidden",
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        marginHorizontal: 30
     },
 });

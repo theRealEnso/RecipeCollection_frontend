@@ -62,7 +62,6 @@ const HomeScreen = () => {
                         <View>
                             <CuisineList categoriesData={data.categories}></CuisineList>
                             <View>
-                                <Text>I AM THE HOME SCREEN!</Text>
                                 <Button title="Sign out" onPress={logOut}></Button>
                             </View>   
                         </View>

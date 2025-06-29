@@ -11,20 +11,26 @@ import colors from "../constants/colors";
 
 // import types
 import { Cuisine } from "@/types/Category";
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 type CuisineCategoryProps = {
     cuisineData: Cuisine,
     onLongPress: (id: string, categoryName: string) => void;
     isSelected: boolean;
     setShowWarningModal: React.Dispatch<React.SetStateAction<boolean>>;
+    setShowEditModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const CategoryTile = ({cuisineData, onLongPress, isSelected, setShowWarningModal}: CuisineCategoryProps) => {
+const CategoryTile = ({cuisineData, onLongPress, isSelected, setShowWarningModal, setShowEditModal}: CuisineCategoryProps) => {
     // console.log(cuisineData);
     if(!cuisineData) return null;
 
     const displayWarning = () => {
         setShowWarningModal(true);
+    };
+
+    const displayEdit = () => {
+        setShowEditModal(true);
     };
 
     return (
@@ -48,12 +54,20 @@ const CategoryTile = ({cuisineData, onLongPress, isSelected, setShowWarningModal
             {
                 isSelected && (
                     <View style={styles.buttonOuterContainer}>
-                        <CustomButton
-                            value={<Ionicons name="trash" size={24}></Ionicons>}
-                            width={40}
-                            onButtonPress={displayWarning}
-                        >
-                        </CustomButton>
+                        <View style={styles.buttonInnerContainer}>
+                            <CustomButton
+                                value={<AntDesign name="edit" size={24}></AntDesign>}
+                                width={40}
+                                onButtonPress={displayEdit}
+                            >
+                            </CustomButton>
+                            <CustomButton
+                                value={<Ionicons name="trash" size={24}></Ionicons>}
+                                width={40}
+                                onButtonPress={displayWarning}
+                            >
+                            </CustomButton>
+                        </View>
                     </View>
                 )
             }
@@ -108,5 +122,9 @@ const styles = StyleSheet.create({
         right: 5,
         top: 5,
         // backgroundColor: "black"
+    },
+
+    buttonInnerContainer: {
+        flexDirection: "row"
     }
 });
