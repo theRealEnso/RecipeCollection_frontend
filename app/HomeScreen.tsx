@@ -16,26 +16,26 @@ import colors from "./constants/colors";
 
 const HomeScreen = () => {
     const router = useRouter();
-    const {currentUser, handleSetUser, token, handleSetAccessToken} = useContext(UserContext);
+    const {currentUser, handleSetUser, accessToken, handleSetTokens} = useContext(UserContext);
     
     const logOut = () => {
         handleSetUser(null);
-        handleSetAccessToken("");
+        handleSetTokens("", "");
     };
 
     // useEffect to handle signing out and re-directing to the login screen
     useEffect(() => {
         if(
             (!currentUser || currentUser === null) ||
-            (!token || !token.length)
+            (!accessToken || !accessToken.length)
         ){
             router.replace("/LoginScreen");  
         }  
-    }, [router, currentUser, token]);
+    }, [router, currentUser, accessToken]);
 
     const {data, isLoading, error} = useQuery({
         queryKey: ["userCategories"],
-        queryFn: () => getAllCategories(token),
+        queryFn: () => getAllCategories(accessToken),
         refetchOnMount: "always",
     });
 
@@ -49,7 +49,7 @@ const HomeScreen = () => {
     // if(isLoading) return <ActivityIndicator size="large"></ActivityIndicator>;
     // if(error) return <Text>Error fetching categories</Text>;
 
-    if(token) console.log(token);
+    if(accessToken) console.log(accessToken);
 
     return (
         <View style={styles.container}>

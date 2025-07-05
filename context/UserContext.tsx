@@ -13,8 +13,9 @@ type UserContextTypes = {
     handleSetUser: (user: User | null) => Promise<void>;
     isTokenVerified: boolean;
     setIsTokenVerified: React.Dispatch<React.SetStateAction<boolean>>;
-    token: string;
-    handleSetAccessToken: (token: string) => Promise<void>;
+    accessToken: string;
+    refreshToken: string;
+    handleSetTokens: (accessToken: string, refreshToken: string) => Promise<void>;
     isHydrated: boolean;
     setIsHydrated: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -24,8 +25,9 @@ export const UserContext = createContext<UserContextTypes>({
     handleSetUser: async () => {},
     isTokenVerified: false,
     setIsTokenVerified: () => {},
-    token: "",
-    handleSetAccessToken: async () => {},
+    accessToken: "",
+    refreshToken: "",
+    handleSetTokens: async () => {},
     isHydrated: false,
     setIsHydrated: () => {},
 });
@@ -33,21 +35,24 @@ export const UserContext = createContext<UserContextTypes>({
 export const UserProvider: FC<UserProviderProps> = ({children}) => {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [isTokenVerified, setIsTokenVerified] = useState<boolean>(false);
-    const [token, setToken] = useState<string>("");
+    const [accessToken, setAccessToken] = useState<string>("");
+    const [refreshToken, setRefreshToken] = useState<string>("");
     const [isHydrated, setIsHydrated] = useState<boolean>(false);
 
     useEffect(() => {
         const loadUserFromStorage = async () => {
             try {
                 const storedUser = await SecureStore.getItemAsync("user");
-                const storedToken = await SecureStore.getItemAsync("accessToken");
+                const storedAccessToken = await SecureStore.getItemAsync("access-token");
+                const storedRefreshToken = await SecureStore.getItemAsync("refresh-token");
 
-                if(storedUser && storedToken){
+                if(storedUser && storedAccessToken && storedRefreshToken){
                     setCurrentUser(JSON.parse(storedUser));
-                    setToken(storedToken);
+                    setAccessToken(storedAccessToken);
+                    setRefreshToken(storedRefreshToken);
                 }
             } catch(error){
-                console.error(`Failed to load user from storage, ${error}`)
+                console.error(`Failed to load user information from storage, ${error}`)
             } finally {
                 setIsHydrated(true);
             }
@@ -66,13 +71,16 @@ export const UserProvider: FC<UserProviderProps> = ({children}) => {
         }
     };
 
-    const handleSetAccessToken = async (token: string) => {
-        setToken(token);
+    const handleSetTokens = async (accessToken: string, refreshToken: string) => {
+        setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
 
-        if(token){
-            await SecureStore.setItemAsync("accessToken", token);
+        if(accessToken && refreshToken){
+            await SecureStore.setItemAsync("access-token", accessToken);
+            await SecureStore.setItemAsync("refresh-token", refreshToken);
         } else {
-            await SecureStore.deleteItemAsync("accessToken");
+            await SecureStore.deleteItemAsync("access-token");
+            await SecureStore.deleteItemAsync("refresh-token");
         }
     };
 
@@ -81,8 +89,9 @@ export const UserProvider: FC<UserProviderProps> = ({children}) => {
         handleSetUser,
         isTokenVerified,
         setIsTokenVerified,
-        token,
-        handleSetAccessToken,
+        accessToken,
+        refreshToken,
+        handleSetTokens,
         isHydrated,
         setIsHydrated,
     };

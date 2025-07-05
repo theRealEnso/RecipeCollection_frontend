@@ -37,7 +37,7 @@ const RegisterScreen = () => {
     }
   }, [navigationReady, router])
 
-  const {handleSetUser, handleSetAccessToken, setIsTokenVerified} = useContext(UserContext);
+  const {handleSetUser, handleSetTokens, setIsTokenVerified} = useContext(UserContext);
 
   const [formInputs, setFormInputs] = useState({
       firstName: "",
@@ -64,7 +64,7 @@ const RegisterScreen = () => {
           console.log("User created:", data);
           handleSetUser(data.user);
           setIsTokenVerified(true);
-          handleSetAccessToken(data.user.access_token);
+          handleSetTokens(data.user.access_token, data.user.refresh_token);
           setNavigationReady(true);
         }
       },

@@ -1,6 +1,7 @@
-import { Pressable, StyleSheet, Text, View, } from "react-native";
-// import {BlurView} from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { Pressable, StyleSheet, Text, View, } from "react-native";
 
 // import component(s)
 import CustomButton from "./CustomButton";
@@ -22,8 +23,23 @@ type CuisineCategoryProps = {
 };
 
 const CategoryTile = ({cuisineData, onLongPress, isSelected, setShowWarningModal, setShowEditModal}: CuisineCategoryProps) => {
-    // console.log(cuisineData);
-    if(!cuisineData) return null;
+    const router = useRouter();
+    const [tileId, setTileId] = useState<string | null>(null);
+
+    const categoryId = cuisineData._id;
+    const categoryName = cuisineData.cuisineName
+
+    useEffect(() => {
+        if(tileId){
+            router.push({
+                pathname: "/RecipesOverview",
+                params: {
+                    categoryId,
+                    categoryName,
+                }
+            })
+        }
+    }, [tileId, categoryId, categoryName, router]);
 
     const displayWarning = () => {
         setShowWarningModal(true);
@@ -40,6 +56,7 @@ const CategoryTile = ({cuisineData, onLongPress, isSelected, setShowWarningModal
                 style={styles.pressable}
                 onLongPress={() => onLongPress(cuisineData._id, cuisineData.cuisineName)}
                 delayLongPress={1000}
+                onPress={() => setTileId(categoryId)}
             >
                 {({ pressed }) => (
                     <LinearGradient

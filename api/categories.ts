@@ -1,4 +1,5 @@
 import axios from "axios";
+import api from "./axiosInterceptor";
 
 //import types
 import { Cuisine } from "@/types/Category";
@@ -27,7 +28,7 @@ type EditCategoryProps = AddCategoryProps & {
 
 export const getAllCategories = async (accessToken: string): Promise<Categories | undefined> => {
     try {
-        const { data } = await axios.get(`${CATEGORIES_ENDPOINT}/get-user-categories`, {
+        const { data } = await api.get(`${CATEGORIES_ENDPOINT}/get-user-categories`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             },

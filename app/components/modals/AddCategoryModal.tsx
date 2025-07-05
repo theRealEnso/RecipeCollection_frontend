@@ -4,8 +4,8 @@ import { ActivityIndicator, Modal, StyleSheet, Text, TextInput, View } from "rea
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { addCuisineCategory } from "@/api/categories";
 // import api function calls
+import { addCuisineCategory } from "@/api/categories";
 
 // import component(s)
 import CustomButton from "../CustomButton";
@@ -21,7 +21,7 @@ type AddModalProps = {
 
 const AddCategoryModal = ({setShowAddCategoryModal}: AddModalProps) => {
     const queryClient = useQueryClient();
-    const { token } = useContext(UserContext);
+    const { accessToken } = useContext(UserContext);
 
     const [textInput, setTextInput] = useState<string>("");
 
@@ -44,10 +44,10 @@ const AddCategoryModal = ({setShowAddCategoryModal}: AddModalProps) => {
     };
 
     const handleAddCategory = () => {
-        if(!token) return;
+        if(!accessToken) return;
 
         addCategoryMutation.mutate({
-            accessToken: token,
+            accessToken,
             categoryText: formatString(textInput),
         });
     };
@@ -93,7 +93,6 @@ const AddCategoryModal = ({setShowAddCategoryModal}: AddModalProps) => {
                 }
             </View>
         </Modal>
-
     );
 };
 

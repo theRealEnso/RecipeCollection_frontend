@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { UserContext } from '../context/UserContext';
 
 import { Link, useRouter } from 'expo-router';
@@ -25,13 +25,15 @@ export default function LoginScreen() {
   const router = useRouter();
 
   const [navigationReady, setNavigationReady] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
   useEffect(() => {
     if(navigationReady){
       router.replace("/HomeScreen");
     }
   }, [router, navigationReady]);
 
-  const {handleSetUser, handleSetAccessToken} = useContext(UserContext);
+  const {handleSetUser, handleSetTokens} = useContext(UserContext);
 
   const [formErrors, setFormErrors] = useState<FormErrors>({
     email: null,
@@ -52,17 +54,23 @@ export default function LoginScreen() {
       }));
   };
 
+  //to fix stale closure issue where react query was referencing a function that no longer exists
+  const handleError = useCallback((error: any) => {
+    setErrorMessage(error.message);
+
+  }, []);
+
   const loginUserMutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
-      handleSetUser(data.user);
-      handleSetAccessToken(data.user.access_token);
-      setNavigationReady(true);
+      if(data){
+        handleSetUser(data.user);
+        handleSetTokens(data.user.access_token, data.user.refresh_token);
+        setNavigationReady(true);
+      }
     },
 
-    onError: (error) => {
-      console.error(`Error: ${error}`);
-    }
+    onError: handleError,
   });
 
   const handleLoginSubmit = async () => {
