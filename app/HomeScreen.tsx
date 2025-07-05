@@ -39,12 +39,6 @@ const HomeScreen = () => {
         refetchOnMount: "always",
     });
 
-    // useEffect(() => {
-    //     if (data) {
-    //         console.log("Fetched categories data:", data);
-    //     }
-    // }, [data]);
-
 
     // if(isLoading) return <ActivityIndicator size="large"></ActivityIndicator>;
     // if(error) return <Text>Error fetching categories</Text>;
@@ -67,7 +61,7 @@ const HomeScreen = () => {
                         </View>
                     )
                     : (
-                        <Text>You currently do not have any cuisines added. Start adding!</Text>
+                        <Text>You currently do not have any cuisines added. Press the button at the bottom right to start adding!</Text>
                     )            
             }
             
