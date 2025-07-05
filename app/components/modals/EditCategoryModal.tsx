@@ -32,7 +32,7 @@ const EditCategoryModal = (
 
     const queryClient = useQueryClient();
     
-    const { token } = useContext(UserContext);
+    const { accessToken } = useContext(UserContext);
 
     const editCategoryMutation = useMutation({
         mutationFn: editCuisineCategory,
@@ -48,7 +48,7 @@ const EditCategoryModal = (
 
     const handleSaveEdit = async () => {
         editCategoryMutation.mutate({
-            accessToken: token,
+            accessToken,
             categoryText: textInput,
             categoryId: selectedTileId,
         });

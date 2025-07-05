@@ -30,7 +30,7 @@ const ConfirmDeletionModal = (
 
     const queryClient = useQueryClient();
     
-    const { token } = useContext(UserContext);
+    const { accessToken } = useContext(UserContext);
 
     const hideWarning = () => {
         setShowWarningModal(false);
@@ -51,12 +51,12 @@ const ConfirmDeletionModal = (
     const handleDeleteCategory = () => {
         console.log("Confirm button pressed!");
 
-        if(!token || ! selectedTileId) return;
+        if(!accessToken || ! selectedTileId) return;
 
         deleteCategoryMutation.mutate({
-            accessToken: token,
+            accessToken,
             categoryId: selectedTileId,
-        })
+        });
     };
 
     return (
