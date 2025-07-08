@@ -72,16 +72,10 @@ export const UserProvider: FC<UserProviderProps> = ({children}) => {
     };
 
     const handleSetTokens = async (accessToken: string, refreshToken: string) => {
+        await SecureStore.setItemAsync("access-token", accessToken);
+        await SecureStore.setItemAsync("refresh-token", refreshToken);
         setAccessToken(accessToken);
         setRefreshToken(refreshToken);
-
-        if(accessToken && refreshToken){
-            await SecureStore.setItemAsync("access-token", accessToken);
-            await SecureStore.setItemAsync("refresh-token", refreshToken);
-        } else {
-            await SecureStore.deleteItemAsync("access-token");
-            await SecureStore.deleteItemAsync("refresh-token");
-        }
     };
 
     const value = {

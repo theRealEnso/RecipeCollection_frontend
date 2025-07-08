@@ -22,18 +22,18 @@ type FormErrors = {
 };
 
 export default function LoginScreen() {
-  const router = useRouter();
-
+  const {handleSetUser, handleSetTokens, accessToken, refreshToken} = useContext(UserContext);
   const [navigationReady, setNavigationReady] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
+  const router = useRouter();
+
   useEffect(() => {
-    if(navigationReady){
+    if(navigationReady && accessToken && refreshToken){
+      // console.log(accessToken);
       router.replace("/HomeScreen");
     }
-  }, [router, navigationReady]);
-
-  const {handleSetUser, handleSetTokens} = useContext(UserContext);
+  }, [router, navigationReady, accessToken, refreshToken]);
 
   const [formErrors, setFormErrors] = useState<FormErrors>({
     email: null,
@@ -65,7 +65,7 @@ export default function LoginScreen() {
     onSuccess: (data) => {
       if(data){
         handleSetUser(data.user);
-        handleSetTokens(data.user.access_token, data.user.refresh_token);
+        handleSetTokens(data.access_token, data.refresh_token);
         setNavigationReady(true);
       }
     },

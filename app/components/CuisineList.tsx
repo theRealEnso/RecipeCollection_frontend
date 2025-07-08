@@ -7,9 +7,9 @@ import CategoryTile from "./CategoryTile";
 import CustomButton from "./CustomButton";
 
 //import Modal component(s)
-import AddCategoryModal from "./modals/AddCategoryModal";
-import ConfirmDeletionModal from "./modals/ConfirmDeletionModal";
-import EditCategoryModal from "./modals/EditCategoryModal";
+import AddCategoryModal from "./modals/category/AddCategoryModal";
+import ConfirmDeletionModal from "./modals/category/ConfirmDeletionModal";
+import EditCategoryModal from "./modals/category/EditCategoryModal";
 
 // import icons
 import Entypo from '@expo/vector-icons/Entypo';

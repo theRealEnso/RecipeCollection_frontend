@@ -3,6 +3,4 @@ export type User = {
     firstName: string;
     lastName: string;
     email: string;
-    access_token: string;
-    refresh_token: string;
 };

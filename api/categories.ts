@@ -28,6 +28,8 @@ type EditCategoryProps = AddCategoryProps & {
 
 export const getAllCategories = async (accessToken: string): Promise<Categories | undefined> => {
     try {
+        // const accessToken = await SecureStore.getItemAsync("access-token");
+
         const { data } = await api.get(`${CATEGORIES_ENDPOINT}/get-user-categories`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
@@ -38,6 +40,7 @@ export const getAllCategories = async (accessToken: string): Promise<Categories 
 
     } catch(error){
         console.error(`Error: ${error}`);
+        throw error;
     };
 };
 

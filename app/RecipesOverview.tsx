@@ -1,8 +1,17 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useState } from "react";
 
 import { Button, StyleSheet, Text, View } from "react-native";
 
+//import component(s)
+import CustomButton from "./components/CustomButton";
+import AddRecipeModal from "./components/modals/recipes/addRecipeModal";
+
+import colors from "./constants/colors";
+
 const RecipesOverview = () => {
+    const [showForm, setShowForm] = useState<boolean>(false);
+
     const { categoryId, categoryName } = useLocalSearchParams();
 
     const router = useRouter(); 
@@ -11,10 +20,34 @@ const RecipesOverview = () => {
         router.replace("/HomeScreen")
     };
 
+    const displayForm = () => {
+        setShowForm(true);
+    }
+
     return (
         <View style={styles.container}>
-            <Text>All recipes inside of your <Text>{categoryName}</Text> collection</Text>
+            <View style={styles.mainContent}>
+                <View style={styles.headerContainer}>
+                    <Text style={styles.header}>All recipes inside of your <Text>{categoryName}</Text> food collection</Text>
+                </View>
+                
+                <View style={styles.buttonContainer}>
+                    <CustomButton value="Add a recipe!" width={100} onButtonPress={displayForm}></CustomButton>
+                </View>
+                
+            </View>
+
             <Button title="Go back" onPress={returnToHomeScreen}></Button>
+
+            {
+                showForm && (
+                    <AddRecipeModal
+                        setShowForm={setShowForm}
+                    >
+
+                    </AddRecipeModal>
+                )
+            }
         </View>
     )
 };
@@ -25,5 +58,30 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginVertical: 50,
+    },
+
+    mainContent: {
+        flex: 1,
+        // alignItems: "center",
+        // justifyContent: "center"
+    },
+
+    headerContainer: {
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        padding: 20,
+    },
+
+    header: {
+        color: colors.primaryAccent500,
+        fontWeight: "600",
+        fontSize: 30,
+    },
+
+    buttonContainer: {
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        paddingHorizontal: 50,
     }
-})
+});

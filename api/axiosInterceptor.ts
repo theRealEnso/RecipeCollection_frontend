@@ -56,15 +56,11 @@ api.interceptors.response.use(
             //Otherwise, mark that we are refreshing now
             isRefreshing = true;
 
-            // ask the server to issue a new access token
+            // ask the server to issue a new access token using refresh token that should be stored in expo
             try {
-                const { data } = await axios.post(
-                    `${RECIPE_COLLECTION_ENDPOINT}/auth/refresh-token`, 
-                    null, 
-                    {
-                        withCredentials: true,
-                    }
-                );
+                const refreshToken = await SecureStore.getItemAsync("refresh-token");
+
+                const { data } = await axios.post(`${RECIPE_COLLECTION_ENDPOINT}/auth/refresh-token`, {refresh_token: refreshToken});
 
                 const newAccessToken = data.access_token;
 
@@ -77,8 +73,8 @@ api.interceptors.response.use(
                 //retry all requests that were waiting
                 processQueue(null, newAccessToken);
 
-                //retry the original request that failed
-                originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+                //retry the original request that failed with the new access token retrieived from the server
+                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
                 return api(originalRequest);
             } catch(error) {
                 // if refresh fails, then reject all the queued requests

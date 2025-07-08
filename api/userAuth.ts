@@ -7,6 +7,8 @@ import { UserData } from "../app/RegisterScreen";
 type UserInfoFromServer = {
   message: string;
   user: User;
+  access_token: string;
+  refresh_token: string;
 }
  
 const RECIPE_COLLECTION_ENDPOINT = process.env.EXPO_PUBLIC_RECIPE_COLLECTION_ENDPOINT_3;

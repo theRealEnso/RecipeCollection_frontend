@@ -4,61 +4,58 @@ import { ActivityIndicator, Modal, StyleSheet, Text, TextInput, View } from "rea
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-//import api function calls
-import { editCuisineCategory } from "@/api/categories";
+// import api function calls
+import { addCuisineCategory } from "@/api/categories";
 
 // import component(s)
-import CustomButton from "../CustomButton";
+import CustomButton from "../../CustomButton";
 
-import colors from "../../constants/colors";
+import colors from "../../../constants/colors";
 
-// import types
+// import utility function(s)
+import { formatString } from "@/utils/formatString";
 
-type EditModalProps = {
-    categoryName: string | null;
-    setShowEditModal: React.Dispatch<React.SetStateAction<boolean>>;
-    selectedTileId: string | null;
+type AddModalProps = {
+    setShowAddCategoryModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const EditCategoryModal = (
-    {
-        categoryName, 
-        setShowEditModal, 
-        selectedTileId, 
-    }: EditModalProps
-) => {
-
-    const [textInput, setTextInput] = useState<string | undefined>(categoryName as string);
-
+const AddCategoryModal = ({setShowAddCategoryModal}: AddModalProps) => {
     const queryClient = useQueryClient();
-    
     const { accessToken } = useContext(UserContext);
 
-    const editCategoryMutation = useMutation({
-        mutationFn: editCuisineCategory,
+    const [textInput, setTextInput] = useState<string>("");
+
+    const addCategoryMutation = useMutation({
+        mutationFn: addCuisineCategory,
         onSuccess: (data) => {
-            console.log(data);
-            queryClient.invalidateQueries({queryKey: ["userCategories"]})
-            setShowEditModal(false);
+            if(data){
+                console.log("Successfully added a category:", data)
+                queryClient.invalidateQueries({queryKey: ["userCategories"]}) // force refetch of categories after adding one
+                setShowAddCategoryModal(false);
+            }
         },
         onError: (error) => {
-            console.error("Error editing cusine category: ", error);
+            console.error(`Error adding a category: ${error}`);
         },
     });
 
-    const handleSaveEdit = async () => {
-        editCategoryMutation.mutate({
+    const hideAddModal = () => {
+        setShowAddCategoryModal(false);
+    };
+
+    const handleAddCategory = () => {
+        if(!accessToken) return;
+
+        addCategoryMutation.mutate({
             accessToken,
-            categoryText: textInput,
-            categoryId: selectedTileId,
+            categoryText: formatString(textInput),
         });
     };
 
-    const hideEditModal = () => {
-        setShowEditModal(false);
-    }
+    console.log(textInput);
+
     return (
-         <Modal 
+        <Modal 
             animationType="fade"
             transparent={false}
             visible={true}
@@ -66,11 +63,10 @@ const EditCategoryModal = (
             <View style={styles.container}>
                 <View style={styles.content}>
                     <View>
-                        <Text style={styles.label}>Edit category name</Text>
+                        <Text style={styles.label}>Add a cuisine category</Text>
                         <TextInput 
-                            placeholder="enter updated name" 
+                            placeholder="e.g. Italian" 
                             style={styles.textInputStyles}
-                            value={textInput}
                             onChangeText={(value) => setTextInput(value)}
                         >
                         </TextInput>
@@ -78,14 +74,14 @@ const EditCategoryModal = (
 
                     <View style={styles.buttonsContainer}>
                         <View style={styles.buttonOuterContainer}>
-                            <CustomButton width={100} value="Cancel" onButtonPress={hideEditModal}></CustomButton>
+                            <CustomButton width={100} value="Cancel" onButtonPress={hideAddModal}></CustomButton>
                         </View>
 
                         <View style={styles.buttonOuterContainer}>
                             <CustomButton 
                                 width={100} 
-                                value="Save" 
-                                onButtonPress={handleSaveEdit}
+                                value="Confirm" 
+                                onButtonPress={handleAddCategory}
                                 // mutationPending={deleteCategoryMutation.isPending}
                             />
                         </View>
@@ -93,15 +89,14 @@ const EditCategoryModal = (
                 </View>
 
                 {
-                    editCategoryMutation.isPending && <ActivityIndicator color={colors.primaryAccent500}></ActivityIndicator>
+                    addCategoryMutation.isPending && <ActivityIndicator color={colors.primaryAccent500}></ActivityIndicator>
                 }
             </View>
         </Modal>
-
     );
 };
 
-export default EditCategoryModal;
+export default AddCategoryModal;
 
 const styles = StyleSheet.create({
     container: {

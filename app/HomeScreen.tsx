@@ -16,7 +16,7 @@ import colors from "./constants/colors";
 
 const HomeScreen = () => {
     const router = useRouter();
-    const {currentUser, handleSetUser, accessToken, handleSetTokens} = useContext(UserContext);
+    const {currentUser, handleSetUser, handleSetTokens, accessToken, refreshToken,} = useContext(UserContext);
     
     const logOut = () => {
         handleSetUser(null);
@@ -43,7 +43,8 @@ const HomeScreen = () => {
     // if(isLoading) return <ActivityIndicator size="large"></ActivityIndicator>;
     // if(error) return <Text>Error fetching categories</Text>;
 
-    if(accessToken) console.log(accessToken);
+    if(accessToken) console.log("access token is:", accessToken);
+    if(refreshToken) console.log("refresh token is: ", refreshToken);
 
     return (
         <View style={styles.container}>
