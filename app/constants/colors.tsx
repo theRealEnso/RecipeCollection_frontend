@@ -7,6 +7,7 @@ const colors = {
   secondaryAccent500: "#F2B134",
   textPrimary500: "#3B2F2F",
   textPrimary600: "#4f2f19",
+  textPrimary700: "#69441b",
   backgroundPrimary: "#ebe4df",
 };
 

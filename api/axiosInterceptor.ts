@@ -31,7 +31,7 @@ const processQueue = (error: any, token: string | null = null) => {
 // intercept responses
 api.interceptors.response.use(
     response => response, // if request succeeds, just return the response
-    async error => {
+    async error => { // otherwise, if there is an error, then...
         const originalRequest = error.config;
 
         // Check: Is this a 401 error and the first time we're retrying it?
