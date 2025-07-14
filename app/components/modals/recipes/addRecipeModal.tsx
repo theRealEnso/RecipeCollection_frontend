@@ -70,9 +70,15 @@ const AddRecipeModal = ({categoryId, setShowForm}: AddRecipeModalProps) => {
         setIngredientInput("");
     };
 
-    //function to capture user updates to items in the IngredientList component and update the ingredientsList array. Pass as props to IngredientList component
+    //function to capture user updates to a list item in the IngredientList component and update the ingredientsList array. Pass as props to IngredientList component
     const updateIngredients = (index: number, updatedIngredient: string) => {
         const updatedIngredientsList = ingredientsList.map((ingredient, i) => index === i ? updatedIngredient : ingredient);
+        setIngredientsList(updatedIngredientsList);
+    };
+
+    //function to remove an ingredient from the list. Pass as props to IngredientList component
+    const removeIngredient = (index: number) => {
+        const updatedIngredientsList = ingredientsList.filter((_, i) => i !== index);
         setIngredientsList(updatedIngredientsList);
     };
 
@@ -155,6 +161,7 @@ const AddRecipeModal = ({categoryId, setShowForm}: AddRecipeModalProps) => {
 
                     <View style={[styles.inputContainer, {marginVertical: 20}]}>
                         <Text style={styles.ingredientsLabel}>List of Ingredients</Text>
+
                         <View style={styles.ingredientInputOuterContainer}>
                             <View style={styles.ingredientInputInnerContainer}>
                                 <FormInput 
@@ -174,6 +181,14 @@ const AddRecipeModal = ({categoryId, setShowForm}: AddRecipeModalProps) => {
                                 </CustomButton>
                             </View>
                         </View>
+
+                        {
+                            ingredientsList.length && (
+                                <Text style={{marginTop: 10}}>
+                                    Tap on a list item to make edits, or the trash icon to delete
+                                </Text>
+                            )
+                        }
                     </View>
 
                 </View>
@@ -184,7 +199,12 @@ const AddRecipeModal = ({categoryId, setShowForm}: AddRecipeModalProps) => {
                 {/* render list of ingredients */}
                 {
                     ingredientsList && (
-                        <IngredientList ingredients={ingredientsList} onEdit={updateIngredients}></IngredientList>
+                        <IngredientList 
+                            ingredients={ingredientsList} 
+                            onEdit={updateIngredients}
+                            onDelete={removeIngredient}
+                        >
+                        </IngredientList>
                     )
                 }
 

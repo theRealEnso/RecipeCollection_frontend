@@ -1,14 +1,28 @@
 import { useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+    FlatList,
+    Keyboard,
+    KeyboardAvoidingView,
+    Platform,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View,
+} from "react-native";
+
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import colors from "../constants/colors";
 
 type IngredientListProps = {
     ingredients: string[];
     onEdit: (index: number, updatedIngredient: string) => void;
+    onDelete: (index: number) => void;
 };
 
-const IngredientList = ({ingredients, onEdit}: IngredientListProps) => {
+const IngredientList = ({ingredients, onEdit, onDelete}: IngredientListProps) => {
     const [itemIndex, setItemIndex] = useState<number | null>(null);
     const [itemText, setItemText] = useState<string>("");
 
@@ -26,45 +40,86 @@ const IngredientList = ({ingredients, onEdit}: IngredientListProps) => {
         setItemIndex(null);
     };
 
+    const handleItemDelete = (index: number) => {
+        onDelete(index);
+    };
+
     return (
-        <Pressable onPress={() => setItemIndex(null)}>
-            <FlatList
-                data={ingredients}
-                renderItem={({item, index}) => {
-                    return (
-                        <View style={styles.listContainer}>
-                            <Text style={[styles.text, {fontSize: 25, fontWeight: "bold"}]}>{"\u2022"}</Text>
-                            <View style={styles.touchableContainer}>
-                                {
-                                    itemIndex === index 
-                                    ? (
-                                        <TextInput
-                                            style={styles.textInput} 
-                                            value={itemText}
-                                            onChangeText={(newText) => setItemText(newText)}
-                                            onSubmitEditing={() => handleTextSubmit(index)}
-                                        ></TextInput>
-                                    ) 
-                                    : (
-                                        <TouchableOpacity style={styles.touchable}>
-                                            <Text style={styles.text2} onPress={() => handleItemPress(item, index)}>{item}</Text>
-                                        </TouchableOpacity>
-                                    )
-                                }
-                            </View>
-                        </View>
-                    )
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{flex: 1}}
+        >
+            <TouchableWithoutFeedback
+                onPress={() => {
+                    Keyboard.dismiss();
+                    setItemIndex(null);
                 }}
             >
-            </FlatList>
-         </Pressable>
-    )
+                <View>                    
+                    <FlatList
+                        data={ingredients}
+                        renderItem={({item, index}) => {
+                            return (
+                                <View style={styles.listContainer}>
+                                    <Text style={[styles.text, {fontSize: 25, fontWeight: "bold"}]}>{"\u2022"}</Text>
+                                    <View style={styles.touchableContainer}>
+                                        {
+                                            itemIndex === index 
+                                            ? (
+                                                <TextInput
+                                                    style={styles.textInput} 
+                                                    value={itemText}
+                                                    onChangeText={(newText) => setItemText(newText)}
+                                                    onSubmitEditing={() => handleTextSubmit(index)}
+                                                ></TextInput>
+                                            ) 
+                                            : (
+                                                <View style={styles.listItem}>
+                                                    <View>
+                                                        <TouchableOpacity style={styles.touchable}>
+                                                            <Text 
+                                                                style={styles.text2} 
+                                                                onPress={() => handleItemPress(item, index)}
+                                                                
+                                                            >
+                                                                {item}
+                                                            </Text>
+                                                        </TouchableOpacity>
+                                                    </View>
+
+                                                    <View>
+                                                        <FontAwesome 
+                                                            name="trash-o" 
+                                                            size={24} color="black" 
+                                                            onPress={() => handleItemDelete(index)} 
+                                                        />
+                                                    </View>
+
+                                                </View>
+                                            )
+                                        }
+                                    </View>
+                                </View>
+                            )
+                        }}
+                        keyExtractor={(_, index) => index.toString()}
+                    >
+                    </FlatList>
+                </View>
+            </TouchableWithoutFeedback>
+         </KeyboardAvoidingView>
+    );
 };
 
 export default IngredientList;
 
 const styles = StyleSheet.create({
     listContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+
+    listItem: {
         flexDirection: "row",
         alignItems: "center",
     },
