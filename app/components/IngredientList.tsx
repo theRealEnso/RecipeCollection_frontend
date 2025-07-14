@@ -1,29 +1,63 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import { FlatList, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import colors from "../constants/colors";
 
 type IngredientListProps = {
     ingredients: string[];
+    onEdit: (index: number, updatedIngredient: string) => void;
 };
 
-const IngredientList = ({ingredients}: IngredientListProps) => {
+const IngredientList = ({ingredients, onEdit}: IngredientListProps) => {
+    const [itemIndex, setItemIndex] = useState<number | null>(null);
+    const [itemText, setItemText] = useState<string>("");
+
+    const handleItemPress = (itemText: string, index: number) => {
+        setItemText(itemText);
+        setItemIndex(index);
+    };
+
+    // const handleInputChange = () => {
+
+    // }
+
+    const handleTextSubmit = (index: number) => {
+        onEdit(index, itemText);
+        setItemIndex(null);
+    };
+
     return (
-        <FlatList
-            data={ingredients}
-            renderItem={({item}) => {
-                return (
-                    <View style={styles.listContainer}>
-                        <Text style={[styles.text, {fontSize: 25, fontWeight: "bold"}]}>{"\u2022"}</Text>
-                        <View style={styles.touchableContainer}>
-                            <TouchableOpacity style={styles.touchable}>
-                                <Text style={styles.text2}>{item}</Text>
-                            </TouchableOpacity>
+        <Pressable onPress={() => setItemIndex(null)}>
+            <FlatList
+                data={ingredients}
+                renderItem={({item, index}) => {
+                    return (
+                        <View style={styles.listContainer}>
+                            <Text style={[styles.text, {fontSize: 25, fontWeight: "bold"}]}>{"\u2022"}</Text>
+                            <View style={styles.touchableContainer}>
+                                {
+                                    itemIndex === index 
+                                    ? (
+                                        <TextInput
+                                            style={styles.textInput} 
+                                            value={itemText}
+                                            onChangeText={(newText) => setItemText(newText)}
+                                            onSubmitEditing={() => handleTextSubmit(index)}
+                                        ></TextInput>
+                                    ) 
+                                    : (
+                                        <TouchableOpacity style={styles.touchable}>
+                                            <Text style={styles.text2} onPress={() => handleItemPress(item, index)}>{item}</Text>
+                                        </TouchableOpacity>
+                                    )
+                                }
+                            </View>
                         </View>
-                    </View>
-                )
-            }}
-        >
-        </FlatList>
+                    )
+                }}
+            >
+            </FlatList>
+         </Pressable>
     )
 };
 
@@ -46,7 +80,7 @@ const styles = StyleSheet.create({
     },
 
     touchableContainer: {
-        width: 100,
+        width: 120,
     },
 
     touchable: {
@@ -58,7 +92,16 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 5,
         alignItems: "center",
-        justifyContent: "center"
-    }
+        justifyContent: "center",
+        width: 120,
+    },
+
+    textInput: {
+        borderWidth: 2,
+        borderRadius: 10,
+        borderColor: colors.textPrimary700,
+        padding: 5,
+        width: 100,
+    },
 });
 
