@@ -183,10 +183,9 @@ const AddRecipeModal = ({categoryId, setShowForm}: AddRecipeModalProps) => {
                         </View>
 
                         {
-                            ingredientsList.length && (
+                            ingredientsList.length > 0 && (
                                 <Text style={{marginTop: 10}}>
-                                    Tap on a list item to make edits, or the trash icon to delete
-                                </Text>
+                                    Tap on a list item to make edits, or the trash icon to delete</Text>
                             )
                         }
                     </View>
