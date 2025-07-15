@@ -61,7 +61,6 @@ const IngredientList = ({ingredients, onEdit, onDelete}: IngredientListProps) =>
                         renderItem={({item, index}) => {
                             return (
                                 <View style={styles.listContainer}>
-                                    <Text style={[styles.text, {fontSize: 25, fontWeight: "bold"}]}>{"\u2022"}</Text>
                                     <View style={styles.touchableContainer}>
                                         {
                                             itemIndex === index 
@@ -117,6 +116,7 @@ const styles = StyleSheet.create({
     listContainer: {
         flexDirection: "row",
         alignItems: "center",
+        marginVertical: 5,
     },
 
     listItem: {
@@ -135,7 +135,9 @@ const styles = StyleSheet.create({
     },
 
     touchableContainer: {
-        width: 120,
+        width: 300,
+        alignItems: "center",
+        justifyContent: "center",
     },
 
     touchable: {
@@ -148,15 +150,16 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         alignItems: "center",
         justifyContent: "center",
-        width: 120,
+        width: 250,
     },
 
     textInput: {
         borderWidth: 2,
         borderRadius: 10,
         borderColor: colors.textPrimary700,
-        padding: 5,
-        width: 100,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        width: 250,
     },
 });
 

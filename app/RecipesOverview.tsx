@@ -1,28 +1,29 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
 
 import { Button, StyleSheet, Text, View } from "react-native";
 
 //import component(s)
 import CustomButton from "./components/CustomButton";
-import AddRecipeModal from "./components/modals/recipes/addRecipeModal";
 
 import colors from "./constants/colors";
 
 const RecipesOverview = () => {
-    const [showForm, setShowForm] = useState<boolean>(false);
 
     const { categoryId, categoryName } = useLocalSearchParams();
 
     const router = useRouter(); 
 
     const returnToHomeScreen = () => {
-        router.replace("/HomeScreen")
+        router.replace("/HomeScreen");
     };
 
-    const displayForm = () => {
-        setShowForm(true);
+    const navigateToAddRecipe = () => {
+        router.replace("/AddRecipeScreen");
     }
+
+    // const displayForm = () => {
+    //     setShowForm(true);
+    // }
 
     return (
         <View style={styles.container}>
@@ -32,22 +33,12 @@ const RecipesOverview = () => {
                 </View>
                 
                 <View style={styles.buttonContainer}>
-                    <CustomButton value="Add a recipe!" width={100} onButtonPress={displayForm}></CustomButton>
+                    <CustomButton value="Add a recipe!" width={100} onButtonPress={navigateToAddRecipe}></CustomButton>
                 </View>
                 
             </View>
 
             <Button title="Go back" onPress={returnToHomeScreen}></Button>
-
-            {
-                showForm && (
-                    <AddRecipeModal
-                        setShowForm={setShowForm}
-                    >
-
-                    </AddRecipeModal>
-                )
-            }
         </View>
     )
 };

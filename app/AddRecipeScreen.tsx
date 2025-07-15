@@ -1,0 +1,180 @@
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+
+// import component(s)
+import CustomButton from "./components/CustomButton";
+import FormInput from "./components/FormInput";
+
+// import colors from "@/app/constants/colors";
+
+type RecipeProps = {
+    recipeOwner?: string;
+    nameOfDish: string;
+    difficultyLevel: string;
+    timeToCook: string;
+    numberOfServings: string;
+    specialEquipment?: string;
+    components?: string[];
+};
+
+const AddRecipeScreen = () => {
+    const router = useRouter();
+
+    let [recipeForm, setRecipeForm] = useState<RecipeProps>({
+        recipeOwner: "",
+        nameOfDish: "",
+        difficultyLevel: "",
+        timeToCook: "",
+        numberOfServings: "",
+        specialEquipment: "",
+        components: [],
+    });
+
+    let {
+        recipeOwner,
+        nameOfDish,
+        difficultyLevel,
+        timeToCook,
+        numberOfServings,
+        // ingredientsList,
+        specialEquipment,
+        components
+    } = recipeForm;
+
+    // const closeForm = () => {
+    //     setShowForm(false);
+    // };
+
+    const handleInputChange = (fieldName: string, value: string) => {
+        setRecipeForm((previousState) => {
+            return ({
+                ...previousState,
+                [fieldName]: value,
+            });
+        });
+    };
+
+    // function to navigate to the next screen to continue adding the recipe ingredients
+    const continueToAddIngredients = () => {
+        router.push({
+            pathname: "/AddIngredientsScreen",
+            params: {
+                recipeInfo: JSON.stringify(recipeForm),
+            },
+        });
+    };
+
+    return (
+        <View style={styles.container}>
+            <View>
+                <View style={styles.inputContainer}>
+                    <Text>Enter the name / title of your dish!</Text>
+                    <FormInput 
+                        placeholder="recipe title"  
+                        value={nameOfDish} 
+                        width={380}
+                        onChangeText={(typedValue) => handleInputChange("nameOfDish", typedValue)} 
+                    >
+                    </FormInput>
+                </View>
+
+                <View style={styles.inputContainer}>
+                    <Text>{`Enter name of recipe owner/creator (optional)`}</Text>
+                    <FormInput 
+                        placeholder="name of recipe owner (optional)"  
+                        value={recipeOwner} 
+                        width={380}
+                        onChangeText={(typedValue) => handleInputChange("recipeOwner", typedValue)} 
+                    >
+                    </FormInput>
+                </View>
+
+                <View style={styles.inputContainer}>
+                    <Text>Enter the dish&apos;s difficulty level</Text>
+                    <FormInput 
+                        placeholder="e.g easy, medium, or hard"
+                        value={difficultyLevel} 
+                        width={380}
+                        onChangeText={(typedValue) => handleInputChange("difficultyLevel", typedValue)} 
+                    >
+                    </FormInput>
+                </View>
+
+                <View style={styles.inputContainer}>
+                    <Text>Enter estimated time to cook</Text>
+                    <FormInput 
+                        placeholder="e.g 30 minutes"
+                        value={timeToCook} 
+                        width={380}
+                        onChangeText={(typedValue) => handleInputChange("timeToCook", typedValue)}
+                    >
+                    </FormInput>
+                </View>
+
+                <View style={styles.inputContainer}>
+                    <Text>{`(Optional) if any special equipment is required, then enter them separated by commas`}</Text>
+                    <FormInput 
+                        placeholder="e.g. pressure cooker, sous vide machine, paster maker, etc  "
+                        value={specialEquipment} 
+                        width={380}
+                        onChangeText={(typedValue) => handleInputChange("specialEquipment", typedValue)}
+                    >
+                    </FormInput>
+                </View>
+
+                <View style={styles.inputContainer}>
+                    <Text>Enter estimated amount of servings this recipe yields</Text>
+                    <FormInput 
+                        placeholder="e.g 3-4 servings"
+                        value={numberOfServings} 
+                        width={380}
+                        onChangeText={(typedValue) => handleInputChange("numberOfServings", typedValue)} 
+                    >
+                    </FormInput>
+                </View>
+
+
+            </View>
+
+            {/* button to go to next screen to continue the form */}
+            <View style={styles.buttonsContainer}>
+                <View style={styles.buttonContainer}>
+                    <CustomButton value="Cancel" width={100} onButtonPress={() => router.replace("/RecipesOverview")}></CustomButton>
+                </View>
+                <View style={styles.buttonContainer}>
+                    <CustomButton value="Next" width={100} onButtonPress={continueToAddIngredients}></CustomButton>
+                </View>
+            </View>
+        </View>
+    );
+};
+
+export default AddRecipeScreen;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingVertical: 60,
+        paddingHorizontal: 20,
+        marginTop: 50,
+    },
+
+    inputContainer: {
+        marginVertical: 10,
+        // alignItems: "center",
+        // justifyContent: "center",
+    },
+
+    buttonsContainer: {
+        flex: 6,
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        paddingHorizontal: 20,
+        marginTop: 50,
+    },
+
+    buttonContainer: {
+        marginHorizontal: 5,
+    },
+});
