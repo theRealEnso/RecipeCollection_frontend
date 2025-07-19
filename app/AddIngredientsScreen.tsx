@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useContext } from "react";
 
 import { StyleSheet, Text, View } from "react-native";
+
+// import Recipe context
+import { RecipeContext } from "@/context/RecipeContext";
 
 import { useRouter } from "expo-router";
 
@@ -13,9 +16,15 @@ import IngredientList from "./components/IngredientList";
 import colors from "./constants/colors";
 
 const AddRecipeScreen = () => {
+    const {
+        ingredientInput, 
+        setIngredientInput, 
+        ingredientsList, 
+        setIngredientsList,
+        nameOfDish
+    } = useContext(RecipeContext);
+
     const router = useRouter();
-    const [ingredientInput, setIngredientInput] = useState<string>("");
-    const [ingredientsList, setIngredientsList] = useState<string[]>([]);
 
     const addIngredientToList = () => {
         const updatedIngredientList = [...ingredientsList, ingredientInput];
@@ -42,8 +51,8 @@ const AddRecipeScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.ingredientsLabel}>List of Ingredients</Text>
-            <Text>Enter quantity and name of ingredient item</Text>
+            <Text style={styles.ingredientsLabel}>{`Ingredients for ${nameOfDish}`}</Text>
+            <Text>Does this recipe contain sub-recipes or components with separate ingredient lists?</Text>
 
             <View style={styles.ingredientInputOuterContainer}>
                 <View style={styles.ingredientInputInnerContainer}>
@@ -104,26 +113,32 @@ const styles = StyleSheet.create({
         marginBottom: 50,
         alignItems: "center",
         justifyContent: "center",
+        paddingHorizontal: 40,
     },
 
     ingredientInputOuterContainer: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
+        marginTop: 20,
     },
 
     ingredientInputInnerContainer: {
         marginHorizontal: 5,
         // width: 300,
+        alignItems: "center",
+        justifyContent: "center",
     },
 
     ingredientsLabel: {
         color: colors.primaryAccent500,
         fontWeight: 500,
         fontSize: 30,
-        marginBottom: 10,
+        marginBottom: 20,
         textDecorationStyle: "dashed",
-        textDecorationLine: "underline"
+        textDecorationLine: "underline",
+        textAlign: "center",
+        // paddingHorizontal: 40,
     },
 
     messageContainer: {

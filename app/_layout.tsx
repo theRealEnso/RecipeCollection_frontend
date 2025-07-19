@@ -3,6 +3,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { useState } from 'react';
 
+import { RecipeProvider } from '@/context/RecipeContext';
 import { UserProvider } from '../context/UserContext';
 
 export default function RootLayout() {
@@ -19,7 +20,9 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <UserProvider>
-        <Stack screenOptions={{ headerShown: false }} />
+        <RecipeProvider>
+          <Stack screenOptions={{ headerShown: false }} />
+        </RecipeProvider>
       </UserProvider>
     </QueryClientProvider>
   );

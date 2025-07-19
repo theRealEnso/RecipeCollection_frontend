@@ -1,6 +1,9 @@
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
+
+//import Recipe context
+import { RecipeContext } from "@/context/RecipeContext";
 
 // import component(s)
 import CustomButton from "./components/CustomButton";
@@ -8,43 +11,20 @@ import FormInput from "./components/FormInput";
 
 // import colors from "@/app/constants/colors";
 
-type RecipeProps = {
-    recipeOwner?: string;
-    nameOfDish: string;
-    difficultyLevel: string;
-    timeToCook: string;
-    numberOfServings: string;
-    specialEquipment?: string;
-    components?: string[];
-};
 
 const AddRecipeScreen = () => {
-    const router = useRouter();
-
-    let [recipeForm, setRecipeForm] = useState<RecipeProps>({
-        recipeOwner: "",
-        nameOfDish: "",
-        difficultyLevel: "",
-        timeToCook: "",
-        numberOfServings: "",
-        specialEquipment: "",
-        components: [],
-    });
-
-    let {
+    const {
         recipeOwner,
         nameOfDish,
         difficultyLevel,
         timeToCook,
         numberOfServings,
-        // ingredientsList,
         specialEquipment,
-        components
-    } = recipeForm;
+        components,
+        setRecipeForm,
+    } = useContext(RecipeContext);
+    const router = useRouter();
 
-    // const closeForm = () => {
-    //     setShowForm(false);
-    // };
 
     const handleInputChange = (fieldName: string, value: string) => {
         setRecipeForm((previousState) => {
@@ -57,12 +37,9 @@ const AddRecipeScreen = () => {
 
     // function to navigate to the next screen to continue adding the recipe ingredients
     const continueToAddIngredients = () => {
-        router.push({
-            pathname: "/AddIngredientsScreen",
-            params: {
-                recipeInfo: JSON.stringify(recipeForm),
-            },
-        });
+        setTimeout(() => {
+            router.push("/AddIngredientsScreen");
+        }, 500);
     };
 
     return (
