@@ -31,10 +31,6 @@ const IngredientList = ({ingredients, onEdit, onDelete}: IngredientListProps) =>
         setItemIndex(index);
     };
 
-    // const handleInputChange = () => {
-
-    // }
-
     const handleTextSubmit = (index: number) => {
         onEdit(index, itemText);
         setItemIndex(null);

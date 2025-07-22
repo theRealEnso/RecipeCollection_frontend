@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 import { StyleSheet, Text, View } from "react-native";
 
@@ -8,40 +8,32 @@ import { RecipeContext } from "@/context/RecipeContext";
 import { useRouter } from "expo-router";
 
 // import components(s)
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Fontisto from '@expo/vector-icons/Fontisto';
 import CustomButton from "./components/CustomButton";
-import FormInput from "./components/FormInput";
-import IngredientList from "./components/IngredientList";
+import MultipleIngredientsList from "./components/MultipleIngredientsList";
+import SingleIngredientList from "./components/SingleIngredientList";
 
 import colors from "./constants/colors";
 
 const AddRecipeScreen = () => {
+    const [toggleNo, setToggleNo] = useState<boolean>(true);
+    const [toggleYes, setToggleYes] = useState<boolean>(false);
+
     const {
-        ingredientInput, 
-        setIngredientInput, 
-        ingredientsList, 
+        nameOfDish,
         setIngredientsList,
-        nameOfDish
     } = useContext(RecipeContext);
 
     const router = useRouter();
 
-    const addIngredientToList = () => {
-        const updatedIngredientList = [...ingredientsList, ingredientInput];
-        setIngredientsList(updatedIngredientList);
-        setIngredientInput("");
+    const pressNo = () => {
+        setToggleNo(true);
+        setToggleYes(false);
     };
-
-    //function to capture user updates to a list item in the IngredientList component and update the ingredientsList array. Pass as props to IngredientList component
-    const updateIngredients = (index: number, updatedIngredient: string) => {
-        const updatedIngredientsList = ingredientsList.map((ingredient, i) => index === i ? updatedIngredient : ingredient);
-        setIngredientsList(updatedIngredientsList);
-    };
-
-    //function to remove an ingredient from the list. Pass as props to IngredientList component
-    const removeIngredient = (index: number) => {
-        const updatedIngredientsList = ingredientsList.filter((_, i) => i !== index);
-        setIngredientsList(updatedIngredientsList);
+    const pressYes = () => {
+        setToggleNo(false);
+        setToggleYes(true);
+        setIngredientsList([]);
     };
 
     //function to back to previous screen
@@ -51,52 +43,54 @@ const AddRecipeScreen = () => {
 
     return (
         <View style={styles.container}>
+            {/* header / title */}
             <Text style={styles.ingredientsLabel}>{`Ingredients for ${nameOfDish}`}</Text>
-            <Text>Does this recipe contain sub-recipes or components with separate ingredient lists?</Text>
 
-            <View style={styles.ingredientInputOuterContainer}>
-                <View style={styles.ingredientInputInnerContainer}>
-                    <View style={{marginTop: 10}}>
-                        <FormInput 
-                            placeholder="e.g 2 cups chicken stock"
-                            value={ingredientInput} 
-                            width={220}
-                            onChangeText={(typedValue) => setIngredientInput(typedValue)}
-                        >
-                        </FormInput>
-                    </View>
-
+            {/* ui that prompts user to select no or yes to create ingredient sublists */}
+            <View style={{flexDirection: "row", width: 250, alignItems: "center", justifyContent: "space-evenly"}}>
+                <View style={{width: 180}}>
+                    <Text>Does this recipe contain sub-recipes or components with separate ingredient lists?</Text>
                 </View>
-                <View style={styles.ingredientInputInnerContainer}>
-                    <CustomButton 
-                        value={<FontAwesome6 name="add" size={30} color="white"></FontAwesome6>} 
-                        width={50}
-                        onButtonPress={addIngredientToList}
-                    >
-                    </CustomButton>
+                
+                <View style={{flexDirection: "row"}}>
+                    <View style={{flexDirection: "row", marginHorizontal: 10}}>
+                        <Text style={{marginRight: 10}}>no</Text>
+                        <Fontisto 
+                            name="checkbox-passive" 
+                            size={24} 
+                            color={toggleNo ? colors.textPrimary600 : "black"} 
+                            style={{
+                                backgroundColor: toggleNo ? colors.textPrimary600 : "white",
+                                borderColor: "black",
+                            }}
+                            onPress={pressNo} 
+                        />
+                    </View>
+                    <View style={{flexDirection: "row", marginHorizontal: 10}}>
+                        <Text style={{marginRight: 10}}>yes</Text>
+                        <Fontisto 
+                            name="checkbox-passive" 
+                            size={24} 
+                            color={toggleYes ? colors.textPrimary600 : "black"}
+                            style={{
+                                backgroundColor: toggleYes? colors.textPrimary600 : "white",
+                                borderColor: "black",
+                            }}
+                            onPress={pressYes} 
+                        />
+                    </View>
                 </View>
             </View>
 
+            {/* render single or multi-ingredient list depending on user selection */}
             {
-                ingredientsList.length > 0 && (
-                    <View style={styles.messageContainer}>
-                        <Text style={styles.message}>* Tap on a list item to make edits, or tap on the trash icon to remove that item from the list *</Text>
-                    </View>
+                toggleYes ? (
+                    <MultipleIngredientsList></MultipleIngredientsList>
+                ) : (
+                    <SingleIngredientList></SingleIngredientList>
                 )
             }
-
-            {/* render list of ingredients */}
-            {
-                ingredientsList && (
-                    <IngredientList 
-                        ingredients={ingredientsList} 
-                        onEdit={updateIngredients}
-                        onDelete={removeIngredient}
-                    >
-                    </IngredientList>
-                )
-            }
-
+            
             <View>
                 <CustomButton  value="Go back" width={100} onButtonPress={goBack}></CustomButton>
             </View>
@@ -111,23 +105,9 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 100,
         marginBottom: 50,
-        alignItems: "center",
-        justifyContent: "center",
+        // alignItems: "center",
+        // justifyContent: "center",
         paddingHorizontal: 40,
-    },
-
-    ingredientInputOuterContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        marginTop: 20,
-    },
-
-    ingredientInputInnerContainer: {
-        marginHorizontal: 5,
-        // width: 300,
-        alignItems: "center",
-        justifyContent: "center",
     },
 
     ingredientsLabel: {
@@ -139,14 +119,5 @@ const styles = StyleSheet.create({
         textDecorationLine: "underline",
         textAlign: "center",
         // paddingHorizontal: 40,
-    },
-
-    messageContainer: {
-        width: 300,
-    },
-
-    message: {
-        marginVertical: 10,
-        color: colors.primaryAccent900,
     },
 });

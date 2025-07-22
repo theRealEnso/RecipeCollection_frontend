@@ -37,6 +37,7 @@ const AddRecipeScreen = () => {
 
     // function to navigate to the next screen to continue adding the recipe ingredients
     const continueToAddIngredients = () => {
+        //add small delay so that React can update recipe context values from calling setRecipeForm before navigating
         setTimeout(() => {
             router.push("/AddIngredientsScreen");
         }, 500);

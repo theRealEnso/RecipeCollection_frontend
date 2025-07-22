@@ -16,6 +16,12 @@ type RecipeForm = {
     components?: string[]; 
 };
 
+type ListNameProps = {
+    name: string;
+    id: string;
+};
+
+
 type RecipeContextTypes = {
     recipeOwner?: string;
     nameOfDish: string;
@@ -29,8 +35,9 @@ type RecipeContextTypes = {
     setIngredientInput: React.Dispatch<React.SetStateAction<string>>;
     ingredientsList: string[];
     setIngredientsList: React.Dispatch<React.SetStateAction<string[]>>;
+    sublistNames: ListNameProps[];
+    setSublistNames: React.Dispatch<React.SetStateAction<ListNameProps[]>>;
 };
-
 ////////////////////////////////////////////////////////////////
 
 export const RecipeContext = createContext<RecipeContextTypes>({
@@ -46,11 +53,14 @@ export const RecipeContext = createContext<RecipeContextTypes>({
     setIngredientInput: () => {},
     ingredientsList: [],
     setIngredientsList: () => {},
+    sublistNames: [],
+    setSublistNames: () => {},
 });
 
 export const RecipeProvider = ({children}: RecipeProviderProps) => {
     const [ingredientInput, setIngredientInput] = useState<string>("");
     const [ingredientsList, setIngredientsList] = useState<string[]>([]);
+    const [sublistNames, setSublistNames] = useState<ListNameProps[]>([]);
     const [recipeForm, setRecipeForm] = useState<RecipeForm>({
         recipeOwner: "",
         nameOfDish: "",
@@ -84,6 +94,8 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         setIngredientInput,
         ingredientsList,
         setIngredientsList,
+        sublistNames,
+        setSublistNames,
     };
 
     return <RecipeContext.Provider value={value}>{children}</RecipeContext.Provider>

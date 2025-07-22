@@ -1,5 +1,6 @@
 import { Redirect } from 'expo-router';
 import { useContext } from 'react';
+import 'react-native-get-random-values';
 import { UserContext } from '../context/UserContext';
 
 export default function Index() {
