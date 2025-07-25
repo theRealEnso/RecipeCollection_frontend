@@ -1,43 +1,19 @@
 import { createContext, ReactNode, useState } from "react";
 
-// define types
+//import types
+import {
+    ListNameProps,
+    RecipeContextTypes,
+    RecipeForm,
+    SublistItem,
+} from "@/types/RecipeTypes";
 
+// define additional type(s)
 type RecipeProviderProps = {
     children: ReactNode;
 };
 
-type RecipeForm = {
-    recipeOwner?: string;
-    nameOfDish: string;
-    difficultyLevel: string;
-    timeToCook: string;
-    numberOfServings: string;
-    specialEquipment?: string;
-    components?: string[]; 
-};
 
-type ListNameProps = {
-    name: string;
-    id: string;
-};
-
-
-type RecipeContextTypes = {
-    recipeOwner?: string;
-    nameOfDish: string;
-    difficultyLevel: string;
-    timeToCook: string;
-    numberOfServings: string;
-    specialEquipment?: string;
-    components?: string[];
-    setRecipeForm: React.Dispatch<React.SetStateAction<RecipeForm>>;
-    ingredientInput: string;
-    setIngredientInput: React.Dispatch<React.SetStateAction<string>>;
-    ingredientsList: string[];
-    setIngredientsList: React.Dispatch<React.SetStateAction<string[]>>;
-    sublistNames: ListNameProps[];
-    setSublistNames: React.Dispatch<React.SetStateAction<ListNameProps[]>>;
-};
 ////////////////////////////////////////////////////////////////
 
 export const RecipeContext = createContext<RecipeContextTypes>({
@@ -55,12 +31,15 @@ export const RecipeContext = createContext<RecipeContextTypes>({
     setIngredientsList: () => {},
     sublistNames: [],
     setSublistNames: () => {},
+    subIngredients: [],
+    setSubIngredients: () => {}
 });
 
 export const RecipeProvider = ({children}: RecipeProviderProps) => {
     const [ingredientInput, setIngredientInput] = useState<string>("");
     const [ingredientsList, setIngredientsList] = useState<string[]>([]);
     const [sublistNames, setSublistNames] = useState<ListNameProps[]>([]);
+    const [subIngredients, setSubIngredients] = useState<SublistItem[]>([])
     const [recipeForm, setRecipeForm] = useState<RecipeForm>({
         recipeOwner: "",
         nameOfDish: "",
@@ -96,6 +75,8 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         setIngredientsList,
         sublistNames,
         setSublistNames,
+        subIngredients,
+        setSubIngredients
     };
 
     return <RecipeContext.Provider value={value}>{children}</RecipeContext.Provider>

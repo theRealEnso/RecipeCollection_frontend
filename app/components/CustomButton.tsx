@@ -10,6 +10,7 @@ type CustomButtonProps = {
     onButtonPress?: () => void;
     mutationPending?: boolean;
     color?: string;
+    radius?: number;
 };
 
 const CustomButton = ({
@@ -17,7 +18,8 @@ const CustomButton = ({
     width, 
     onButtonPress, 
     mutationPending,
-    color
+    color,
+    radius,
 }: CustomButtonProps) => {
     return (
         <Pressable 
@@ -30,6 +32,7 @@ const CustomButton = ({
                             width: width, 
                             borderColor: color ? color : colors.primaryAccent500, 
                             backgroundColor: color ? color : colors.primaryAccent500,
+                            borderRadius: radius ? radius : 12,
                         }
                     ] 
                     : [
@@ -38,6 +41,7 @@ const CustomButton = ({
                             width: width,
                             borderColor: color ? color : colors.primaryAccent500, 
                             backgroundColor: color ? color : colors.primaryAccent500,
+                            borderRadius: radius ? radius : 12,
                         },
 
                     ]
@@ -64,7 +68,6 @@ const styles = StyleSheet.create({
         padding: 4,
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: 12,
       },
     
     pressed: {

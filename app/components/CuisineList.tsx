@@ -1,6 +1,7 @@
 import { useState } from "react";
-
 import { FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, View } from "react-native";
+
+import { useRouter } from "expo-router";
 
 //import component(s)
 import CategoryTile from "./CategoryTile";
@@ -22,6 +23,8 @@ type CategoriesData = {
 };
 
 const CuisineList = ({categoriesData}: CategoriesData) => {
+    const router = useRouter();
+
     const [selectedTileId, setSelectedTileId] = useState<string | null>(null);
     const [categoryName, setCategoryName] = useState<string | null>(null);
     const [showWarningModal, setShowWarningModal] = useState<boolean>(false);
@@ -72,6 +75,14 @@ const CuisineList = ({categoriesData}: CategoriesData) => {
                         width={40} 
                         value={<Entypo name="add-to-list" size={24} color="#fff"></Entypo>}
                         onButtonPress={displayAddModal}
+                    >
+                    </CustomButton>
+                </View>
+                <View style={styles.addButtonContainer}>
+                    <CustomButton 
+                        width={40} 
+                        value="Test Swipeable"
+                        onButtonPress={() => router.push("/SwipeableDemo")}
                     >
                     </CustomButton>
                 </View>

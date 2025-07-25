@@ -1,11 +1,16 @@
 import { useContext, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
 // import Recipe context
 import { RecipeContext } from "@/context/RecipeContext";
 
+//import components for creating a swipeable
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
+
 // import component(s)
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import CustomButton from "./CustomButton";
 import FormInput from "./FormInput";
 import Sublist from "./Sublist";
@@ -17,11 +22,14 @@ import colors from "../constants/colors";
 import { generateUUID } from "@/utils/generateUUID";
 
 const MultipleIngredientsList = () => {
-    const [listName, setListName] = useState<string>("");
+    const [listName, setListName] = useState<string>(""); // for controlled input
+    const [itemId, setItemId] = useState<string>("");
 
     const {
         sublistNames,
         setSublistNames,
+        subIngredients,
+        setSubIngredients
     } = useContext(RecipeContext);
 
     const addListName = () => {
@@ -37,8 +45,33 @@ const MultipleIngredientsList = () => {
         setListName("");
     };
 
+    const deleteSublistName = (list_id: string) => {
+        const filteredLists = sublistNames.filter((sublist) => sublist.id !== list_id);
+        setSublistNames(filteredLists);
+    };
+
+    const deleteSubIngredients = (list_id: string) => {
+        const filteredSubIngredients = subIngredients.filter((subIngredient) => subIngredient.listId !== list_id);
+        setSubIngredients(filteredSubIngredients);
+    };
+
+    const removeSublistAndIngredients = (list_id: string) => {
+        deleteSublistName(list_id);
+        deleteSubIngredients(list_id);
+    };
+    //function to show trash can UI to delete a sublist
+    const rightAction = (onDelete: () => void) => (
+        <Pressable onPress={onDelete}>
+            <View style={styles.deleteBox}>
+                <Ionicons name="trash" size={24} color="white" />
+                <Text style={styles.deleteText}>Delete</Text>
+            </View>
+        </Pressable>
+    );
+
+
     return (
-        <View style={{flex: 1}}>
+        <Pressable style={{flex: 1,}}>
             <View style={styles.ingredientInputOuterContainer}>
                 <View>
                     <Text>Enter name of sub-recipe list</Text>
@@ -67,18 +100,47 @@ const MultipleIngredientsList = () => {
                 </View>
             </View>
 
-            {
-                sublistNames && 
-                    sublistNames.length > 0 
-                        && sublistNames.map((listNameObj) => <Sublist key={listNameObj.id} name={listNameObj.name} id={listNameObj.id}></Sublist>)
-            }
-        </View>
+            <FlatList
+                data={sublistNames}
+                keyExtractor={(item) => item.id}
+                renderItem={({item}) => (
+                    <GestureHandlerRootView>
+                        <ReanimatedSwipeable
+                            containerStyle={styles.swipeable}
+                            friction={2}
+                            enableTrackpadTwoFingerGesture
+                            rightThreshold={40}
+                            //renderRightActions expects a function that returns a React node, or in other words, our swipeable UI
+                            renderRightActions={() => rightAction(() => removeSublistAndIngredients(item.id))} 
+                        >
+                            <Sublist
+                                name={item.name}
+                                id={item.id}
+                                itemId={itemId}
+                                setItemId={setItemId}
+                            >
+                            </Sublist>
+                        </ReanimatedSwipeable>
+                    </GestureHandlerRootView>
+                )}
+            >
+            </FlatList>
+        </Pressable>
     );
 };
 
 export default MultipleIngredientsList;
 
 const styles = StyleSheet.create({
+    swipeable: {
+        marginTop: 10,
+        borderRadius: 10,
+        backgroundColor: "white",
+        // height: "100%",
+        // width: 600,
+        // alignItems: 'center',
+        // justifyContent: "center"
+    },
 
     ingredientInputOuterContainer: {
         // alignItems: "center",
@@ -101,4 +163,17 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         color: colors.primaryAccent900,
     },
+
+    deleteBox: {
+        backgroundColor: 'red',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 80,
+        height: '100%',
+    },
+  deleteText: {
+    color: 'white',
+    fontWeight: 'bold',
+    marginTop: 4,
+  },
 });
