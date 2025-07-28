@@ -41,6 +41,10 @@ const AddRecipeScreen = () => {
         router.back();
     };
 
+    const continueToCookingDirections = () => {
+        router.push("/CookingDirections");
+    };
+
     return (
         <View style={styles.container}>
             {/* header / title */}
@@ -91,8 +95,14 @@ const AddRecipeScreen = () => {
                 )
             }
             
-            <View>
-                <CustomButton  value="Go back" width={100} onButtonPress={goBack}></CustomButton>
+            <View style={styles.buttonNavContainer}>
+                <View>
+                    <CustomButton  value="Go back" width={100} onButtonPress={goBack}></CustomButton>
+                </View>
+                <View>
+                    <CustomButton  value="Continue" width={100} onButtonPress={continueToCookingDirections}></CustomButton>
+                </View>
+                
             </View>
         </View>
     );
@@ -120,4 +130,9 @@ const styles = StyleSheet.create({
         textAlign: "center",
         // paddingHorizontal: 40,
     },
+
+    buttonNavContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+    }
 });

@@ -4,7 +4,7 @@ import colors from "../constants/colors";
 
 type FormInputProps = {
     placeholder: string;
-    value: string;
+    value: string | undefined;
     width: number;
     onChangeText: (value: string) => void;
     multiline?: boolean;

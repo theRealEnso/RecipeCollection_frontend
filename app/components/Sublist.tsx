@@ -3,7 +3,7 @@ import { FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View } fr
 
 //import components
 // import FormInput from "./FormInput";
-import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CustomButton from "./CustomButton";
 import ListItem from "./ListItem";
 
@@ -67,7 +67,7 @@ const Sublist = ({name, id, itemId, setItemId}: SublistProps) => {
 
     const filteredSubIngredients = subIngredients.filter((subIngredient) => subIngredient.listId === id);
 
-    console.log(subIngredients);
+    // console.log(subIngredients);
     
     return (
         <ScrollView style={{height: 150}}>
@@ -88,7 +88,7 @@ const Sublist = ({name, id, itemId, setItemId}: SublistProps) => {
                     </View>
                     <View>
                         <CustomButton
-                            value={<Ionicons name="bag-add" size={24} color="black" />}
+                            value={<MaterialIcons name="add-task" size={24} color="black" />}
                             width={35}
                             color={colors.primaryAccent900}
                             radius={20}

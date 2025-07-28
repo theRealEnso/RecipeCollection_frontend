@@ -23,7 +23,6 @@ export const RecipeContext = createContext<RecipeContextTypes>({
     timeToCook: "",
     numberOfServings: "",
     specialEquipment: "",
-    components: [],
     setRecipeForm: () => {},
     ingredientInput: "",
     setIngredientInput: () => {},
@@ -32,14 +31,17 @@ export const RecipeContext = createContext<RecipeContextTypes>({
     sublistNames: [],
     setSublistNames: () => {},
     subIngredients: [],
-    setSubIngredients: () => {}
+    setSubIngredients: () => {},
+    cookingDirections: [],
+    setCookingDirections: () => {}
 });
 
 export const RecipeProvider = ({children}: RecipeProviderProps) => {
     const [ingredientInput, setIngredientInput] = useState<string>("");
     const [ingredientsList, setIngredientsList] = useState<string[]>([]);
     const [sublistNames, setSublistNames] = useState<ListNameProps[]>([]);
-    const [subIngredients, setSubIngredients] = useState<SublistItem[]>([])
+    const [subIngredients, setSubIngredients] = useState<SublistItem[]>([]);
+    const [cookingDirections, setCookingDirections] = useState<string[]>([]);
     const [recipeForm, setRecipeForm] = useState<RecipeForm>({
         recipeOwner: "",
         nameOfDish: "",
@@ -47,7 +49,6 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         timeToCook: "",
         numberOfServings: "",
         specialEquipment: "",
-        components: [],
     });
 
     const {
@@ -57,8 +58,8 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         timeToCook,
         numberOfServings,
         specialEquipment,
-        components
     } = recipeForm;
+
 
     const value = {
         recipeOwner,
@@ -67,7 +68,6 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         timeToCook,
         numberOfServings,
         specialEquipment,
-        components,
         setRecipeForm,
         ingredientInput,
         setIngredientInput,
@@ -76,7 +76,9 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         sublistNames,
         setSublistNames,
         subIngredients,
-        setSubIngredients
+        setSubIngredients,
+        cookingDirections,
+        setCookingDirections,
     };
 
     return <RecipeContext.Provider value={value}>{children}</RecipeContext.Provider>
