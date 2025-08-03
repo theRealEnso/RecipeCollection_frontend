@@ -33,7 +33,7 @@ const RecipesOverview = () => {
                 </View>
                 
                 <View style={styles.buttonContainer}>
-                    <CustomButton value="Add a recipe!" width={100} onButtonPress={navigateToAddRecipe}></CustomButton>
+                    <CustomButton value="Add a recipe!" width={100} radius={20} onButtonPress={navigateToAddRecipe}></CustomButton>
                 </View>
                 
             </View>

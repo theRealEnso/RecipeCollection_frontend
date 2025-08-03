@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 //import Recipe context
@@ -11,6 +11,14 @@ import FormInput from "./components/FormInput";
 
 // import colors from "@/app/constants/colors";
 
+//define types
+
+type FormErrors = {
+    dishName: string | null;
+    level: string | null;
+    cookingTime: string | null;
+    servingSize: string | null;
+}
 
 const AddRecipeScreen = () => {
     const {
@@ -20,11 +28,17 @@ const AddRecipeScreen = () => {
         timeToCook,
         numberOfServings,
         specialEquipment,
-        components,
         setRecipeForm,
     } = useContext(RecipeContext);
-    const router = useRouter();
 
+    const [formErrors, setFormErrors] = useState<FormErrors>({
+        dishName: null,
+        level: null,
+        cookingTime: null,
+        servingSize: null,
+    });
+
+    const router = useRouter();
 
     const handleInputChange = (fieldName: string, value: string) => {
         setRecipeForm((previousState) => {
@@ -35,12 +49,42 @@ const AddRecipeScreen = () => {
         });
     };
 
-    // function to navigate to the next screen to continue adding the recipe ingredients
+    // function that validates required fields and then navigates to the next screen to continue adding the recipe ingredients
     const continueToAddIngredients = () => {
-        //add small delay so that React can update recipe context values from calling setRecipeForm before navigating
-        setTimeout(() => {
-            router.push("/AddIngredientsScreen");
-        }, 500);
+        const validationErrors: FormErrors = {
+            dishName: null,
+            level: null,
+            cookingTime: null,
+            servingSize: null,
+        };
+
+        if(!nameOfDish.trim()){
+            validationErrors.dishName = "Missing required field!"
+        };
+
+        if(!difficultyLevel.trim()){
+            validationErrors.level = "Missing required field!";
+        };
+
+        if(!timeToCook.trim()){
+            validationErrors.cookingTime = "Missing required field!";
+        };
+
+        if(!numberOfServings.trim()){
+            validationErrors.servingSize = "Missing required field!";
+        }
+
+        setFormErrors(validationErrors);
+
+        const formHasErrors = Object.values(formErrors).some(field => field !== null);
+
+        if(!formHasErrors){
+            // router.push("/AddIngredientsScreen");
+            //add small delay so that React can update recipe context values from calling setRecipeForm before navigating
+            setTimeout(() => {
+                router.push("/AddIngredientsScreen");
+            }, 500);
+        };
     };
 
     return (
@@ -55,6 +99,9 @@ const AddRecipeScreen = () => {
                         onChangeText={(typedValue) => handleInputChange("nameOfDish", typedValue)} 
                     >
                     </FormInput>
+                    {
+                        formErrors.dishName && <Text style={styles.warning}>{formErrors.dishName}</Text>
+                    }
                 </View>
 
                 <View style={styles.inputContainer}>
@@ -77,6 +124,9 @@ const AddRecipeScreen = () => {
                         onChangeText={(typedValue) => handleInputChange("difficultyLevel", typedValue)} 
                     >
                     </FormInput>
+                    {
+                        formErrors.level && <Text style={styles.warning}>{formErrors.level}</Text>
+                    }
                 </View>
 
                 <View style={styles.inputContainer}>
@@ -88,12 +138,16 @@ const AddRecipeScreen = () => {
                         onChangeText={(typedValue) => handleInputChange("timeToCook", typedValue)}
                     >
                     </FormInput>
+
+                    {
+                        formErrors.cookingTime && <Text style={styles.warning}>{formErrors.cookingTime}</Text>
+                    }
                 </View>
 
                 <View style={styles.inputContainer}>
                     <Text>{`(Optional) if any special equipment is required, then enter them separated by commas`}</Text>
                     <FormInput 
-                        placeholder="e.g. pressure cooker, sous vide machine, paster maker, etc  "
+                        placeholder="e.g. pressure cooker, sous vide machine, pasta maker, etc  "
                         value={specialEquipment} 
                         width={380}
                         onChangeText={(typedValue) => handleInputChange("specialEquipment", typedValue)}
@@ -110,18 +164,20 @@ const AddRecipeScreen = () => {
                         onChangeText={(typedValue) => handleInputChange("numberOfServings", typedValue)} 
                     >
                     </FormInput>
+
+                    {
+                        formErrors.servingSize && <Text style={styles.warning}>{formErrors.servingSize}</Text>
+                    }
                 </View>
-
-
             </View>
 
             {/* button to go to next screen to continue the form */}
             <View style={styles.buttonsContainer}>
                 <View style={styles.buttonContainer}>
-                    <CustomButton value="Cancel" width={100} onButtonPress={() => router.replace("/RecipesOverview")}></CustomButton>
+                    <CustomButton value="Cancel" width={100} radius={20} onButtonPress={() => router.replace("/RecipesOverview")}></CustomButton>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <CustomButton value="Next" width={100} onButtonPress={continueToAddIngredients}></CustomButton>
+                    <CustomButton value="Next" width={100} radius={20} onButtonPress={continueToAddIngredients}></CustomButton>
                 </View>
             </View>
         </View>
@@ -154,5 +210,11 @@ const styles = StyleSheet.create({
 
     buttonContainer: {
         marginHorizontal: 5,
+        borderRadius: 20,
+        width: 100,
     },
+
+    warning: {
+        color: "red",
+    }
 });

@@ -1,4 +1,4 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { ReactNode } from "react";
 
@@ -22,48 +22,52 @@ const CustomButton = ({
     radius,
 }: CustomButtonProps) => {
     return (
-        <Pressable 
-            style={
-                ({pressed}) => pressed  
-                    ? [
-                        styles.pressable, 
-                        styles.pressed, 
-                        {
-                            width: width, 
-                            borderColor: color ? color : colors.primaryAccent500, 
-                            backgroundColor: color ? color : colors.primaryAccent500,
-                            borderRadius: radius ? radius : 12,
-                        }
-                    ] 
-                    : [
-                        styles.pressable, 
-                        {
-                            width: width,
-                            borderColor: color ? color : colors.primaryAccent500, 
-                            backgroundColor: color ? color : colors.primaryAccent500,
-                            borderRadius: radius ? radius : 12,
-                        },
+        <View style={[styles.buttonOuterContainer, {width: width, borderRadius: radius}]}>
+            <Pressable 
+                style={
+                    ({pressed}) => pressed  
+                        ? [
+                            styles.pressable, 
+                            styles.pressed, 
+                            {
+                                width: width, 
+                                borderColor: color ? color : colors.primaryAccent500, 
+                                backgroundColor: color ? color : colors.primaryAccent500,
+                                borderRadius: radius ? radius : 12,
+                            }
+                        ] 
+                        : [
+                            styles.pressable, 
+                            {
+                                width: width,
+                                borderColor: color ? color : colors.primaryAccent500, 
+                                backgroundColor: color ? color : colors.primaryAccent500,
+                                borderRadius: radius ? radius : 12,
+                            },
 
-                    ]
-            } 
-            android_ripple={{color: colors.primaryAccent600}}
-            onPress={onButtonPress}
-        >
-        {
-            mutationPending
-            ? <ActivityIndicator color="#fff"></ActivityIndicator>
-            : <Text style={{color: "#fff"}}>{value}</Text>
-        }
-        </Pressable>
+                        ]
+                } 
+                android_ripple={{color: colors.primaryAccent600}}
+                onPress={onButtonPress}
+            >
+            {
+                mutationPending
+                ? <ActivityIndicator color="#fff"></ActivityIndicator>
+                : <Text style={{color: "#fff"}}>{value}</Text>
+            }
+            </Pressable>
+        </View>
     )
 };
 
 export default CustomButton;
 
 const styles = StyleSheet.create({
+    buttonOuterContainer: {
+        overflow: "hidden",
+    },
+
     pressable: {
-        // backgroundColor: colors.primaryAccent500,
-        // borderColor: colors.primaryAccent500,
         borderWidth: 2,
         padding: 4,
         alignItems: "center",

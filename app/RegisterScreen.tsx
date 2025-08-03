@@ -131,6 +131,7 @@ const RegisterScreen = () => {
       //check to see if there were any validation errors. If no errors, then try registering the user
       const hasErrors = Object.values(formErrors).some((value) => value !== null);
 
+      //register user if there are no errors
       if(!hasErrors){
           try {
               registerUserMutation.mutate({...formInputs});
