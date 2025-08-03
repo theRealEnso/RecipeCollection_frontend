@@ -129,7 +129,7 @@ export default Sublist;
 
 const styles = StyleSheet.create({
     container: {
-        // marginTop: 10,
+        marginVertical: 5,
         borderRadius: 10,
         backgroundColor: "white",
         padding: 5,

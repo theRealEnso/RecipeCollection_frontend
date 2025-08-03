@@ -53,7 +53,7 @@ const AddRecipeScreen = () => {
             {/* ui that prompts user to select no or yes to create ingredient sublists */}
             <View style={{flexDirection: "row", width: 250, alignItems: "center", justifyContent: "space-evenly"}}>
                 <View style={{width: 180}}>
-                    <Text>Does this recipe contain sub-recipes or components with separate ingredient lists?</Text>
+                    <Text>Does this recipe contain sub-recipes or components that require separate lists of ingredients?</Text>
                 </View>
                 
                 <View style={{flexDirection: "row"}}>
@@ -95,6 +95,7 @@ const AddRecipeScreen = () => {
                 )
             }
             
+            {/* navigation buttons */}
             <View style={styles.buttonNavContainer}>
                 <View>
                     <CustomButton  value="Go back" width={100} onButtonPress={goBack}></CustomButton>
@@ -113,8 +114,8 @@ export default AddRecipeScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 100,
-        marginBottom: 50,
+        marginTop: 60,
+        marginBottom: 30,
         // alignItems: "center",
         // justifyContent: "center",
         paddingHorizontal: 40,
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
     ingredientsLabel: {
         color: colors.primaryAccent500,
         fontWeight: 500,
-        fontSize: 30,
+        fontSize: 25,
         marginBottom: 20,
         textDecorationStyle: "dashed",
         textDecorationLine: "underline",
@@ -134,5 +135,6 @@ const styles = StyleSheet.create({
     buttonNavContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
+        marginTop: 10,
     }
 });

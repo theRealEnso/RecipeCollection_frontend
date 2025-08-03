@@ -3,6 +3,7 @@ import { useContext, useEffect } from "react";
 import { ActivityIndicator, Button, StyleSheet, Text, View } from "react-native";
 
 //import context
+import { RecipeContext } from "@/context/RecipeContext";
 import { UserContext } from "../context/UserContext";
 
 //import components
@@ -17,10 +18,16 @@ import colors from "./constants/colors";
 const HomeScreen = () => {
     const router = useRouter();
     const {currentUser, handleSetUser, handleSetTokens, accessToken, refreshToken,} = useContext(UserContext);
+    const {setCookingDirections, setIngredientsList, setSubDirections, setSubIngredients, setSublistNames,} = useContext(RecipeContext);
     
     const logOut = () => {
         handleSetUser(null);
         handleSetTokens("", "");
+        setCookingDirections([]);
+        setIngredientsList([]);
+        setSubDirections([]);
+        setSubIngredients([]);
+        setSublistNames([]);
     };
 
     // useEffect to handle signing out and re-directing to the login screen
@@ -38,10 +45,6 @@ const HomeScreen = () => {
         queryFn: () => getAllCategories(accessToken),
         refetchOnMount: "always",
     });
-
-
-    // if(isLoading) return <ActivityIndicator size="large"></ActivityIndicator>;
-    // if(error) return <Text>Error fetching categories</Text>;
 
     if(accessToken) console.log("access token is:", accessToken);
     if(refreshToken) console.log("refresh token is: ", refreshToken);

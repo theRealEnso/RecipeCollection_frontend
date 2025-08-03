@@ -9,6 +9,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 
 // import component(s)
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import CustomButton from "./CustomButton";
@@ -74,7 +75,17 @@ const MultipleIngredientsList = () => {
         <Pressable style={{flex: 1,}}>
             <View style={styles.ingredientInputOuterContainer}>
                 <View>
-                    <Text>Enter name of sub-recipe list</Text>
+                    <View style={styles.tipsContainer}>
+                        <View style={{marginRight: 5,}}>
+                            <Text style={styles.tipsHeader}>Tips</Text>
+                        </View>
+                        <View style={{marginRight: 5,}}>
+                            <FontAwesome5 name="lightbulb" size={24} color="black" />
+                        </View>
+                    </View>
+                    <Text style={styles.tips}>* Create separate lists here by typing in the name of the list</Text>
+                    <Text style={styles.tips}>* To remove a list, swipe left on the list and press delete icon</Text>
+                    <Text style={styles.tips}>* You can also create your main list of ingredients here and name it something like Final Dish</Text>
                 </View>
                 
                 <View style={styles.ingredientInputInnerContainer}>
@@ -176,4 +187,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 4,
   },
+
+  tipsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  tipsHeader: {
+    fontSize: 16,
+    color: colors.primaryAccent600,
+    fontWeight: "bold",
+  },
+
+  tips: {
+    fontSize: 12,
+  }
 });

@@ -39,4 +39,13 @@ export type RecipeContextTypes = {
     setSubIngredients: React.Dispatch<React.SetStateAction<SublistItem[]>>;
     cookingDirections: string[],
     setCookingDirections: React.Dispatch<React.SetStateAction<string[]>>;
+    subDirections: RecipeSubDirections[],
+    setSubDirections: React.Dispatch<React.SetStateAction<RecipeSubDirections[]>>
+};
+
+export type RecipeSubDirections = {
+    sublistName: string;
+    sublistId: string;
+    direction: string;
+    direction_id: string;
 };

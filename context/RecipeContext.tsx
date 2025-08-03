@@ -5,6 +5,7 @@ import {
     ListNameProps,
     RecipeContextTypes,
     RecipeForm,
+    RecipeSubDirections,
     SublistItem,
 } from "@/types/RecipeTypes";
 
@@ -33,7 +34,9 @@ export const RecipeContext = createContext<RecipeContextTypes>({
     subIngredients: [],
     setSubIngredients: () => {},
     cookingDirections: [],
-    setCookingDirections: () => {}
+    setCookingDirections: () => {},
+    subDirections: [],
+    setSubDirections: () => {},
 });
 
 export const RecipeProvider = ({children}: RecipeProviderProps) => {
@@ -42,6 +45,7 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
     const [sublistNames, setSublistNames] = useState<ListNameProps[]>([]);
     const [subIngredients, setSubIngredients] = useState<SublistItem[]>([]);
     const [cookingDirections, setCookingDirections] = useState<string[]>([]);
+    const [subDirections, setSubDirections] = useState<RecipeSubDirections[]>([])
     const [recipeForm, setRecipeForm] = useState<RecipeForm>({
         recipeOwner: "",
         nameOfDish: "",
@@ -79,6 +83,8 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         setSubIngredients,
         cookingDirections,
         setCookingDirections,
+        subDirections,
+        setSubDirections,
     };
 
     return <RecipeContext.Provider value={value}>{children}</RecipeContext.Provider>

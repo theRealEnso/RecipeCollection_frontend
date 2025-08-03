@@ -1,29 +1,30 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
+
+import { useRouter } from "expo-router";
 
 // import Recipe context
 import { RecipeContext } from "@/context/RecipeContext";
 
 // import component(s)
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CookingDirectionsList from "./components/CookingDirectionsList";
 import CustomButton from "./components/CustomButton";
-import FormInput from "./components/FormInput";
+import Subdirections from "./components/Subdirections";
 
 // import colors
 import colors from "./constants/colors";
 
+
+//UI needs to be dynamic.
+//If there are multiple lists for sub recipes, then this screen needs to display cooking and/or preparation directions for each sub list
+//so, map through sublistNames array and display UI to add cooking / prep directions for each sublist name
+//if no sublist name exists, then just display UI to add cooking / prep directions for the single ingredient list
 const CookingDirections = () => {
-    const {cookingDirections, setCookingDirections} = useContext(RecipeContext);
+    const {cookingDirections, sublistNames} = useContext(RecipeContext);
 
-    const [directionsInput, setDirectionsInput] = useState<string>("");
+    const router = useRouter();
 
-    // function to add typed cooking instructions to array
-    const addCookingInstruction = () => {
-        const updatedCookingInstructions = [...cookingDirections, directionsInput];
-        setCookingDirections(updatedCookingInstructions);
-        setDirectionsInput("");
-    };
+    const goBack = () => router.back();
 
     return (
         <View style={styles.container}>
@@ -31,41 +32,22 @@ const CookingDirections = () => {
                 <Text style={styles.header}>Cooking Directions</Text>
             </View>
 
-            <View style={styles.inputContainer}>
-                <View style={{marginHorizontal: 5}}>
-                    <FormInput 
-                        placeholder="Enter step-by-step cooking instructions" 
-                        value={directionsInput} 
-                        width={280}
-                        onChangeText={(typedValue) => setDirectionsInput(typedValue)}
-                    >
-                    </FormInput>
-                </View>
-
-                <View style={{marginHorizontal: 5}}>
-                    <CustomButton
-                        value={<MaterialIcons name="add-task" size={24} color="black" />}
-                        width={40}
-                        radius={25}
-                        onButtonPress={addCookingInstruction}
-                    >
-                    </CustomButton>
-                </View>
-            </View>
-
             {
-                cookingDirections && 
-                    cookingDirections.length > 0 &&
+                sublistNames && 
+                    sublistNames.length > 0 ?
                         (
+                            sublistNames.map((sublistName) => (<Subdirections name={sublistName.name} key={sublistName.id} id={sublistName.id}></Subdirections>))
+                        ) : (
                             <CookingDirectionsList cookingDirections={cookingDirections}></CookingDirectionsList>
                         )
             }
 
+            {/* navigation buttons */}
             <View style={styles.buttonNavContainer}>
-                <View>
-                    <CustomButton  value="Go back" width={100}></CustomButton>
+                <View style={{marginHorizontal: 20}}>
+                    <CustomButton  value="Go back" width={100} onButtonPress={goBack}></CustomButton>
                 </View>
-                <View>
+                <View style={{marginHorizontal: 20}}>
                     <CustomButton  value="Continue" width={100}></CustomButton>
                 </View>
             </View>
@@ -80,7 +62,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         // justifyContent: "center",
-        marginTop: 100,
+        marginTop: 70,
     },
 
     headerContainer: {
@@ -93,14 +75,9 @@ const styles = StyleSheet.create({
         fontSize: 30,
     },
 
-    inputContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-    },
-
     buttonNavContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
+        flex: 1,
     },
 })
