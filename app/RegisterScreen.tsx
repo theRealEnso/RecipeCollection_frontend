@@ -61,10 +61,10 @@ const RegisterScreen = () => {
       mutationFn: registerUser,
       onSuccess: (data) => {
         if(data){
-          console.log("User created:", data);
+          // console.log("User created:", data);
           handleSetUser(data.user);
           setIsTokenVerified(true);
-          handleSetTokens(data.user.access_token, data.user.refresh_token);
+          handleSetTokens(data.access_token, data.refresh_token);
           setNavigationReady(true);
         }
       },

@@ -29,7 +29,7 @@ const AddCategoryModal = ({setShowAddCategoryModal}: AddModalProps) => {
         mutationFn: addCuisineCategory,
         onSuccess: (data) => {
             if(data){
-                console.log("Successfully added a category:", data)
+                // console.log("Successfully added a category:", data);
                 queryClient.invalidateQueries({queryKey: ["userCategories"]}) // force refetch of categories after adding one
                 setShowAddCategoryModal(false);
             }
@@ -52,7 +52,7 @@ const AddCategoryModal = ({setShowAddCategoryModal}: AddModalProps) => {
         });
     };
 
-    console.log(textInput);
+    // console.log(textInput);
 
     return (
         <Modal 

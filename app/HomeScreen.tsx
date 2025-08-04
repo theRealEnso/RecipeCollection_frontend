@@ -17,17 +17,36 @@ import colors from "./constants/colors";
 
 const HomeScreen = () => {
     const router = useRouter();
-    const {currentUser, handleSetUser, handleSetTokens, accessToken, refreshToken,} = useContext(UserContext);
-    const {setCookingDirections, setIngredientsList, setSubDirections, setSubIngredients, setSublistNames,} = useContext(RecipeContext);
-    
-    const logOut = () => {
-        handleSetUser(null);
-        handleSetTokens("", "");
+    const {currentUser, handleSetUser, handleSetTokens, accessToken,} = useContext(UserContext);
+    const {
+        setCookingDirections, 
+        setIngredientsList, 
+        setSubDirections, 
+        setSubIngredients, 
+        setSublistNames,
+        setRecipeForm,
+    } = useContext(RecipeContext);
+
+    const resetState = () => {
         setCookingDirections([]);
         setIngredientsList([]);
         setSubDirections([]);
         setSubIngredients([]);
         setSublistNames([]);
+        setRecipeForm({
+            recipeOwner: "",
+            nameOfDish: "",
+            difficultyLevel: "",
+            timeToCook: "",
+            numberOfServings: "",
+            specialEquipment: "",
+        });
+    }
+    
+    const logOut = () => {
+        handleSetUser(null);
+        handleSetTokens("", "");
+        resetState();
     };
 
     // useEffect to handle signing out and re-directing to the login screen
@@ -46,8 +65,8 @@ const HomeScreen = () => {
         refetchOnMount: "always",
     });
 
-    if(accessToken) console.log("access token is:", accessToken);
-    if(refreshToken) console.log("refresh token is: ", refreshToken);
+    // if(accessToken) console.log("access token is:", accessToken);
+    // if(refreshToken) console.log("refresh token is: ", refreshToken);
 
     return (
         <View style={styles.container}>

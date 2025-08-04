@@ -37,7 +37,7 @@ const CuisineList = ({categoriesData}: CategoriesData) => {
 
     const displayAddModal = () => setShowAddCategoryModal(true);
 
-    console.log(selectedTileId);
+    // console.log(selectedTileId);
 
     return (
         <KeyboardAvoidingView 

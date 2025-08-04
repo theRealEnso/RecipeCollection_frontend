@@ -1,16 +1,10 @@
 import axios, { isAxiosError } from "axios";
 
 //import types
-import { User } from "@/types/User";
+import { UserInfoFromServer } from "@/types/User";
 import { UserData } from "../app/RegisterScreen";
 
-type UserInfoFromServer = {
-  message: string;
-  user: User;
-  access_token: string;
-  refresh_token: string;
-}
- 
+
 const RECIPE_COLLECTION_ENDPOINT = process.env.EXPO_PUBLIC_RECIPE_COLLECTION_ENDPOINT_3;
 
 const AUTH_ENDPOINT = `${RECIPE_COLLECTION_ENDPOINT}/auth`

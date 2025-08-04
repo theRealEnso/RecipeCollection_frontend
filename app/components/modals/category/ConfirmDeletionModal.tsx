@@ -39,7 +39,7 @@ const ConfirmDeletionModal = (
     const deleteCategoryMutation = useMutation({
         mutationFn: deleteCuisineCategory,
         onSuccess: async (data) => {
-            console.log(`Category successfully deleted: ${data}`);
+            // console.log(`Category successfully deleted: ${data}`);
             queryClient.invalidateQueries({queryKey: ["userCategories"]});
             setShowWarningModal(false);
         },
@@ -49,8 +49,6 @@ const ConfirmDeletionModal = (
     });
 
     const handleDeleteCategory = () => {
-        console.log("Confirm button pressed!");
-
         if(!accessToken || ! selectedTileId) return;
 
         deleteCategoryMutation.mutate({

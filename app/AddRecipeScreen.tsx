@@ -21,6 +21,8 @@ type FormErrors = {
 }
 
 const AddRecipeScreen = () => {
+    const router = useRouter();
+    
     const {
         recipeOwner,
         nameOfDish,
@@ -37,8 +39,6 @@ const AddRecipeScreen = () => {
         cookingTime: null,
         servingSize: null,
     });
-
-    const router = useRouter();
 
     const handleInputChange = (fieldName: string, value: string) => {
         setRecipeForm((previousState) => {
@@ -76,14 +76,14 @@ const AddRecipeScreen = () => {
 
         setFormErrors(validationErrors);
 
-        const formHasErrors = Object.values(formErrors).some(field => field !== null);
+        const formHasErrors = Object.values(validationErrors).some(field => field !== null);
 
         if(!formHasErrors){
-            // router.push("/AddIngredientsScreen");
+            router.push("/AddIngredientsScreen");
             //add small delay so that React can update recipe context values from calling setRecipeForm before navigating
-            setTimeout(() => {
-                router.push("/AddIngredientsScreen");
-            }, 500);
+            // setTimeout(() => {
+            //     router.push("/AddIngredientsScreen");
+            // }, 1000);
         };
     };
 

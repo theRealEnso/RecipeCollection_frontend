@@ -37,7 +37,7 @@ const EditCategoryModal = (
     const editCategoryMutation = useMutation({
         mutationFn: editCuisineCategory,
         onSuccess: (data) => {
-            console.log(data);
+            // console.log(data);
             queryClient.invalidateQueries({queryKey: ["userCategories"]})
             setShowEditModal(false);
         },
