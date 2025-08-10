@@ -7,7 +7,7 @@ import { UserData } from "../app/RegisterScreen";
 
 const RECIPE_COLLECTION_ENDPOINT = process.env.EXPO_PUBLIC_RECIPE_COLLECTION_ENDPOINT_3;
 
-const AUTH_ENDPOINT = `${RECIPE_COLLECTION_ENDPOINT}/auth`
+const AUTH_ENDPOINT = `${RECIPE_COLLECTION_ENDPOINT}/auth`;
 
 export const registerUser = async (userData: UserData): Promise<UserInfoFromServer | undefined> => {
     try {

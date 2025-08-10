@@ -118,7 +118,7 @@ const AddRecipeScreen = () => {
                 <View style={styles.inputContainer}>
                     <Text>Enter the dish&apos;s difficulty level</Text>
                     <FormInput 
-                        placeholder="e.g easy, medium, or hard"
+                        placeholder="e.g easy, intermediate, hard, etc"
                         value={difficultyLevel} 
                         width={380}
                         onChangeText={(typedValue) => handleInputChange("difficultyLevel", typedValue)} 

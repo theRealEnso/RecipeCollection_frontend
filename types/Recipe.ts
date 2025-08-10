@@ -5,7 +5,6 @@ export type RecipeForm = {
     timeToCook: string;
     numberOfServings: string;
     specialEquipment?: string;
-    components?: string[]; 
 };
 
 export type ListNameProps = {
@@ -13,14 +12,19 @@ export type ListNameProps = {
     id: string;
 };
 
-export type SublistItem = {
-    listId: string;
+export type SubIngredient = {
+    sublistName: string;
+    sublistId: string;
     nameOfIngredient: string;
     ingredient_id: string;
 };
 
 
 export type RecipeContextTypes = {
+    categoryName: string;
+    setCategoryName: React.Dispatch<React.SetStateAction<string>>;
+    categoryId: string;
+    setCategoryId: React.Dispatch<React.SetStateAction<string>>;
     recipeOwner?: string;
     nameOfDish: string;
     difficultyLevel: string;
@@ -35,8 +39,8 @@ export type RecipeContextTypes = {
     setIngredientsList: React.Dispatch<React.SetStateAction<string[]>>;
     sublistNames: ListNameProps[];
     setSublistNames: React.Dispatch<React.SetStateAction<ListNameProps[]>>;
-    subIngredients: SublistItem[];
-    setSubIngredients: React.Dispatch<React.SetStateAction<SublistItem[]>>;
+    subIngredients: SubIngredient[];
+    setSubIngredients: React.Dispatch<React.SetStateAction<SubIngredient[]>>;
     cookingDirections: string[],
     setCookingDirections: React.Dispatch<React.SetStateAction<string[]>>;
     subDirections: RecipeSubDirections[],
@@ -48,4 +52,13 @@ export type RecipeSubDirections = {
     sublistId: string;
     direction: string;
     direction_id: string;
+};
+
+export type RecipeData = RecipeForm & {
+    categoryName: string;
+    categoryId: string;
+    cookingDirections: string[],
+    subDirections: RecipeSubDirections[],
+    ingredients: string[],
+    subIngredients: SubIngredient[],
 };

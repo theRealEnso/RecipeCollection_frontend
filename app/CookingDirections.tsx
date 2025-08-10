@@ -5,6 +5,10 @@ import { useRouter } from "expo-router";
 
 // import Recipe context
 import { RecipeContext } from "@/context/RecipeContext";
+import { UserContext } from "@/context/UserContext";
+
+import { createNewRecipe } from "@/api/recipes";
+import { useMutation } from "@tanstack/react-query";
 
 // import component(s)
 import CookingDirectionsList from "./components/CookingDirectionsList";
@@ -20,9 +24,67 @@ import colors from "./constants/colors";
 //so, map through sublistNames array and display UI to add cooking / prep directions for each sublist name
 //if no sublist name exists, then just display UI to add cooking / prep directions for the single ingredient list
 const CookingDirections = () => {
-    const {cookingDirections, sublistNames} = useContext(RecipeContext);
-
     const router = useRouter();
+
+    const { accessToken } = useContext(UserContext);
+    const {
+        sublistNames,
+        categoryName,
+        categoryId,
+        recipeOwner,
+        nameOfDish,
+        difficultyLevel,
+        timeToCook,
+        numberOfServings,
+        specialEquipment,
+        ingredientsList,
+        subIngredients,
+        cookingDirections,
+        subDirections,
+    } = useContext(RecipeContext);
+
+    let recipeData = {
+        categoryName,
+        categoryId,
+        recipeOwner,
+        nameOfDish,
+        difficultyLevel,
+        timeToCook,
+        numberOfServings,
+        specialEquipment,
+        ingredients: ingredientsList,
+        subIngredients,
+        cookingDirections,
+        subDirections,
+    }
+
+    const createNewRecipeMutation = useMutation({
+        mutationFn: createNewRecipe,
+        onSuccess: (data) => {
+            if(data){
+                console.log(data);
+                router.push({
+                    pathname: "/RecipesOverview",
+                    params: {
+                        categoryName,
+                        categoryId,
+                    }
+                })
+            }
+        },
+        onError: (error) => {
+            console.error(error);
+        }
+    });
+
+    const handleCreateRecipe = () => {
+        console.log("recipeData", JSON.stringify(recipeData, null, 2));
+
+        createNewRecipeMutation.mutate({
+            accessToken,
+            recipeData,
+        });
+    };
 
     const goBack = () => router.back();
 
@@ -48,7 +110,7 @@ const CookingDirections = () => {
                     <CustomButton  value="Go back" width={100} onButtonPress={goBack}></CustomButton>
                 </View>
                 <View style={{marginHorizontal: 20}}>
-                    <CustomButton  value="Continue" width={100}></CustomButton>
+                    <CustomButton  value="Create Recipe" width={100} onButtonPress={handleCreateRecipe}></CustomButton>
                 </View>
             </View>
         </View>
@@ -66,7 +128,7 @@ const styles = StyleSheet.create({
     },
 
     headerContainer: {
-        marginBottom: 10,
+        // marginBottom: 5,
     },
 
     header: {
