@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import { useRouter } from "expo-router";
 
@@ -14,6 +14,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CookingDirectionsList from "./components/CookingDirectionsList";
 import CustomButton from "./components/CustomButton";
 import Subdirections from "./components/Subdirections";
+
+//import icons
+import Entypo from '@expo/vector-icons/Entypo';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 // import colors
 import colors from "./constants/colors";
@@ -43,6 +47,7 @@ const CookingDirections = () => {
         subIngredients,
         cookingDirections,
         subDirections,
+        resetRecipeState
     } = useContext(RecipeContext);
 
     let recipeData = {
@@ -66,7 +71,8 @@ const CookingDirections = () => {
         onSuccess: (data) => {
             if(data){
                 console.log(data);
-                queryClient.invalidateQueries({queryKey: ["categoryRecipes"]});
+                resetRecipeState(); // clear recipe form 
+                queryClient.invalidateQueries({queryKey: ["categoryRecipes"]}); // force refetch of recipes to display updated list
                 router.push({
                     pathname: "/RecipesOverview",
                     params: {
@@ -99,14 +105,58 @@ const CookingDirections = () => {
             </View>
 
             {
-                sublistNames && 
-                    sublistNames.length > 0 ?
-                        (
-                            sublistNames.map((sublistName) => (<Subdirections name={sublistName.name} key={sublistName.id} id={sublistName.id}></Subdirections>))
-                        ) : (
-                            <CookingDirectionsList cookingDirections={cookingDirections}></CookingDirectionsList>
-                        )
+                subDirections.length > 0 && (
+                <View style={{padding: 20,}}>
+                    <View style={styles.tipsContainer}>
+                        <View style={{marginRight: 5,}}>
+                            <Text style={styles.tipsHeader}>Tips</Text>
+                        </View>
+                        <View style={{marginRight: 5,}}>
+                            <FontAwesome5 name="lightbulb" size={24} color="black" />
+                        </View>
+                    </View>
+                        <Text style={styles.tips}>{`* Swipe left or right on the screen to move between lists of directions for each of your individual sub recipes`}</Text>
+                        <Text style={styles.tips}>{`* Tap on individual direction items to make edits to that direction `}</Text>
+                    </View>
+                )
             }
+
+            <View style={styles.sublistContainer}>
+                {
+                    sublistNames && 
+                        sublistNames.length > 0 ?
+                            (
+                                <FlatList
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    pagingEnabled={true}
+                                    data={sublistNames}
+                                    keyExtractor={(item) => item.id}
+                                    renderItem={({item}) => (
+                                        <Subdirections name={item.name} key={item.id} id={item.id}></Subdirections>
+                                    )}
+                                    // to add gap between each sublist
+                                    ItemSeparatorComponent={() => (
+                                        <View style={{width: 10}}></View>
+                                    )}
+                                >
+                                </FlatList>
+                            ) : (
+                                <CookingDirectionsList cookingDirections={cookingDirections}></CookingDirectionsList>
+                            )
+                }
+
+                {
+                    subDirections.length > 0 && (
+                        <View style={styles.arrowContainer}>
+                            <Entypo name="arrow-long-left" size={50} color={colors.primaryAccent900} />
+                            <Text style={{fontSize: 24, fontWeight: "bold", color: colors.primaryAccent900}}>Swipe</Text>
+                            <Entypo name="arrow-long-right" size={50} color={colors.primaryAccent900} />
+                        </View>
+                    )
+                }
+            </View>
+
 
             {/* navigation buttons */}
             <View style={styles.buttonNavContainer}>
@@ -127,7 +177,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: "center",
-        // justifyContent: "center",
+        justifyContent: "center",
         marginTop: 70,
     },
 
@@ -141,9 +191,37 @@ const styles = StyleSheet.create({
         fontSize: 30,
     },
 
+    tipsContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+
+    tipsHeader: {
+        fontSize: 16,
+        color: colors.primaryAccent600,
+        fontWeight: "bold",
+    },
+
+    tips: {
+        fontSize: 16,
+        marginVertical: 5,
+    },
+
     buttonNavContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
-        flex: 1,
+        // flex: 1,
+        marginBottom: 20,
     },
-})
+
+    sublistContainer: {
+        flex: 12,
+    },
+
+    arrowContainer: {
+        marginBottom: 30,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-around",
+  },
+});

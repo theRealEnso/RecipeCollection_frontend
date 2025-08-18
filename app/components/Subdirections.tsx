@@ -76,7 +76,7 @@ const Subdirections = ({name, id,}: SubDirectionsProp) => {
     }, [subDirections]);
     
     return (
-        <View style={{height: 250}}>
+        <View style={styles.outerContainer}>
             <Pressable style={styles.container}>
                 <View style={{marginBottom: 10,}}>
                     <Text style={styles.listLabel}>{`Prep/cooking instructions for ${name}`}</Text>
@@ -138,11 +138,19 @@ const Subdirections = ({name, id,}: SubDirectionsProp) => {
 export default Subdirections;
 
 const styles = StyleSheet.create({
+    outerContainer: {
+        height: "80%",
+        width: "80%",
+        flex: 1,
+        padding: 20,
+    },
+
     container: {
         marginVertical: 20,
         borderRadius: 10,
         backgroundColor: "white",
         padding: 5,
+        width: "100%",
     },
 
     textInputStyles: {
