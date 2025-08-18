@@ -120,7 +120,7 @@ const AddRecipeScreen = () => {
     };
 
     return (
-        <ScrollView style={{flex: 1}}>
+        <ScrollView style={{flex: 1, position: "relative"}}>
             <View style={styles.container}>
                 <View>
                     <View style={styles.inputContainer}>
@@ -205,7 +205,7 @@ const AddRecipeScreen = () => {
                 </View>
                 
                 {/* Button to select an image */}
-                <View style={styles.inputContainer}>
+                <View style={styles.selectImageContainer}>
                     <Text>Select a photo of your dish (optional)</Text>
                     <CustomButton value="Choose Image" width={150} radius={10} onButtonPress={pickImage}></CustomButton>
                     {
@@ -224,15 +224,14 @@ const AddRecipeScreen = () => {
                         )
                     }
                 </View>
-                
-                {/* button to go to next screen to continue the form */}
-                <View style={styles.buttonsContainer}>
-                    <View style={styles.buttonContainer}>
-                        <CustomButton value="Cancel" width={100} radius={20} onButtonPress={() => cancelRecipeCreation()}></CustomButton>
-                    </View>
-                    <View style={styles.buttonContainer}>
-                        <CustomButton value="Next" width={100} radius={20} onButtonPress={continueToAddIngredients}></CustomButton>
-                    </View>
+            </View>
+            {/* button to go to next screen to continue the form */}
+            <View style={styles.buttonsContainer}>
+                <View style={styles.buttonContainer}>
+                    <CustomButton value="Cancel" width={100} radius={20} onButtonPress={() => cancelRecipeCreation()}></CustomButton>
+                </View>
+                <View style={styles.buttonContainer}>
+                    <CustomButton value="Next" width={100} radius={20} onButtonPress={continueToAddIngredients}></CustomButton>
                 </View>
             </View>
         </ScrollView>
@@ -243,36 +242,40 @@ export default AddRecipeScreen;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 3,
         paddingVertical: 60,
         paddingHorizontal: 20,
         marginTop: 40,
-    },
-
-    inputContainer: {
-        marginVertical: 10,
         // alignItems: "center",
         // justifyContent: "center",
     },
 
+    inputContainer: {
+        marginTop: 10,
+        // height: 90,
+    },
+
     buttonsContainer: {
-        flex: 6,
+        flex: 1,
         flexDirection: "row",
-        justifyContent: "space-between",
-        paddingHorizontal: 20,
-        marginTop: 50,
+        justifyContent: "space-evenly",
+        // marginBottom: 20,
     },
 
     buttonContainer: {
-        // flex: 1,
         marginHorizontal: 5,
-        // marginBottom: 20,
+        marginVertical: 100,
         borderRadius: 20,
         width: 100,
     },
 
     warning: {
         color: "red",
+    },
+
+    selectImageContainer:{
+        marginTop: 10,
+        height: 100,
     },
 
     imageContainer: {
