@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
-import { Image, ScrollView, StyleSheet, Text, View, } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 //import Recipe context
 import { RecipeContext } from "@/context/RecipeContext";
@@ -8,6 +8,9 @@ import { RecipeContext } from "@/context/RecipeContext";
 // import component(s)
 import CustomButton from "./components/CustomButton";
 import FormInput from "./components/FormInput";
+
+//import icon(s)
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 import * as ImagePicker from "expo-image-picker";
 
@@ -205,12 +208,21 @@ const AddRecipeScreen = () => {
                 <View style={styles.inputContainer}>
                     <Text>Select a photo of your dish (optional)</Text>
                     <CustomButton value="Choose Image" width={150} radius={10} onButtonPress={pickImage}></CustomButton>
-                    {selectedImage && (
-                        <Image
-                            source={{ uri: selectedImage }}
-                            style={{ width: 150, height: 150, marginTop: 20, borderRadius: 10 }}
-                        />
-                    )}
+                    {
+                        selectedImage && (
+                            <View style={styles.imageContainer}>
+                                <Pressable style={styles.iconContainer} onPress={() => setSelectedImage("")}>
+                                    <View>
+                                        <MaterialIcons name="highlight-remove" size={32} color="black" />
+                                    </View>
+                                </Pressable>
+                                <Image
+                                    source={{ uri: selectedImage }}
+                                    style={{ width: 150, height: 150, marginTop: 20, borderRadius: 10 }}
+                                />
+                            </View>
+                        )
+                    }
                 </View>
                 
                 {/* button to go to next screen to continue the form */}
@@ -252,13 +264,27 @@ const styles = StyleSheet.create({
     },
 
     buttonContainer: {
+        // flex: 1,
         marginHorizontal: 5,
-        marginBottom: 20,
+        // marginBottom: 20,
         borderRadius: 20,
         width: 100,
     },
 
     warning: {
         color: "red",
+    },
+
+    imageContainer: {
+        position: "relative",
+    },
+
+    iconContainer: {
+        position: "absolute",
+        top: 20,
+        left: 120,
+        zIndex: 10,
+        backgroundColor: "white",
+        borderRadius: 20,
     }
 });
