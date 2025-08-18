@@ -1,7 +1,5 @@
 import { useState } from "react";
 import {
-    KeyboardAvoidingView,
-    Platform,
     StyleSheet,
     Text,
     TextInput,
@@ -9,8 +7,10 @@ import {
     View,
 } from "react-native";
 
-// import component(s)
-import Ionicons from '@expo/vector-icons/Ionicons';
+// import icon(s)
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+
+//import component(s)
 import CustomButton from "./CustomButton";
 
 // import colors
@@ -40,45 +40,40 @@ const ListItem = ({subItemName, subItemId, onEdit, onDelete, itemId, setItemId}:
     };
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={{flex: 1}}
-        >
-            <TouchableWithoutFeedback onPress={() => setItemId("")}>
-                <View style={styles.container}>
-                    {
-                        itemId === subItemId 
-                        ? (
-                            <View style={styles.textInputContainer}>
-                                <TextInput 
-                                    style={styles.textInput} 
-                                    value={ingredient}
-                                    onChangeText={(typedValue) => setIngredient(typedValue)}
-                                    onSubmitEditing={() => handleTextSubmit(itemId)}
+        <TouchableWithoutFeedback onPress={() => setItemId("")}>
+            <View style={styles.container}>
+                {
+                    itemId === subItemId 
+                    ? (
+                        <View style={styles.textInputContainer}>
+                            <TextInput 
+                                style={styles.textInput} 
+                                value={ingredient}
+                                onChangeText={(typedValue) => setIngredient(typedValue)}
+                                onSubmitEditing={() => handleTextSubmit(itemId)}
+                            >
+                            </TextInput>
+                        </View>
+                    ) : (
+                        <View style={styles.container}>
+                            <View style={styles.listItem}>
+                                <Text style={{color: "white"}} onPress={pressSubItem}>{subItemName}</Text>
+                            </View>
+                            <View style={{marginHorizontal: 5}}>
+                                <CustomButton
+                                    value={<FontAwesome name="remove" size={15} color="black" />}
+                                    width={25}
+                                    color={colors.primaryAccent900}
+                                    radius={50}
+                                    onButtonPress={() => onDelete(subItemId)}
                                 >
-                                </TextInput>
+                                </CustomButton>
                             </View>
-                        ) : (
-                            <View style={styles.container}>
-                                <View style={styles.listItem}>
-                                    <Text style={{color: "white"}} onPress={pressSubItem}>{subItemName}</Text>
-                                </View>
-                                <View style={{marginHorizontal: 5}}>
-                                    <CustomButton
-                                        value={<Ionicons name="trash" size={20} color="black" />}
-                                        width={30}
-                                        color={colors.primaryAccent900}
-                                        radius={50}
-                                        onButtonPress={() => onDelete(subItemId)}
-                                    >
-                                    </CustomButton>
-                                </View>
-                            </View>
-                        )
-                    }
-                </View>
-            </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+                        </View>
+                    )
+                }
+            </View>
+        </TouchableWithoutFeedback>
     );
 };
 

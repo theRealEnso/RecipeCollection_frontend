@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 //import components
@@ -24,6 +24,7 @@ type SubDirectionsProp = {
 };
 
 const Subdirections = ({name, id,}: SubDirectionsProp) => {
+    const subDirectionsRef = useRef(null)
     const {subDirections, setSubDirections} = useContext(RecipeContext);
 
     const [input, setInput] = useState<string>("");
@@ -35,6 +36,10 @@ const Subdirections = ({name, id,}: SubDirectionsProp) => {
 
     //function to add a direction to the sub directions array
     const addDirections = () => {
+        if(!input || input.length ===0 ){
+            return;
+        }
+
         let subDirection = {
             sublistName: name,
             sublistId: id,
@@ -61,6 +66,14 @@ const Subdirections = ({name, id,}: SubDirectionsProp) => {
     };
 
     const filteredSubDirections = subDirections.filter((subDirection) => subDirection.sublistId === id);
+
+    useEffect(() => {
+        if(subDirectionsRef.current){
+            subDirectionsRef.current.scrollToEnd({
+                animated: true,
+            });
+        };
+    }, [subDirections]);
     
     return (
         <View style={{height: 250}}>
@@ -96,6 +109,7 @@ const Subdirections = ({name, id,}: SubDirectionsProp) => {
                          && subDirections.length > 0
                         && (
                             <FlatList
+                                ref={subDirectionsRef}
                                 data={filteredSubDirections}
                                 keyExtractor={(item) => item.direction_id}
                                 renderItem={({item}) => (

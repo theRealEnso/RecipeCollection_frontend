@@ -18,35 +18,12 @@ import colors from "./constants/colors";
 const HomeScreen = () => {
     const router = useRouter();
     const {currentUser, handleSetUser, handleSetTokens, accessToken,} = useContext(UserContext);
-    const {
-        setCookingDirections, 
-        setIngredientsList, 
-        setSubDirections, 
-        setSubIngredients, 
-        setSublistNames,
-        setRecipeForm,
-    } = useContext(RecipeContext);
-
-    const resetState = () => {
-        setCookingDirections([]);
-        setIngredientsList([]);
-        setSubDirections([]);
-        setSubIngredients([]);
-        setSublistNames([]);
-        setRecipeForm({
-            recipeOwner: "",
-            nameOfDish: "",
-            difficultyLevel: "",
-            timeToCook: "",
-            numberOfServings: "",
-            specialEquipment: "",
-        });
-    }
+    const { resetRecipeState, } = useContext(RecipeContext);
     
     const logOut = () => {
         handleSetUser(null);
         handleSetTokens("", "");
-        resetState();
+        resetRecipeState();
     };
 
     // useEffect to handle signing out and re-directing to the login screen
@@ -62,7 +39,7 @@ const HomeScreen = () => {
     const {data, isLoading, error} = useQuery({
         queryKey: ["userCategories"],
         queryFn: () => getAllCategories(accessToken),
-        refetchOnMount: "always",
+        // refetchOnMount: "always",
     });
 
     // if(accessToken) console.log("access token is:", accessToken);

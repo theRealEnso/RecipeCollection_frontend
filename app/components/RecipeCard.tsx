@@ -1,13 +1,18 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 //import types
-import { RecipeData } from "@/types/Recipe";
+import { RecipeDataProps } from "./RecipeCardList";
 
-type RecipeProps = {
-    recipe: RecipeData
+type Recipe = {
+    recipe: RecipeDataProps
 }
-const RecipeCard = ({recipe}: RecipeProps) => {
 
+const RecipeCard = ({recipe}: Recipe) => {
+    return (
+        <View>
+            <Text>{recipe.nameOfDish}</Text>
+        </View>
+    )
 };
 
 export default RecipeCard;

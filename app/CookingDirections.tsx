@@ -8,7 +8,7 @@ import { RecipeContext } from "@/context/RecipeContext";
 import { UserContext } from "@/context/UserContext";
 
 import { createNewRecipe } from "@/api/recipes";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // import component(s)
 import CookingDirectionsList from "./components/CookingDirectionsList";
@@ -25,6 +25,7 @@ import colors from "./constants/colors";
 //if no sublist name exists, then just display UI to add cooking / prep directions for the single ingredient list
 const CookingDirections = () => {
     const router = useRouter();
+    const queryClient = useQueryClient();
 
     const { accessToken } = useContext(UserContext);
     const {
@@ -37,6 +38,7 @@ const CookingDirections = () => {
         timeToCook,
         numberOfServings,
         specialEquipment,
+        selectedImage,
         ingredientsList,
         subIngredients,
         cookingDirections,
@@ -52,24 +54,26 @@ const CookingDirections = () => {
         timeToCook,
         numberOfServings,
         specialEquipment,
+        selectedImage: selectedImage ? selectedImage : process.env.default_image,
         ingredients: ingredientsList,
         subIngredients,
         cookingDirections,
         subDirections,
-    }
+    };
 
     const createNewRecipeMutation = useMutation({
         mutationFn: createNewRecipe,
         onSuccess: (data) => {
             if(data){
                 console.log(data);
+                queryClient.invalidateQueries({queryKey: ["categoryRecipes"]});
                 router.push({
                     pathname: "/RecipesOverview",
                     params: {
                         categoryName,
                         categoryId,
                     }
-                })
+                });
             }
         },
         onError: (error) => {
@@ -78,7 +82,7 @@ const CookingDirections = () => {
     });
 
     const handleCreateRecipe = () => {
-        console.log("recipeData", JSON.stringify(recipeData, null, 2));
+        // console.log("recipeData", JSON.stringify(recipeData, null, 2));
 
         createNewRecipeMutation.mutate({
             accessToken,

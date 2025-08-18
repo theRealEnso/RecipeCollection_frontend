@@ -66,5 +66,4 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
 
-    
 });

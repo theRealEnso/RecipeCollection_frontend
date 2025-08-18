@@ -1,21 +1,19 @@
-import { useContext, useState } from "react";
-import { FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { RecipeContext } from "@/context/RecipeContext";
+import { useContext, useEffect, useRef, useState } from "react";
 
-//import components
-// import FormInput from "./FormInput";
+import { FlatList, StyleSheet, Text, TextInput, View } from "react-native";
+
+//import component(s)
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import colors from "../constants/colors";
 import CustomButton from "./CustomButton";
 import ListItem from "./ListItem";
 
-// import Recipe context
-import { RecipeContext } from "@/context/RecipeContext";
+//import icons
 
-// import colors
-import colors from "../constants/colors";
 
-//import type definitions
-
-//import utility function to generate random ID
+// import utility function(s)
 import { generateUUID } from "@/utils/generateUUID";
 
 type SublistProps = {
@@ -23,134 +21,160 @@ type SublistProps = {
     id: string;
     itemId: string;
     setItemId: React.Dispatch<React.SetStateAction<string>>;
-    // onDelete: () => void;
+    deleteList: (listId: string) => void
 };
 
+const Sublist = ({ name, id, itemId, setItemId, deleteList }: SublistProps) => {
+    const { subIngredients, setSubIngredients } = useContext(RecipeContext);
+    const subIngredientsRef = useRef(null); // to set up scrolling to end of flatlist
 
-const Sublist = ({name, id, itemId, setItemId}: SublistProps) => {
-    const {subIngredients, setSubIngredients} = useContext(RecipeContext);
+    const [input, setInput] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
-    const [input, setInput] = useState<string>("");
-
-    const handleInputChange = (userInput: string) => {
-        setInput(userInput);
-    };
+    const handleInputChange = (userInput: string) => setInput(userInput);
 
     const addIngredient = () => {
-        let subItem = {
-            listId: id,
+        if (input.trim().length === 0) {
+            setErrorMessage("Cannot add an empty ingredient!");
+            return;
+        }
+
+        const subItem = {
+            sublistName: name,
+            sublistId: id,
             nameOfIngredient: input,
             ingredient_id: generateUUID(),
         };
 
-        let updatedIngredients = [...subIngredients, subItem];
-        setSubIngredients(updatedIngredients);
+        setSubIngredients((prev) => [...prev, subItem]);
         setInput("");
+        setErrorMessage("");
     };
 
     const updateIngredients = (ingredientId: string, updatedIngredientText: string) => {
-        const updatedIngredientsList = subIngredients.map((ingredientObj) => ingredientObj.ingredient_id === ingredientId 
-            ? {
-                ...ingredientObj, 
-                nameOfIngredient: updatedIngredientText
-            }
-            : ingredientObj
+        setSubIngredients((prev) =>
+            prev.map((ingredientObj) =>
+                ingredientObj.ingredient_id === ingredientId
+                    ? { ...ingredientObj, nameOfIngredient: updatedIngredientText }
+                    : ingredientObj
+            )
         );
-
-        setSubIngredients(updatedIngredientsList);
     };
 
     const removeIngredient = (ingredientId: string) => {
-        const updatedIngredientsList = subIngredients.filter((ingredientObj) => ingredientObj.ingredient_id !== ingredientId);
-        setSubIngredients(updatedIngredientsList);
+        setSubIngredients((prev) =>
+            prev.filter((ingredientObj) => ingredientObj.ingredient_id !== ingredientId)
+        );
     };
 
-    const filteredSubIngredients = subIngredients.filter((subIngredient) => subIngredient.listId === id);
+    const filteredSubIngredients = subIngredients.filter(
+        (subIngredient) => subIngredient.sublistId === id
+    );
 
-    // console.log(subIngredients);
-    
+    //handle automatic scroll to end when items are added to the list
+    useEffect(() => {
+        if(subIngredientsRef.current){
+            subIngredientsRef.current.scrollToEnd({
+                animated: true
+            });
+        };
+    }, [subIngredients])
+
     return (
-        <ScrollView style={{height: 150}}>
-            <Pressable style={styles.container}>
-                <View style={{marginBottom: 10,}}>
-                    <Text style={styles.listLabel}>{`Ingredients for ${name}`}</Text>
-                </View>
+        <View style={styles.container}>
+            <View style={styles.trashIcon}>
+                <MaterialCommunityIcons name="delete-forever" size={32} color="red" onPress={() => deleteList(id)} />
+            </View>
+            <View style={{ marginTop: 25, marginBottom: 10, }}>
+                <Text style={styles.listLabel}>{`Ingredients for ${name}`}</Text>
+            </View>
 
-                <View style={styles.inputContainer}>
-                    <View style={{width: 280}}>
-                        <TextInput 
-                            placeholder="Add ingredient name and quantity" 
-                            value={input}
-                            onChangeText={(typedValue) => handleInputChange(typedValue) }
-                            style={styles.textInputStyles}
-                        >
-                        </TextInput>
-                    </View>
-                    <View>
-                        <CustomButton
-                            value={<MaterialIcons name="add-task" size={24} color="black" />}
-                            width={35}
-                            color={colors.primaryAccent900}
-                            radius={20}
-                            onButtonPress={addIngredient}
-                        >
-                        </CustomButton>
-                    </View>
+            <View style={styles.inputContainer}>
+                <View style={{paddingHorizontal: 2}}>
+                    <TextInput
+                        placeholder="Add ingredient name and quantity"
+                        value={input}
+                        onChangeText={handleInputChange}
+                        style={styles.textInputStyles}
+                    />
                 </View>
+                <View style={{paddingHorizontal: 2}}>
+                    <CustomButton
+                        value={<MaterialIcons name="add-task" size={24} color="black" />}
+                        width={35}
+                        color={colors.primaryAccent900}
+                        radius={20}
+                        onButtonPress={addIngredient}
+                    />
+                </View>
+            </View>
 
-                {
-                    subIngredients 
-                         && subIngredients.length > 0
-                        && (
-                            <FlatList
-                                data={filteredSubIngredients}
-                                keyExtractor={(item) => item.ingredient_id}
-                                renderItem={({item}) => (
-                                    <ListItem
-                                        subItemName={item.nameOfIngredient}
-                                        subItemId={item.ingredient_id}
-                                        onEdit={updateIngredients}
-                                        onDelete={removeIngredient}
-                                        itemId={itemId}
-                                        setItemId={setItemId}
-                                    >
-                                    </ListItem>
-                                )}
-                            >
-                            </FlatList>
-                        )
-                }
-            </Pressable>
-        </ScrollView>
-    )
+            {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+
+            <FlatList
+                ref={subIngredientsRef}
+                nestedScrollEnabled={true}
+                showsVerticalScrollIndicator={true}
+                scrollEnabled={true}
+                keyboardShouldPersistTaps="handled"
+                data={filteredSubIngredients}
+                extraData={subIngredients}
+                keyExtractor={(item) => item.ingredient_id}
+                renderItem={({ item }) => (
+                    <ListItem
+                        subItemName={item.nameOfIngredient}
+                        subItemId={item.ingredient_id}
+                        onEdit={updateIngredients}
+                        onDelete={removeIngredient}
+                        itemId={itemId}
+                        setItemId={setItemId}
+                    />
+                )}
+            />
+        </View>
+    );
 };
 
 export default Sublist;
 
 const styles = StyleSheet.create({
     container: {
-        marginVertical: 5,
+        marginTop: 5,
+        height: 380,
         borderRadius: 10,
         backgroundColor: "white",
         padding: 5,
+        alignItems: "center",
+        overflow: "hidden",
+        width: 340,
+        position: "relative",
     },
-
     textInputStyles: {
         borderRadius: 10,
         borderColor: colors.textPrimary600,
         borderWidth: 2,
         paddingHorizontal: 15,
         paddingVertical: 10,
+        width: 250,
     },
-
     inputContainer: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between"
+        justifyContent: "space-evenly",
+        // marginVertical: 5,
     },
-
     listLabel: {
         color: colors.textPrimary700,
         fontWeight: "bold",
+    },
+    error: {
+        color: "red",
+        fontSize: 12,
+        marginTop: 10,
+    },
+    
+    trashIcon: {
+        position: "absolute",
+        left: 300,
     },
 });

@@ -1,13 +1,15 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useContext } from "react";
 
-import { Button, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import { getAllCategoryRecipes } from "@/api/recipes";
 import { useQuery } from "@tanstack/react-query";
 
 //import component(s)
+import Entypo from '@expo/vector-icons/Entypo';
 import CustomButton from "./components/CustomButton";
+import RecipeCardList from "./components/RecipeCardList";
 
 import { RecipeContext } from "@/context/RecipeContext";
 import { UserContext } from "@/context/UserContext";
@@ -40,38 +42,47 @@ const RecipesOverview = () => {
     // if(data) console.log(data);
 
     return (
-        <View style={styles.container}>
-            <View style={styles.mainContent}>
+        <View style={styles.containerOuter}>
+            <View style={styles.containerInner}>
                 <View style={styles.headerContainer}>
                     <Text style={styles.header}>All recipes inside of your <Text>{categoryName}</Text> food collection</Text>
                 </View>
-                {
-                    data && data.categoryRecipes.length > 0 ? (
-                        <View>
-                            <Text>Successfully fetched recipes!</Text>
-                        </View>
-                    ) : isLoading ? (
-                        <View>
-                            <Text>Fetching categories...</Text>
-                        </View>
-                    ) : error ? (
-                        <View>
-                            <Text>Error fetching categories!</Text>
-                        </View>
-                    ) : (
-                        <View>
-                            <Text>{`You currently don't have any recipes in your ${categoryName} collection.`}</Text>
-                            <Text>{`Press on the "Add a recipe!" button to start adding recipes!`}</Text>
-                        </View>
-                    )
-                }
+
+                <View style={styles.content}>
+                    {
+                        data && data.categoryRecipes.length > 0 ? (
+                            <RecipeCardList recipesData={data.categoryRecipes}></RecipeCardList>
+                        ) : isLoading ? (
+                            <View>
+                                <Text>Fetching categories...</Text>
+                            </View>
+                        ) : error ? (
+                            <View>
+                                <Text>Error fetching categories!</Text>
+                            </View>
+                        ) : (
+                            <View>
+                                <View style={styles.icon}>
+                                    <Entypo name="emoji-sad" size={150} color={colors.primaryAccent900} />
+                                </View>
+                                <Text style={styles.message}>{`It's feeling a bit lonely in here without any recipes inside of your ${categoryName} collection...`}</Text>
+                                <Text style={styles.message}>Press on the <Text style={[styles.message, {color: colors.primaryAccent900, fontStyle: "italic", fontWeight: "bold"}]}>{`Add a recipe!`}</Text> button to start adding some zing!</Text>
+                            </View>
+                        )
+                    }
+                </View>
+
                 <View style={styles.buttonContainer}>
-                    <CustomButton value="Add a recipe!" width={100} radius={20} onButtonPress={navigateToAddRecipe}></CustomButton>
+                    <View>
+                        <CustomButton value="Go back" width={100} radius={20} onButtonPress={returnToHomeScreen}></CustomButton>
+                    </View>
+                    <View>
+                        <CustomButton value="Add a recipe!" width={100} radius={20} onButtonPress={navigateToAddRecipe}></CustomButton>
+                    </View>
+                    
                 </View>
                 
             </View>
-
-            <Button title="Go back" onPress={returnToHomeScreen}></Button>
         </View>
     )
 };
@@ -79,15 +90,23 @@ const RecipesOverview = () => {
 export default RecipesOverview;
 
 const styles = StyleSheet.create({
-    container: {
+    containerOuter: {
         flex: 1,
         marginVertical: 50,
+        alignItems: "center",
+        justifyContent: "center",
     },
 
-    mainContent: {
+    containerInner: {
         flex: 1,
         // alignItems: "center",
         // justifyContent: "center"
+    },
+
+    content: {
+      flex: 1,
+      padding: 30,
+      marginVertical: 40,  
     },
 
     headerContainer: {
@@ -105,7 +124,17 @@ const styles = StyleSheet.create({
 
     buttonContainer: {
         flexDirection: "row",
-        justifyContent: "flex-end",
+        justifyContent: "space-between",
         paddingHorizontal: 50,
+    },
+
+    icon: {
+        alignItems: "center",
+        justifyContent: "center",
+    },
+
+    message: {
+        marginVertical: 30,
+        fontSize: 24,
     }
 });

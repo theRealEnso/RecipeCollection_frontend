@@ -41,6 +41,8 @@ export const RecipeContext = createContext<RecipeContextTypes>({
     setCookingDirections: () => {},
     subDirections: [],
     setSubDirections: () => {},
+    selectedImage: "",
+    setSelectedImage: () => {},
 });
 
 export const RecipeProvider = ({children}: RecipeProviderProps) => {
@@ -52,6 +54,7 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
     const [subIngredients, setSubIngredients] = useState<SubIngredient[]>([]);
     const [cookingDirections, setCookingDirections] = useState<string[]>([]);
     const [subDirections, setSubDirections] = useState<RecipeSubDirections[]>([]);
+    const [selectedImage, setSelectedImage] = useState<string>("");
     const [recipeForm, setRecipeForm] = useState<RecipeForm>({
         recipeOwner: "",
         nameOfDish: "",
@@ -70,6 +73,23 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         specialEquipment,
     } = recipeForm;
 
+    const resetRecipeState = () => {
+        setCookingDirections([]);
+        setIngredientsList([]);
+        setSubDirections([]);
+        setSubIngredients([]);
+        setSublistNames([]);
+        setSelectedImage("");
+        setRecipeForm({
+            recipeOwner: "",
+            nameOfDish: "",
+            difficultyLevel: "",
+            timeToCook: "",
+            numberOfServings: "",
+            specialEquipment: "",
+        });
+    };
+
 
     const value = {
         categoryName,
@@ -83,6 +103,8 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         numberOfServings,
         specialEquipment,
         setRecipeForm,
+        selectedImage,
+        setSelectedImage,
         ingredientInput,
         setIngredientInput,
         ingredientsList,
@@ -95,6 +117,7 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         setCookingDirections,
         subDirections,
         setSubDirections,
+        resetRecipeState,
     };
 
     return <RecipeContext.Provider value={value}>{children}</RecipeContext.Provider>

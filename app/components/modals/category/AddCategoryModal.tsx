@@ -30,7 +30,7 @@ const AddCategoryModal = ({setShowAddCategoryModal}: AddModalProps) => {
         onSuccess: (data) => {
             if(data){
                 // console.log("Successfully added a category:", data);
-                queryClient.invalidateQueries({queryKey: ["userCategories"]}) // force refetch of categories after adding one
+                queryClient.invalidateQueries({queryKey: ["userCategories"]}); // force refetch of categories after adding one
                 setShowAddCategoryModal(false);
             }
         },

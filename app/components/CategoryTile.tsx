@@ -27,7 +27,7 @@ const CategoryTile = ({cuisineData, onLongPress, isSelected, setShowWarningModal
     const [tileId, setTileId] = useState<string | null>(null);
 
     const categoryId = cuisineData._id;
-    const categoryName = cuisineData.cuisineName
+    const categoryName = cuisineData.cuisineName;
 
     useEffect(() => {
         if(tileId){
@@ -37,7 +37,7 @@ const CategoryTile = ({cuisineData, onLongPress, isSelected, setShowWarningModal
                     categoryId,
                     categoryName,
                 }
-            })
+            });
         }
     }, [tileId, categoryId, categoryName, router]);
 

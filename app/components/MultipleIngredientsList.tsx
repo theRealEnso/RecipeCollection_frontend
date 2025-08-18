@@ -1,17 +1,15 @@
 import { useContext, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 
 // import Recipe context
 import { RecipeContext } from "@/context/RecipeContext";
 
 //import components for creating a swipeable
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 
 // import component(s)
+import Entypo from '@expo/vector-icons/Entypo';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import CustomButton from "./CustomButton";
 import FormInput from "./FormInput";
 import Sublist from "./Sublist";
@@ -25,6 +23,7 @@ import { generateUUID } from "@/utils/generateUUID";
 const MultipleIngredientsList = () => {
     const [listName, setListName] = useState<string>(""); // for controlled input
     const [itemId, setItemId] = useState<string>("");
+    const [errorMessage, setErrorMessage] = useState<string>("");
 
     const {
         sublistNames,
@@ -34,6 +33,11 @@ const MultipleIngredientsList = () => {
     } = useContext(RecipeContext);
 
     const addListName = () => {
+        if(!listName || listName.length === 0){
+            setErrorMessage("Cannot add an empty list!");
+            return;
+        };
+
         const newId = generateUUID();
 
         const newListObj = {
@@ -44,6 +48,7 @@ const MultipleIngredientsList = () => {
         const updatedListNames = [...sublistNames, newListObj];
         setSublistNames(updatedListNames);
         setListName("");
+        setErrorMessage("");
     };
 
     const deleteSublistName = (list_id: string) => {
@@ -52,7 +57,7 @@ const MultipleIngredientsList = () => {
     };
 
     const deleteSubIngredients = (list_id: string) => {
-        const filteredSubIngredients = subIngredients.filter((subIngredient) => subIngredient.listId !== list_id);
+        const filteredSubIngredients = subIngredients.filter((subIngredient) => subIngredient.sublistId !== list_id);
         setSubIngredients(filteredSubIngredients);
     };
 
@@ -60,19 +65,20 @@ const MultipleIngredientsList = () => {
         deleteSublistName(list_id);
         deleteSubIngredients(list_id);
     };
+
     //function to show trash can UI to delete a sublist
-    const rightAction = (onDelete: () => void) => (
-        <Pressable onPress={onDelete}>
-            <View style={styles.deleteBox}>
-                <Ionicons name="trash" size={24} color="white" />
-                <Text style={styles.deleteText}>Delete</Text>
-            </View>
-        </Pressable>
-    );
+    // const rightAction = (onDelete: () => void) => (
+    //     <Pressable onPress={onDelete}>
+    //         <View style={styles.deleteBox}>
+    //             <Ionicons name="trash" size={24} color="white" />
+    //             <Text style={styles.deleteText}>Delete</Text>
+    //         </View>
+    //     </Pressable>
+    // );
 
 
     return (
-        <Pressable style={{flex: 1,}}>
+        <View style={{flex: 1,}}>
             <View style={styles.ingredientInputOuterContainer}>
                 <View>
                     <View style={styles.tipsContainer}>
@@ -83,74 +89,93 @@ const MultipleIngredientsList = () => {
                             <FontAwesome5 name="lightbulb" size={24} color="black" />
                         </View>
                     </View>
-                    <Text style={styles.tips}>* Create separate lists here by typing in the name of the list</Text>
-                    <Text style={styles.tips}>* To remove a list, swipe left on the list and press delete icon</Text>
+                    <Text style={styles.tips}>{`* Create separate lists here by typing in the name of the list, then press the "+" button`}</Text>
+                    <Text style={styles.tips}>{`* Tap on a list item to make changes. Press in the "X" icon to remove item from the list`}</Text>
+                    <Text style={styles.tips}>{`* Swipe left or right on the list to view other lists that you have added`}</Text>
+                    <Text style={styles.tips}>{`* Tap on the trash icon at the top right to delete the list`}</Text>
                     <Text style={styles.tips}>* You can also create your main list of ingredients here and name it something like Final Dish</Text>
                 </View>
                 
-                <View style={styles.ingredientInputInnerContainer}>
-                    <View style={{marginTop: 10}}>
-                        <FormInput 
-                            placeholder="e.g. homemade Garam Masala Powder"
-                            value={listName} 
-                            width={300}
-                            onChangeText={(typedValue) => setListName(typedValue)}
-                        >
-                        </FormInput>
-                    </View>
-
+                <View style={styles.ingredientInputOuterContainer}>
                     <View style={styles.ingredientInputInnerContainer}>
-                        <CustomButton 
-                            value={<FontAwesome6 name="add" size={30} color="white"></FontAwesome6>} 
-                            width={50}
-                            onButtonPress={addListName}
-                        >
-                        </CustomButton>
+                        <View style={{marginHorizontal: 5}}>
+                            <FormInput 
+                                placeholder="e.g. homemade Garam Masala Powder"
+                                value={listName} 
+                                width={280}
+                                onChangeText={(typedValue) => setListName(typedValue)}
+                            >
+                            </FormInput>
+                        </View>
+
+                        <View style={{marginHorizontal: 5}}>
+                            <CustomButton 
+                                value={<FontAwesome6 name="add" size={30} color="white"></FontAwesome6>} 
+                                width={50}
+                                onButtonPress={addListName}
+                            >
+                            </CustomButton>
+                        </View>
                     </View>
 
+                    {
+                        errorMessage && (
+                            <View>
+                                <Text style={styles.error}>{errorMessage}</Text>
+                            </View>
+                        )
+                    }
                 </View>
             </View>
 
             <FlatList
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                pagingEnabled={true}
                 data={sublistNames}
                 keyExtractor={(item) => item.id}
                 renderItem={({item}) => (
-                    <GestureHandlerRootView>
-                        <ReanimatedSwipeable
-                            containerStyle={styles.swipeable}
-                            friction={2}
-                            enableTrackpadTwoFingerGesture
-                            rightThreshold={40}
-                            //renderRightActions expects a function that returns a React node, or in other words, our swipeable UI
-                            renderRightActions={() => rightAction(() => removeSublistAndIngredients(item.id))} 
-                        >
-                            <Sublist
-                                name={item.name}
-                                id={item.id}
-                                itemId={itemId}
-                                setItemId={setItemId}
-                            >
-                            </Sublist>
-                        </ReanimatedSwipeable>
-                    </GestureHandlerRootView>
+                    <Sublist
+                        name={item.name}
+                        id={item.id}
+                        itemId={itemId}
+                        setItemId={setItemId}
+                        deleteList={removeSublistAndIngredients}
+                    />
+                )}
+                // to add gap between each sublist
+                ItemSeparatorComponent={() => (
+                    <View style={{width: 10}}></View>
                 )}
             >
             </FlatList>
-        </Pressable>
+
+            {
+                sublistNames.length > 0 && (
+                    <View style={styles.arrowContainer}>
+                        <Entypo name="arrow-long-left" size={50} color={colors.primaryAccent900} />
+                        <Text style={{fontSize: 24, fontWeight: "bold", color: colors.primaryAccent900}}>Swipe</Text>
+                        <Entypo name="arrow-long-right" size={50} color={colors.primaryAccent900} />
+                    </View>
+                )
+            }
+        </View>
     );
 };
 
 export default MultipleIngredientsList;
 
 const styles = StyleSheet.create({
-    swipeable: {
-        marginTop: 10,
-        borderRadius: 10,
-        backgroundColor: "white",
-        // height: "100%",
-        // width: 600,
-        // alignItems: 'center',
-        // justifyContent: "center"
+    // swipeable: {
+    //     marginTop: 10,
+    //     borderRadius: 10,
+    //     backgroundColor: "white",
+    // },
+
+    sublistContainer: {
+        flex: 1,
+        overflow: "hidden",
+        borderRadius: 12,
     },
 
     ingredientInputOuterContainer: {
@@ -200,6 +225,19 @@ const styles = StyleSheet.create({
   },
 
   tips: {
+    fontSize: 14,
+    marginVertical: 2,
+  },
+
+  error: {
+    color: "red",
     fontSize: 12,
+  },
+
+  arrowContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    // paddingBottom: 5,
   }
 });

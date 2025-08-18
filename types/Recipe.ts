@@ -31,8 +31,9 @@ export type RecipeContextTypes = {
     timeToCook: string;
     numberOfServings: string;
     specialEquipment?: string;
-    components?: string[];
     setRecipeForm: React.Dispatch<React.SetStateAction<RecipeForm>>;
+    selectedImage: string;
+    setSelectedImage: React.Dispatch<React.SetStateAction<string>>;
     ingredientInput: string;
     setIngredientInput: React.Dispatch<React.SetStateAction<string>>;
     ingredientsList: string[];
@@ -44,7 +45,9 @@ export type RecipeContextTypes = {
     cookingDirections: string[],
     setCookingDirections: React.Dispatch<React.SetStateAction<string[]>>;
     subDirections: RecipeSubDirections[],
-    setSubDirections: React.Dispatch<React.SetStateAction<RecipeSubDirections[]>>
+    setSubDirections: React.Dispatch<React.SetStateAction<RecipeSubDirections[]>>;
+    resetRecipeState: () => void;
+
 };
 
 export type RecipeSubDirections = {
