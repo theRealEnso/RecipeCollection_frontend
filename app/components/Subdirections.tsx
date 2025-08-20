@@ -139,17 +139,18 @@ export default Subdirections;
 
 const styles = StyleSheet.create({
     outerContainer: {
-        height: "80%",
+        height: "100%",
         width: "80%",
         flex: 1,
-        padding: 20,
+        padding: 30,
     },
 
     container: {
+        flex: 1,
         marginVertical: 20,
         borderRadius: 10,
         backgroundColor: "white",
-        padding: 5,
+        padding: 15,
         width: "100%",
     },
 

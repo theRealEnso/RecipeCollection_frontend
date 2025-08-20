@@ -41,8 +41,13 @@ export const RecipeContext = createContext<RecipeContextTypes>({
     setCookingDirections: () => {},
     subDirections: [],
     setSubDirections: () => {},
-    selectedImage: "",
-    setSelectedImage: () => {},
+    selectedImageUri: "",
+    setSelectedImageUri: () => {},
+    selectedImageType: "",
+    setSelectedImageType: () => {},
+    selectedImageName: "",
+    setSelectedImageName: () => {},
+    resetRecipeState: () => {},
 });
 
 export const RecipeProvider = ({children}: RecipeProviderProps) => {
@@ -54,7 +59,9 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
     const [subIngredients, setSubIngredients] = useState<SubIngredient[]>([]);
     const [cookingDirections, setCookingDirections] = useState<string[]>([]);
     const [subDirections, setSubDirections] = useState<RecipeSubDirections[]>([]);
-    const [selectedImage, setSelectedImage] = useState<string>("");
+    const [selectedImageUri, setSelectedImageUri] = useState<string>("");
+    const [selectedImageType, setSelectedImageType] = useState<string>("");
+    const [selectedImageName, setSelectedImageName] = useState<string>("");
     const [recipeForm, setRecipeForm] = useState<RecipeForm>({
         recipeOwner: "",
         nameOfDish: "",
@@ -79,7 +86,9 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         setSubDirections([]);
         setSubIngredients([]);
         setSublistNames([]);
-        setSelectedImage("");
+        setSelectedImageUri("");
+        setSelectedImageType("");
+        setSelectedImageName("");
         setRecipeForm({
             recipeOwner: "",
             nameOfDish: "",
@@ -103,8 +112,12 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         numberOfServings,
         specialEquipment,
         setRecipeForm,
-        selectedImage,
-        setSelectedImage,
+        selectedImageUri,
+        setSelectedImageUri,
+        selectedImageType,
+        setSelectedImageType,
+        selectedImageName,
+        setSelectedImageName,
         ingredientInput,
         setIngredientInput,
         ingredientsList,

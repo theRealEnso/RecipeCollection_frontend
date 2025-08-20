@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useContext } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
@@ -22,6 +23,10 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 // import colors
 import colors from "./constants/colors";
 
+//environment variables
+const cloudinary_name = process.env.EXPO_PUBLIC_CLOUDINARY_API_NAME;
+const cloudinary_key = process.env.EXPO_PUBLIC_CLOUDINARY_UNSIGNED_UPLOAD_PRESET_NAME;
+
 
 //UI needs to be dynamic.
 //If there are multiple lists for sub recipes, then this screen needs to display cooking and/or preparation directions for each sub list
@@ -42,7 +47,9 @@ const CookingDirections = () => {
         timeToCook,
         numberOfServings,
         specialEquipment,
-        selectedImage,
+        selectedImageUri,
+        selectedImageName,
+        selectedImageType,
         ingredientsList,
         subIngredients,
         cookingDirections,
@@ -59,7 +66,7 @@ const CookingDirections = () => {
         timeToCook,
         numberOfServings,
         specialEquipment,
-        selectedImage: selectedImage ? selectedImage : process.env.default_image,
+        imageUri: selectedImageUri,
         ingredients: ingredientsList,
         subIngredients,
         cookingDirections,
@@ -87,13 +94,55 @@ const CookingDirections = () => {
         }
     });
 
-    const handleCreateRecipe = () => {
-        // console.log("recipeData", JSON.stringify(recipeData, null, 2));
+    // function to upload user selected image to cloudinary. Returns back an object containing data about the uploaded image
+    const uploadImageToCloudinary = async () => {
+        try {
+            const formData = new FormData();
+            formData.append("upload_preset", cloudinary_key as string);
+            formData.append("file", {
+                uri: selectedImageUri,
+                type: selectedImageType,
+                name: selectedImageName,
+            } as any);
 
-        createNewRecipeMutation.mutate({
-            accessToken,
-            recipeData,
-        });
+            const { data } = await axios.post(`https://api.cloudinary.com/v1_1/${cloudinary_name}/image/upload`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                }
+            });
+
+            return data;
+        } catch(error){
+            console.error(error);
+            throw error;
+        }
+    };
+
+    const handleCreateRecipe = async () => {
+        try {
+            if(selectedImageUri && selectedImageUri.length > 0){
+                const uploadedImage = await uploadImageToCloudinary();
+                const cloudinaryImageUrl = uploadedImage?.secure_url;
+
+                createNewRecipeMutation.mutate({
+                    accessToken,
+                    recipeData: {
+                        ...recipeData, 
+                        imageUri: cloudinaryImageUrl,
+                    },
+                });
+            } else {
+                createNewRecipeMutation.mutate({
+                    accessToken,
+                    recipeData: {
+                        ...recipeData,
+                        imageUri: process.env.default_image as string,
+                    }
+                })
+            }
+        } catch(error){
+            console.error("Error creating recipe: ", error)
+        }
     };
 
     const goBack = () => router.back();
@@ -105,7 +154,7 @@ const CookingDirections = () => {
             </View>
 
             {
-                subDirections.length > 0 && (
+                sublistNames.length > 0 ? (
                 <View style={{padding: 20,}}>
                     <View style={styles.tipsContainer}>
                         <View style={{marginRight: 5,}}>
@@ -118,7 +167,7 @@ const CookingDirections = () => {
                         <Text style={styles.tips}>{`* Swipe left or right on the screen to move between lists of directions for each of your individual sub recipes`}</Text>
                         <Text style={styles.tips}>{`* Tap on individual direction items to make edits to that direction `}</Text>
                     </View>
-                )
+                ) : null
             }
 
             <View style={styles.sublistContainer}>
@@ -147,7 +196,7 @@ const CookingDirections = () => {
                 }
 
                 {
-                    subDirections.length > 0 && (
+                    sublistNames.length > 0 && (
                         <View style={styles.arrowContainer}>
                             <Entypo name="arrow-long-left" size={50} color={colors.primaryAccent900} />
                             <Text style={{fontSize: 24, fontWeight: "bold", color: colors.primaryAccent900}}>Swipe</Text>

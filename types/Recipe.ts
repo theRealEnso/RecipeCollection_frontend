@@ -32,8 +32,12 @@ export type RecipeContextTypes = {
     numberOfServings: string;
     specialEquipment?: string;
     setRecipeForm: React.Dispatch<React.SetStateAction<RecipeForm>>;
-    selectedImage: string;
-    setSelectedImage: React.Dispatch<React.SetStateAction<string>>;
+    selectedImageUri: string;
+    setSelectedImageUri: React.Dispatch<React.SetStateAction<string>>;
+    selectedImageType: string;
+    setSelectedImageType: React.Dispatch<React.SetStateAction<string>>;
+    selectedImageName: string;
+    setSelectedImageName: React.Dispatch<React.SetStateAction<string>>;
     ingredientInput: string;
     setIngredientInput: React.Dispatch<React.SetStateAction<string>>;
     ingredientsList: string[];
@@ -64,4 +68,5 @@ export type RecipeData = RecipeForm & {
     subDirections: RecipeSubDirections[],
     ingredients: string[],
     subIngredients: SubIngredient[],
+    imageUri: string;
 };

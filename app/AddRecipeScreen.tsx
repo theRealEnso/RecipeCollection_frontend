@@ -14,6 +14,9 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 import * as ImagePicker from "expo-image-picker";
 
+// import utility function(s);
+import { getFileType } from "@/utils/getFileType";
+
 // import colors from "@/app/constants/colors";
 
 //define types
@@ -36,8 +39,12 @@ const AddRecipeScreen = () => {
         numberOfServings,
         specialEquipment,
         setRecipeForm,
-        selectedImage,
-        setSelectedImage,
+        selectedImageUri,
+        selectedImageName,
+        selectedImageType,
+        setSelectedImageUri,
+        setSelectedImageName,
+        setSelectedImageType,
         resetRecipeState
     } = useContext(RecipeContext);
 
@@ -74,10 +81,21 @@ const AddRecipeScreen = () => {
         });
 
         if(!result.canceled){
-            const uri = result.assets[0].uri
-            setSelectedImage(uri);
+            const asset = result.assets[0];
+            // console.log(asset);
+            const uri = asset.uri; // local uri link
+            const imageName = asset.fileName || uri.split("/").pop();
+            const fileType = getFileType(uri);
+
+            setSelectedImageUri(uri);
+            setSelectedImageName(imageName as string);
+            setSelectedImageType(fileType);
         }
     };
+
+    // console.log(selectedImageUri);
+    // console.log(selectedImageName);
+    // console.log(selectedImageType);
 
     // function that validates required fields and then navigates to the next screen to continue adding the recipe ingredients
     const continueToAddIngredients = () => {
@@ -209,15 +227,15 @@ const AddRecipeScreen = () => {
                     <Text>Select a photo of your dish (optional)</Text>
                     <CustomButton value="Choose Image" width={150} radius={10} onButtonPress={pickImage}></CustomButton>
                     {
-                        selectedImage && (
+                        selectedImageUri && (
                             <View style={styles.imageContainer}>
-                                <Pressable style={styles.iconContainer} onPress={() => setSelectedImage("")}>
+                                <Pressable style={styles.iconContainer} onPress={() => setSelectedImageUri("")}>
                                     <View>
                                         <MaterialIcons name="highlight-remove" size={32} color="black" />
                                     </View>
                                 </Pressable>
                                 <Image
-                                    source={{ uri: selectedImage }}
+                                    source={{ uri: selectedImageUri }}
                                     style={{ width: 150, height: 150, marginTop: 20, borderRadius: 10 }}
                                 />
                             </View>
