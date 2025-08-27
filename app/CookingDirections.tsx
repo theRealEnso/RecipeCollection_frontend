@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 import { useContext } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
@@ -8,7 +8,7 @@ import { useRouter } from "expo-router";
 import { RecipeContext } from "@/context/RecipeContext";
 import { UserContext } from "@/context/UserContext";
 
-import { createNewRecipe } from "@/api/recipes";
+import { createCloudinaryURL, createNewRecipe } from "@/api/recipes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // import component(s)
@@ -23,9 +23,9 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 // import colors
 import colors from "./constants/colors";
 
-//environment variables
-const cloudinary_name = process.env.EXPO_PUBLIC_CLOUDINARY_API_NAME;
-const cloudinary_key = process.env.EXPO_PUBLIC_CLOUDINARY_UNSIGNED_UPLOAD_PRESET_NAME;
+// //environment variables
+// const cloudinary_name = process.env.EXPO_PUBLIC_CLOUDINARY_API_NAME;
+// const cloudinary_key = process.env.EXPO_PUBLIC_CLOUDINARY_UNSIGNED_UPLOAD_PRESET_NAME;
 
 
 //UI needs to be dynamic.
@@ -48,8 +48,7 @@ const CookingDirections = () => {
         numberOfServings,
         specialEquipment,
         selectedImageUri,
-        selectedImageName,
-        selectedImageType,
+        base64Url,
         ingredientsList,
         subIngredients,
         cookingDirections,
@@ -94,43 +93,69 @@ const CookingDirections = () => {
         }
     });
 
-    // function to upload user selected image to cloudinary. Returns back an object containing data about the uploaded image
-    const uploadImageToCloudinary = async () => {
-        try {
-            const formData = new FormData();
-            formData.append("upload_preset", cloudinary_key as string);
-            formData.append("file", {
-                uri: selectedImageUri,
-                type: selectedImageType,
-                name: selectedImageName,
-            } as any);
-
-            const { data } = await axios.post(`https://api.cloudinary.com/v1_1/${cloudinary_name}/image/upload`, formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                }
-            });
-
-            return data;
-        } catch(error){
+    const createCloudinaryUrlMutation = useMutation({
+        mutationFn: ({accessToken, base64Url}: {accessToken: string, base64Url: string}) => createCloudinaryURL({accessToken, base64Url}),
+        onSuccess: (data) => {
+            if(data?.imageUrl){
+                console.log(data);
+                createNewRecipeMutation.mutate({
+                    accessToken,
+                    recipeData: {
+                        ...recipeData,
+                        imageUri: data.imageUrl,
+                    }
+                })
+            }
+        },
+        onError: (error) => {
             console.error(error);
-            throw error;
-        }
-    };
+        },
+    })
+
+    // // function to upload user selected image to cloudinary. Returns back an object containing data about the uploaded image
+    // const uploadImageToCloudinary = async () => {
+    //     try {
+    //         const formData = new FormData();
+    //         formData.append("upload_preset", cloudinary_key as string);
+    //         formData.append("file", {
+    //             uri: selectedImageUri,
+    //             type: selectedImageType,
+    //             name: selectedImageName,
+    //         } as any);
+
+    //         const { data } = await axios.post(`https://api.cloudinary.com/v1_1/${cloudinary_name}/image/upload`, formData, {
+    //             headers: {
+    //                 "Content-Type": "multipart/form-data",
+    //             }
+    //         });
+
+    //         return data;
+    //     } catch(error){
+    //         console.error(error);
+    //         throw error;
+    //     }
+    // };
 
     const handleCreateRecipe = async () => {
         try {
             if(selectedImageUri && selectedImageUri.length > 0){
-                const uploadedImage = await uploadImageToCloudinary();
-                const cloudinaryImageUrl = uploadedImage?.secure_url;
+                // const uploadedImage = await uploadImageToCloudinary();
+                // const cloudinaryImageUrl = uploadedImage?.secure_url;
+                console.log("Sending base64 length:", base64Url?.length);
 
-                createNewRecipeMutation.mutate({
+
+                createCloudinaryUrlMutation.mutate({
                     accessToken,
-                    recipeData: {
-                        ...recipeData, 
-                        imageUri: cloudinaryImageUrl,
-                    },
+                    base64Url
                 });
+
+                // createNewRecipeMutation.mutate({
+                //     accessToken,
+                //     recipeData: {
+                //         ...recipeData, 
+                //         imageUri: cloudinaryImageUrl,
+                //     },
+                // });
             } else {
                 createNewRecipeMutation.mutate({
                     accessToken,

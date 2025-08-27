@@ -12,14 +12,6 @@ export type ListNameProps = {
     id: string;
 };
 
-export type SubIngredient = {
-    sublistName: string;
-    sublistId: string;
-    nameOfIngredient: string;
-    ingredient_id: string;
-};
-
-
 export type RecipeContextTypes = {
     categoryName: string;
     setCategoryName: React.Dispatch<React.SetStateAction<string>>;
@@ -38,6 +30,8 @@ export type RecipeContextTypes = {
     setSelectedImageType: React.Dispatch<React.SetStateAction<string>>;
     selectedImageName: string;
     setSelectedImageName: React.Dispatch<React.SetStateAction<string>>;
+    base64Url: string;
+    setBase64Url: React.Dispatch<React.SetStateAction<string>>;
     ingredientInput: string;
     setIngredientInput: React.Dispatch<React.SetStateAction<string>>;
     ingredientsList: string[];
@@ -52,6 +46,23 @@ export type RecipeContextTypes = {
     setSubDirections: React.Dispatch<React.SetStateAction<RecipeSubDirections[]>>;
     resetRecipeState: () => void;
 
+};
+
+export type Ingredient = {
+    nameOfIngredient: string;
+    ingredient_id: string;
+};
+
+export type SubIngredient = {
+    sublistName: string;
+    sublistId: string;
+    nameOfIngredient: string;
+    ingredient_id: string;
+};
+
+export type CookingDirections = {
+    direction: string;
+    direction_id: string;
 };
 
 export type RecipeSubDirections = {

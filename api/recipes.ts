@@ -12,11 +12,6 @@ type CreateRecipeProps = {
     recipeData: RecipeData;
 };
 
-// type GetRecipeProps = {
-//     accessToken: string;
-//     categoryId: string;
-// };
-
 export const getAllCategoryRecipes = async (accessToken: string, categoryId: string) => {
     try {
         const { data } = await axios.get(`${RECIPES_ENDPOINT}/get-category-recipes/${categoryId}`, {
@@ -28,9 +23,21 @@ export const getAllCategoryRecipes = async (accessToken: string, categoryId: str
         return data;
     } catch(error){
         console.error(error);
-    }
+    };
 };
 
+export const getDetailedRecipe = async (accessToken: string, recipeId: string) => {
+    try {
+        const { data } = await axios.get(`${RECIPES_ENDPOINT}/get-category-recipes/recipe/${recipeId}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+        });
+        return data;
+    } catch(error){
+        console.error(error);
+    };
+};
 
 export const createNewRecipe = async ({accessToken, recipeData}: CreateRecipeProps) => {
     try {
@@ -44,5 +51,19 @@ export const createNewRecipe = async ({accessToken, recipeData}: CreateRecipePro
 
     } catch(error){
         console.error(error)
+    };
+};
+
+export const createCloudinaryURL = async ({accessToken, base64Url}: {accessToken: string, base64Url: string}) => {
+    try {
+        const { data } = await axios.post(`${RECIPES_ENDPOINT}/create-cloudinary-image-url`, { base64: base64Url }, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+            },
+        });
+        return data;
+    } catch(error){
+        console.error(error);
     };
 };

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 // import Recipe context
@@ -14,6 +14,8 @@ import IngredientList from "./IngredientList";
 import colors from "../constants/colors";
 
 const SingleIngredientList = () => {
+    const [error, setError] = useState<string>("");
+
     const {
         ingredientInput, 
         setIngredientInput,
@@ -22,9 +24,15 @@ const SingleIngredientList = () => {
     } = useContext(RecipeContext);
 
     const addIngredientToList = () => {
+        if(ingredientInput.length === 0){
+            setError("Cannot add an empty ingredient to your list!");
+            return;
+        };
+
         const updatedIngredientList = [...ingredientsList, ingredientInput];
         setIngredientsList(updatedIngredientList);
         setIngredientInput("");
+        setError("");
     };
 
     //function to capture user updates to a list item in the IngredientList component and update the ingredientsList array. Pass as props to IngredientList component
@@ -58,11 +66,16 @@ const SingleIngredientList = () => {
                     <CustomButton 
                         value={<FontAwesome6 name="add" size={30} color="white"></FontAwesome6>} 
                         width={50}
+                        radius={12}
                         onButtonPress={addIngredientToList}
                     >
                     </CustomButton>
                 </View>
             </View>
+
+            {
+                error && <Text style={styles.errorMessage}>{error}</Text>
+            }
 
             {
                 ingredientsList.length > 0 && (
@@ -117,10 +130,16 @@ const styles = StyleSheet.create({
 
     messageContainer: {
         width: 300,
+        marginVertical: 10,
+
     },
     
     message: {
         marginVertical: 10,
         color: colors.primaryAccent900,
     },
+
+    errorMessage: {
+        color: "red",
+    }
 });

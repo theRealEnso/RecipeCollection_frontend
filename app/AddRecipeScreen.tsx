@@ -40,8 +40,7 @@ const AddRecipeScreen = () => {
         specialEquipment,
         setRecipeForm,
         selectedImageUri,
-        selectedImageName,
-        selectedImageType,
+        setBase64Url,
         setSelectedImageUri,
         setSelectedImageName,
         setSelectedImageType,
@@ -74,6 +73,7 @@ const AddRecipeScreen = () => {
         };
 
         const result = await ImagePicker.launchImageLibraryAsync({
+            base64: true,
             mediaTypes: ["images"],
             allowsEditing: true,
             aspect: [4,3],
@@ -83,10 +83,15 @@ const AddRecipeScreen = () => {
         if(!result.canceled){
             const asset = result.assets[0];
             // console.log(asset);
+            const base64_url = asset.base64;
             const uri = asset.uri; // local uri link
             const imageName = asset.fileName || uri.split("/").pop();
             const fileType = getFileType(uri);
 
+            //need to add correct prefix in format that cloudinary will accept
+            const base64WithPrefix = `data:${fileType};base64,${base64_url}`;
+
+            setBase64Url(base64WithPrefix);
             setSelectedImageUri(uri);
             setSelectedImageName(imageName as string);
             setSelectedImageType(fileType);

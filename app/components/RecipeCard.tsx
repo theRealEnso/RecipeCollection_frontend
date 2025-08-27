@@ -15,9 +15,20 @@ type Recipe = {
 const RecipeCard = ({recipe}: Recipe) => {
     const router = useRouter();
 
+    const { _id } = recipe;
+
+    const navigateToRecipeDetails = () => {
+        router.push({
+            pathname: "/components/RecipeScreen",
+            params: {
+                _id,
+            }
+        })
+    };
+
     return (
         <View style={styles.container}> 
-            <Pressable>
+            <Pressable onPress={navigateToRecipeDetails}>
                 {/* image container */}
                 <View style={styles.imageContainer}>
                     <Image src={recipe.imageUri} style={styles.image}></Image>

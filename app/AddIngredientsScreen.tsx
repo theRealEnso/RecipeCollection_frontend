@@ -22,6 +22,9 @@ const AddRecipeScreen = () => {
     const {
         nameOfDish,
         setIngredientsList,
+        setSubIngredients,
+        setCookingDirections,
+        setSubDirections,
     } = useContext(RecipeContext);
 
     const router = useRouter();
@@ -29,11 +32,14 @@ const AddRecipeScreen = () => {
     const pressNo = () => {
         setToggleNo(true);
         setToggleYes(false);
+        setSubIngredients([]);
+        setSubDirections([]);
     };
     const pressYes = () => {
         setToggleNo(false);
         setToggleYes(true);
         setIngredientsList([]);
+        setCookingDirections([]);
     };
 
     //function to back to previous screen

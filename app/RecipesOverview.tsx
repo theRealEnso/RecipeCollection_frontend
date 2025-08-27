@@ -61,7 +61,7 @@ const RecipesOverview = () => {
                             <Text>Error fetching categories!</Text>
                         </View>
                     ) : (
-                        <View>
+                        <View style={styles.emptyMessage}>
                             <View style={styles.icon}>
                                 <Entypo name="emoji-sad" size={150} color={colors.primaryAccent900} />
                             </View>
@@ -125,5 +125,9 @@ const styles = StyleSheet.create({
     message: {
         marginVertical: 30,
         fontSize: 24,
+    },
+
+    emptyMessage: {
+        padding: 30,
     }
 });
