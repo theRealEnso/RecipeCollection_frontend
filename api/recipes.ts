@@ -54,6 +54,20 @@ export const createNewRecipe = async ({accessToken, recipeData}: CreateRecipePro
     };
 };
 
+export const generateCloudinarySignature = async (accessToken: string) => {
+    try {
+        const { data } = await axios.get(`${RECIPES_ENDPOINT}/get-cloudinary-signature`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+
+        return data;
+    } catch(error){
+        console.error(error);
+    };
+};
+
 export const createCloudinaryURL = async ({accessToken, base64Url}: {accessToken: string, base64Url: string}) => {
     try {
         const { data } = await axios.post(`${RECIPES_ENDPOINT}/create-cloudinary-image-url`, { base64: base64Url }, {

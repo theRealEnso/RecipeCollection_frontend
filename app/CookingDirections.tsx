@@ -1,4 +1,4 @@
-// import axios from "axios";
+import axios from "axios";
 import { useContext } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
@@ -8,7 +8,7 @@ import { useRouter } from "expo-router";
 import { RecipeContext } from "@/context/RecipeContext";
 import { UserContext } from "@/context/UserContext";
 
-import { createCloudinaryURL, createNewRecipe } from "@/api/recipes";
+import { createNewRecipe } from "@/api/recipes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // import component(s)
@@ -23,7 +23,9 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 // import colors
 import colors from "./constants/colors";
 
-// //environment variables
+// environment variables
+const RECIPE_COLLECTION_ENDPOINT = process.env.EXPO_PUBLIC_RECIPE_COLLECTION_ENDPOINT_3
+const RECIPES_ENDPOINT = `${RECIPE_COLLECTION_ENDPOINT}/recipes`;
 // const cloudinary_name = process.env.EXPO_PUBLIC_CLOUDINARY_API_NAME;
 // const cloudinary_key = process.env.EXPO_PUBLIC_CLOUDINARY_UNSIGNED_UPLOAD_PRESET_NAME;
 
@@ -72,6 +74,103 @@ const CookingDirections = () => {
         subDirections,
     };
 
+    //helper function to image + signed preset to cloudinary
+    const uploadToCloudinarySigned = async (
+        base64Url: string,
+        signature: string,
+        timestamp: number,
+        apikey: string,
+        cloudname: string,
+        uploadPreset: string,
+        folder: string,
+    ) => {
+        try {
+            const formData = new FormData();
+            formData.append("file", base64Url);
+            formData.append("api_key", apikey);
+            formData.append("timestamp", timestamp.toString());
+            formData.append("upload_preset", uploadPreset);
+            formData.append("signature", signature);
+            formData.append("folder", folder)
+
+            const { data } = await axios.post(`https://api.cloudinary.com/v1_1/${cloudname}/image/upload`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                },
+            });
+
+            return data;
+        } catch(error: any){
+            if (axios.isAxiosError(error)) {
+                console.error("Cloudinary error response:", error.response?.data); // 👈 actual message
+                console.error("Cloudinary error status:", error.response?.status); // 👈 400
+            } else {
+                console.error("Unexpected error:", error);
+            }
+
+            throw error; // rethrow so React Query / caller can still catch it
+        }
+    };
+
+    const createCloudinaryUrlMutation = useMutation({
+        // need to first get signature from api endpoint,
+        // then upload the image to cloudinary with the signature to get the secure url,
+        // and finally create the recipe with the secure url
+
+        mutationFn: async ({accessToken, base64Url}: {accessToken: string, base64Url: string}) => {
+            const { data } = await axios.get(`${RECIPES_ENDPOINT}/get-cloudinary-signature`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            });
+
+            const {
+                signature,
+                timestamp,
+                apikey,
+                cloudname,
+                uploadPreset,
+                folder,
+            } = data;
+
+            console.log("Upload preset is:", uploadPreset);
+
+            return await uploadToCloudinarySigned(base64Url, signature, timestamp, apikey, cloudname, uploadPreset, folder);
+        },
+        onSuccess: (data) => {
+            if(data?.secure_url){
+                createNewRecipeMutation.mutate({
+                    accessToken,
+                    recipeData: {
+                        ...recipeData,
+                        imageUri: data.secure_url
+                    }
+                })
+            }
+        },
+        onError: (error) => {
+            console.error("Cloudinary upload failed:", error)
+        },
+
+        // // old code we were previously just creating a recipe using the createCloudinaryUrl helper function using accessToken and base64Url as inputs, then sending base64Url to specific back end api endpoint that handled uploading image to cloudinary using UNSIGNED preset, and finally grabbing the secure url to send back to the front end
+        // mutationFn: createCloudinaryURL,
+        // onSuccess: (data) => {
+        //     if(data?.imageUrl){
+        //         console.log(data);
+        //         createNewRecipeMutation.mutate({
+        //             accessToken,
+        //             recipeData: {
+        //                 ...recipeData,
+        //                 imageUri: data.imageUrl,
+        //             }
+        //         })
+        //     }
+        // },
+        // onError: (error) => {
+        //     console.error(error);
+        // },
+    });
+
     const createNewRecipeMutation = useMutation({
         mutationFn: createNewRecipe,
         onSuccess: (data) => {
@@ -93,69 +192,15 @@ const CookingDirections = () => {
         }
     });
 
-    const createCloudinaryUrlMutation = useMutation({
-        mutationFn: ({accessToken, base64Url}: {accessToken: string, base64Url: string}) => createCloudinaryURL({accessToken, base64Url}),
-        onSuccess: (data) => {
-            if(data?.imageUrl){
-                console.log(data);
-                createNewRecipeMutation.mutate({
-                    accessToken,
-                    recipeData: {
-                        ...recipeData,
-                        imageUri: data.imageUrl,
-                    }
-                })
-            }
-        },
-        onError: (error) => {
-            console.error(error);
-        },
-    })
-
-    // // function to upload user selected image to cloudinary. Returns back an object containing data about the uploaded image
-    // const uploadImageToCloudinary = async () => {
-    //     try {
-    //         const formData = new FormData();
-    //         formData.append("upload_preset", cloudinary_key as string);
-    //         formData.append("file", {
-    //             uri: selectedImageUri,
-    //             type: selectedImageType,
-    //             name: selectedImageName,
-    //         } as any);
-
-    //         const { data } = await axios.post(`https://api.cloudinary.com/v1_1/${cloudinary_name}/image/upload`, formData, {
-    //             headers: {
-    //                 "Content-Type": "multipart/form-data",
-    //             }
-    //         });
-
-    //         return data;
-    //     } catch(error){
-    //         console.error(error);
-    //         throw error;
-    //     }
-    // };
-
     const handleCreateRecipe = async () => {
         try {
             if(selectedImageUri && selectedImageUri.length > 0){
-                // const uploadedImage = await uploadImageToCloudinary();
-                // const cloudinaryImageUrl = uploadedImage?.secure_url;
                 console.log("Sending base64 length:", base64Url?.length);
-
 
                 createCloudinaryUrlMutation.mutate({
                     accessToken,
-                    base64Url
+                    base64Url,
                 });
-
-                // createNewRecipeMutation.mutate({
-                //     accessToken,
-                //     recipeData: {
-                //         ...recipeData, 
-                //         imageUri: cloudinaryImageUrl,
-                //     },
-                // });
             } else {
                 createNewRecipeMutation.mutate({
                     accessToken,
