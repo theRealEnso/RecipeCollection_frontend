@@ -24,8 +24,8 @@ export type RecipeContextTypes = {
     numberOfServings: string;
     specialEquipment?: string;
     setRecipeForm: React.Dispatch<React.SetStateAction<RecipeForm>>;
-    selectedImageUri: string;
-    setSelectedImageUri: React.Dispatch<React.SetStateAction<string>>;
+    selectedImageUrl: string;
+    setSelectedImageUrl: React.Dispatch<React.SetStateAction<string>>;
     selectedImageType: string;
     setSelectedImageType: React.Dispatch<React.SetStateAction<string>>;
     selectedImageName: string;
@@ -40,12 +40,11 @@ export type RecipeContextTypes = {
     setSublistNames: React.Dispatch<React.SetStateAction<ListNameProps[]>>;
     subIngredients: SubIngredient[];
     setSubIngredients: React.Dispatch<React.SetStateAction<SubIngredient[]>>;
-    cookingDirections: string[],
-    setCookingDirections: React.Dispatch<React.SetStateAction<string[]>>;
-    subDirections: RecipeSubDirections[],
-    setSubDirections: React.Dispatch<React.SetStateAction<RecipeSubDirections[]>>;
+    cookingInstructions: string[],
+    setCookingInstructions: React.Dispatch<React.SetStateAction<string[]>>;
+    subInstructions: RecipeSubInstructions[],
+    setSubInstructions: React.Dispatch<React.SetStateAction<RecipeSubInstructions[]>>;
     resetRecipeState: () => void;
-
 };
 
 export type Ingredient = {
@@ -60,24 +59,24 @@ export type SubIngredient = {
     ingredient_id: string;
 };
 
-export type CookingDirections = {
-    direction: string;
-    direction_id: string;
+export type CookingInstructions = {
+    instruction: string;
+    instruction_id: string;
 };
 
-export type RecipeSubDirections = {
+export type RecipeSubInstructions = {
     sublistName: string;
     sublistId: string;
-    direction: string;
-    direction_id: string;
+    instruction: string;
+    instruction_id: string;
 };
 
 export type RecipeData = RecipeForm & {
     categoryName: string;
     categoryId: string;
-    cookingDirections: string[],
-    subDirections: RecipeSubDirections[],
+    cookingInstructions: string[],
+    subInstructions: RecipeSubInstructions[],
     ingredients: string[],
     subIngredients: SubIngredient[],
-    imageUri: string;
+    imageUrl: string;
 };

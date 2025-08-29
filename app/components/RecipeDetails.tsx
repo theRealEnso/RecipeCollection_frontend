@@ -4,29 +4,29 @@ import { Image, ScrollView, StyleSheet, Text, View, } from "react-native";
 import colors from "../constants/colors";
 
 //import type(s)
-import { CookingDirections, Ingredient, RecipeSubDirections, SubIngredient } from "@/types/Recipe";
+import { CookingInstructions, Ingredient, RecipeSubInstructions, SubIngredient } from "@/types/Recipe";
 
 type RecipeDetailsProps = {
     recipeOwner: string;
     nameOfDish: string;
-    imageUri: string;
+    imageUrl: string;
     specialEquipment: string;
     ingredients: Ingredient[];
     subIngredients: SubIngredient[];
-    cookingDirections: CookingDirections[];
-    subDirections: RecipeSubDirections[]
+    cookingInstructions: CookingInstructions[];
+    subInstructions: RecipeSubInstructions[]
 }
 
 const RecipeDetails = (
     {
         recipeOwner, 
         nameOfDish, 
-        imageUri,
+        imageUrl,
         specialEquipment,
         ingredients,
         subIngredients,
-        cookingDirections,
-        subDirections, 
+        cookingInstructions,
+        subInstructions, 
     }: RecipeDetailsProps) => {
     return (
         <ScrollView>
@@ -35,7 +35,7 @@ const RecipeDetails = (
                     <Text style={styles.header}>{nameOfDish}</Text>
                 </View>
                 <View style={styles.imageContainer}>
-                    <Image src={imageUri} style={styles.image} />
+                    <Image src={imageUrl} style={styles.image} />
                 </View>
                 <View>
                     <Text style={styles.subHeader}>Ingredients</Text>

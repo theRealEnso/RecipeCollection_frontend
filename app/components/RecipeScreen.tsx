@@ -38,24 +38,24 @@ const RecipeScreen = () => {
                     const {
                         recipeOwner, 
                         nameOfDish, 
-                        imageUri,
+                        imageUrl,
                         specialEquipment,
                         ingredients,
                         subIngredients,
-                        cookingDirections,
-                        subDirections, 
+                        cookingInstructions,
+                        subInstructions, 
                     } = data.recipeDetails;
 
                     return (
                         <RecipeDetails
                             recipeOwner={recipeOwner}
                             nameOfDish={nameOfDish}
-                            imageUri={imageUri}
+                            imageUrl={imageUrl}
                             specialEquipment={specialEquipment}
                             ingredients={ingredients}
                             subIngredients={subIngredients}
-                            cookingDirections={cookingDirections}
-                            subDirections={subDirections}
+                            cookingInstructions={cookingInstructions}
+                            subInstructions={subInstructions}
                         >
                         </RecipeDetails>
                     );

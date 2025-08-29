@@ -34,7 +34,7 @@ const RecipesOverview = () => {
         router.replace("/AddRecipeScreen");
     };
 
-    const {data, isLoading, error} = useQuery({
+    const {data, isLoading, error,} = useQuery({
         queryKey: ["categoryRecipes"],
         queryFn: () => getAllCategoryRecipes(accessToken, categoryId as string),
         // refetchOnMount: "always",

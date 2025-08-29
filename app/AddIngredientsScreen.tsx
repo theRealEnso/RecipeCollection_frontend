@@ -23,8 +23,8 @@ const AddRecipeScreen = () => {
         nameOfDish,
         setIngredientsList,
         setSubIngredients,
-        setCookingDirections,
-        setSubDirections,
+        setCookingInstructions,
+        setSubInstructions,
     } = useContext(RecipeContext);
 
     const router = useRouter();
@@ -33,13 +33,13 @@ const AddRecipeScreen = () => {
         setToggleNo(true);
         setToggleYes(false);
         setSubIngredients([]);
-        setSubDirections([]);
+        setSubInstructions([]);
     };
     const pressYes = () => {
         setToggleNo(false);
         setToggleYes(true);
         setIngredientsList([]);
-        setCookingDirections([]);
+        setCookingInstructions([]);
     };
 
     //function to back to previous screen
@@ -47,8 +47,8 @@ const AddRecipeScreen = () => {
         router.back();
     };
 
-    const continueToCookingDirections = () => {
-        router.push("/CookingDirections");
+    const continueToCookingInstructions = () => {
+        router.push("/CookingInstructions");
     };
 
     return (
@@ -107,7 +107,7 @@ const AddRecipeScreen = () => {
                     <CustomButton  value="Go back" width={100} onButtonPress={goBack}></CustomButton>
                 </View>
                 <View>
-                    <CustomButton  value="Continue" width={100} onButtonPress={continueToCookingDirections}></CustomButton>
+                    <CustomButton  value="Continue" width={100} onButtonPress={continueToCookingInstructions}></CustomButton>
                 </View>
                 
             </View>

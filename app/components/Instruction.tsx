@@ -21,24 +21,24 @@ import colors from "../constants/colors";
 type SubIngredientProps = {
     sublistName: string;
     sublistId: string;
-    direction: string;
-    directionId: string;
-    onEdit: (directionId: string, updatedDirection: string) => void;
-    onDelete: (directionId: string) => void;
-    dirId: string;
-    setDirId: React.Dispatch<React.SetStateAction<string>>;
+    instruction: string;
+    instructionId: string;
+    onEdit: (instructionId: string, updatedInstruction: string) => void;
+    onDelete: (instructionId: string) => void;
+    instructionID: string;
+    setInstructionID: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const Direction = ({sublistName, sublistId, direction, directionId, onEdit, onDelete, dirId, setDirId}: SubIngredientProps) => {
-    const [directionText, setDirectionText] = useState<string>("");
+const Instruction = ({sublistName, sublistId, instruction, instructionId, onEdit, onDelete, instructionID, setInstructionID}: SubIngredientProps) => {
+    const [instructionText, setInstructionText] = useState<string>("");
     
-    const pressSubDirection = () => {
-        setDirId(directionId);
+    const pressSubInstruction = () => {
+        setInstructionID(instructionId);
     };
 
-    const handleTextSubmit = (directionId: string) => {
-        onEdit(directionId, directionText);
-        setDirId("");
+    const handleTextSubmit = (instructionId: string) => {
+        onEdit(instructionId, instructionText);
+        setInstructionID("");
     };
 
     return (
@@ -46,24 +46,24 @@ const Direction = ({sublistName, sublistId, direction, directionId, onEdit, onDe
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={{flex: 1}}
         >
-            <TouchableWithoutFeedback onPress={() => setDirId("")}>
+            <TouchableWithoutFeedback onPress={() => setInstructionID("")}>
                 <View style={styles.container}>
                     {
-                        dirId === directionId 
+                        instructionId === instructionID 
                         ? (
                             <View style={styles.textInputContainer}>
                                 <TextInput 
                                     style={styles.textInput} 
-                                    value={directionText}
-                                    onChangeText={(typedValue) => setDirectionText(typedValue)}
-                                    onSubmitEditing={() => handleTextSubmit(directionId)}
+                                    value={instructionText}
+                                    onChangeText={(typedValue) => setInstructionText(typedValue)}
+                                    onSubmitEditing={() => handleTextSubmit(instructionId)}
                                 >
                                 </TextInput>
                             </View>
                         ) : (
                             <View style={styles.container}>
                                 <View style={styles.listItem}>
-                                    <Text style={{color: "white"}} onPress={pressSubDirection}>{direction}</Text>
+                                    <Text style={{color: "white"}} onPress={pressSubInstruction}>{instruction}</Text>
                                 </View>
                                 <View style={{marginHorizontal: 5}}>
                                     <CustomButton
@@ -71,7 +71,7 @@ const Direction = ({sublistName, sublistId, direction, directionId, onEdit, onDe
                                         width={30}
                                         color={colors.primaryAccent900}
                                         radius={50}
-                                        onButtonPress={() => onDelete(directionId)}
+                                        onButtonPress={() => onDelete(instructionId)}
                                     >
                                     </CustomButton>
                                 </View>
@@ -84,7 +84,7 @@ const Direction = ({sublistName, sublistId, direction, directionId, onEdit, onDe
     );
 };
 
-export default Direction;
+export default Instruction;
 
 const styles = StyleSheet.create({
     container: {

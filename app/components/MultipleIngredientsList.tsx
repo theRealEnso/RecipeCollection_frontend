@@ -4,15 +4,17 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 // import Recipe context
 import { RecipeContext } from "@/context/RecipeContext";
 
-//import components for creating a swipeable
+
 
 // import component(s)
-import Entypo from '@expo/vector-icons/Entypo';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import CustomButton from "./CustomButton";
 import FormInput from "./FormInput";
 import Sublist from "./Sublist";
+
+//import icon(s)
+import Entypo from '@expo/vector-icons/Entypo';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 // import colors
 import colors from "../constants/colors";

@@ -5,7 +5,7 @@ import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from "react-na
 // import FormInput from "./FormInput";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CustomButton from "./CustomButton";
-import Direction from "./Direction";
+import Instruction from "./Instruction";
 
 // import Recipe context
 import { RecipeContext } from "@/context/RecipeContext";
@@ -18,62 +18,62 @@ import colors from "../constants/colors";
 //import utility function to generate random ID
 import { generateUUID } from "@/utils/generateUUID";
 
-type SubDirectionsProp = {
+type SubInstructionsProp = {
     name: string;
     id: string;
 };
 
-const Subdirections = ({name, id,}: SubDirectionsProp) => {
-    const subDirectionsRef = useRef(null)
-    const {subDirections, setSubDirections} = useContext(RecipeContext);
+const SubInstructions = ({name, id,}: SubInstructionsProp) => {
+    const subInstructionsRef = useRef(null)
+    const {subInstructions, setSubInstructions} = useContext(RecipeContext);
 
     const [input, setInput] = useState<string>("");
-    const [dirId, setDirId] = useState<string>("");
+    const [instructionID, setInstructionID] = useState<string>("");
 
     const handleInputChange = (userInput: string) => {
         setInput(userInput);
     };
 
-    //function to add a direction to the sub directions array
-    const addDirections = () => {
+    //function to add an instruction to the sub instructions array
+    const addInstructions = () => {
         if(!input || input.length ===0 ){
             return;
         }
 
-        let subDirection = {
+        let subInstruction = {
             sublistName: name,
             sublistId: id,
-            direction: input,
-            direction_id: generateUUID(),
+            instruction: input,
+            instruction_id: generateUUID(),
         };
 
-        let updatedDirections = [...subDirections, subDirection];
-        setSubDirections(updatedDirections);
+        let updatedInstructions = [...subInstructions, subInstruction];
+        setSubInstructions(updatedInstructions);
         setInput("");
     };
 
-    //function to remove a direction from the sub directions array
-    const removeDirection = (directionId: string) => {
-        const updatedSubDirections = subDirections.filter((subDirection) => subDirection.direction_id !== directionId);
-        setSubDirections(updatedSubDirections);
+    //function to remove a instruction from the sub instructions array
+    const removeInstruction = (instructionId: string) => {
+        const updatedSubInstructions = subInstructions.filter((subInstruction) => subInstruction.instruction_id !== instructionId);
+        setSubInstructions(updatedSubInstructions);
     };
 
-    //function to edit a specific direction from the sub directions array
-    const updateDirection = (directionId: string, updatedDirection: string) => {
-        const updatedSubDirections = subDirections.map((subDirection) => subDirection.direction_id === directionId ? {...subDirection, direction: updatedDirection} : subDirection);
+    //function to edit a specific instruction from the sub instructions array
+    const updateInstruction = (instructionId: string, updatedInstruction: string) => {
+        const updatedSubInstructions = subInstructions.map((subInstruction) => subInstruction.instruction_id === instructionId ? {...subInstruction, instruction: updatedInstruction} : subInstruction);
 
-        setSubDirections(updatedSubDirections);
+        setSubInstructions(updatedSubInstructions);
     };
 
-    const filteredSubDirections = subDirections.filter((subDirection) => subDirection.sublistId === id);
+    const filteredSubInstructions = subInstructions.filter((subInstruction) => subInstruction.sublistId === id);
 
     useEffect(() => {
-        if(subDirectionsRef.current){
-            subDirectionsRef.current.scrollToEnd({
+        if(subInstructionsRef.current){
+            subInstructionsRef.current.scrollToEnd({
                 animated: true,
             });
         };
-    }, [subDirections]);
+    }, [subInstructions]);
     
     return (
         <View style={styles.outerContainer}>
@@ -85,7 +85,7 @@ const Subdirections = ({name, id,}: SubDirectionsProp) => {
                 <View style={styles.inputContainer}>
                     <View style={{width: 280, marginHorizontal: 5}}>
                         <TextInput 
-                            placeholder="Add food handling directions" 
+                            placeholder="Add food handling instructions" 
                             value={input}
                             onChangeText={(typedValue) => handleInputChange(typedValue) }
                             style={styles.textInputStyles}
@@ -98,33 +98,33 @@ const Subdirections = ({name, id,}: SubDirectionsProp) => {
                             width={35}
                             color={colors.primaryAccent900}
                             radius={20}
-                            onButtonPress={addDirections}
+                            onButtonPress={addInstructions}
                         >
                         </CustomButton>
                     </View>
                 </View>
 
                 {
-                    subDirections 
-                         && subDirections.length > 0
+                    subInstructions 
+                         && subInstructions.length > 0
                         && (
                             <FlatList
-                                ref={subDirectionsRef}
-                                data={filteredSubDirections}
-                                keyExtractor={(item) => item.direction_id}
+                                ref={subInstructionsRef}
+                                data={filteredSubInstructions}
+                                keyExtractor={(item) => item.instruction_id}
                                 renderItem={({item}) => (
-                                    <Direction
+                                    <Instruction
                                         sublistName={item.sublistName}
                                         sublistId={item.sublistId}
-                                        direction={item.direction}
-                                        directionId={item.direction_id}
-                                        onEdit={updateDirection}
-                                        onDelete={removeDirection}
-                                        dirId={dirId}
-                                        setDirId={setDirId}
+                                        instruction={item.instruction}
+                                        instructionId={item.instruction_id}
+                                        onEdit={updateInstruction}
+                                        onDelete={removeInstruction}
+                                        instructionID={instructionID}
+                                        setInstructionID={setInstructionID}
                 
                                     >
-                                    </Direction>
+                                    </Instruction>
                                 )}
                             >
                             </FlatList>
@@ -135,7 +135,7 @@ const Subdirections = ({name, id,}: SubDirectionsProp) => {
     )
 };
 
-export default Subdirections;
+export default SubInstructions;
 
 const styles = StyleSheet.create({
     outerContainer: {

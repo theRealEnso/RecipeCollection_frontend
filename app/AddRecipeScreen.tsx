@@ -39,9 +39,9 @@ const AddRecipeScreen = () => {
         numberOfServings,
         specialEquipment,
         setRecipeForm,
-        selectedImageUri,
+        selectedImageUrl,
         setBase64Url,
-        setSelectedImageUri,
+        setSelectedImageUrl,
         setSelectedImageName,
         setSelectedImageType,
         resetRecipeState
@@ -92,13 +92,13 @@ const AddRecipeScreen = () => {
             const base64WithPrefix = `data:${fileType};base64,${base64_url}`;
 
             setBase64Url(base64WithPrefix);
-            setSelectedImageUri(uri);
+            setSelectedImageUrl(uri);
             setSelectedImageName(imageName as string);
             setSelectedImageType(fileType);
         }
     };
 
-    // console.log(selectedImageUri);
+    // console.log(selectedImageUrl);
     // console.log(selectedImageName);
     // console.log(selectedImageType);
 
@@ -232,15 +232,15 @@ const AddRecipeScreen = () => {
                     <Text>Select a photo of your dish (optional)</Text>
                     <CustomButton value="Choose Image" width={150} radius={10} onButtonPress={pickImage}></CustomButton>
                     {
-                        selectedImageUri && (
+                        selectedImageUrl && (
                             <View style={styles.imageContainer}>
-                                <Pressable style={styles.iconContainer} onPress={() => setSelectedImageUri("")}>
+                                <Pressable style={styles.iconContainer} onPress={() => setSelectedImageUrl("")}>
                                     <View>
                                         <MaterialIcons name="highlight-remove" size={32} color="black" />
                                     </View>
                                 </Pressable>
                                 <Image
-                                    source={{ uri: selectedImageUri }}
+                                    source={{ uri: selectedImageUrl }}
                                     style={{ width: 150, height: 150, marginTop: 20, borderRadius: 10 }}
                                 />
                             </View>

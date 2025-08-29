@@ -31,7 +31,7 @@ const RecipeCard = ({recipe}: Recipe) => {
             <Pressable onPress={navigateToRecipeDetails}>
                 {/* image container */}
                 <View style={styles.imageContainer}>
-                    <Image src={recipe.imageUri} style={styles.image}></Image>
+                    <Image src={recipe.imageUrl} style={styles.image}></Image>
                 </View>
 
                 <View style={styles.dishTitleContainer}>

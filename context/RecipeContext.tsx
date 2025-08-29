@@ -5,7 +5,7 @@ import {
     ListNameProps,
     RecipeContextTypes,
     RecipeForm,
-    RecipeSubDirections,
+    RecipeSubInstructions,
     SubIngredient,
 } from "@/types/Recipe";
 
@@ -37,12 +37,12 @@ export const RecipeContext = createContext<RecipeContextTypes>({
     setSublistNames: () => {},
     subIngredients: [],
     setSubIngredients: () => {},
-    cookingDirections: [],
-    setCookingDirections: () => {},
-    subDirections: [],
-    setSubDirections: () => {},
-    selectedImageUri: "",
-    setSelectedImageUri: () => {},
+    cookingInstructions: [],
+    setCookingInstructions: () => {},
+    subInstructions: [],
+    setSubInstructions: () => {},
+    selectedImageUrl: "",
+    setSelectedImageUrl: () => {},
     selectedImageType: "",
     setSelectedImageType: () => {},
     selectedImageName: "",
@@ -59,9 +59,9 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
     const [ingredientsList, setIngredientsList] = useState<string[]>([]);
     const [sublistNames, setSublistNames] = useState<ListNameProps[]>([]);
     const [subIngredients, setSubIngredients] = useState<SubIngredient[]>([]);
-    const [cookingDirections, setCookingDirections] = useState<string[]>([]);
-    const [subDirections, setSubDirections] = useState<RecipeSubDirections[]>([]);
-    const [selectedImageUri, setSelectedImageUri] = useState<string>("");
+    const [cookingInstructions, setCookingInstructions] = useState<string[]>([]);
+    const [subInstructions, setSubInstructions] = useState<RecipeSubInstructions[]>([]);
+    const [selectedImageUrl, setSelectedImageUrl] = useState<string>("");
     const [selectedImageType, setSelectedImageType] = useState<string>("");
     const [selectedImageName, setSelectedImageName] = useState<string>("");
     const [base64Url, setBase64Url] = useState<string>("");
@@ -84,12 +84,12 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
     } = recipeForm;
 
     const resetRecipeState = () => {
-        setCookingDirections([]);
+        setCookingInstructions([]);
         setIngredientsList([]);
-        setSubDirections([]);
+        setSubInstructions([]);
         setSubIngredients([]);
         setSublistNames([]);
-        setSelectedImageUri("");
+        setSelectedImageUrl("");
         setSelectedImageType("");
         setBase64Url("");
         setRecipeForm({
@@ -115,8 +115,8 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         numberOfServings,
         specialEquipment,
         setRecipeForm,
-        selectedImageUri,
-        setSelectedImageUri,
+        selectedImageUrl,
+        setSelectedImageUrl,
         selectedImageType,
         setSelectedImageType,
         selectedImageName,
@@ -131,10 +131,10 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         setSublistNames,
         subIngredients,
         setSubIngredients,
-        cookingDirections,
-        setCookingDirections,
-        subDirections,
-        setSubDirections,
+        cookingInstructions,
+        setCookingInstructions,
+        subInstructions,
+        setSubInstructions,
         resetRecipeState,
     };
 

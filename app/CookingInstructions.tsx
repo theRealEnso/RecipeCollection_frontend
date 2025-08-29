@@ -12,9 +12,9 @@ import { createNewRecipe } from "@/api/recipes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // import component(s)
-import CookingDirectionsList from "./components/CookingDirectionsList";
+import CookingInstructionsList from "./components/CookingInstructionsList";
 import CustomButton from "./components/CustomButton";
-import Subdirections from "./components/Subdirections";
+import SubInstructions from "./components/SubInstructions";
 
 //import icons
 import Entypo from '@expo/vector-icons/Entypo';
@@ -31,10 +31,10 @@ const RECIPES_ENDPOINT = `${RECIPE_COLLECTION_ENDPOINT}/recipes`;
 
 
 //UI needs to be dynamic.
-//If there are multiple lists for sub recipes, then this screen needs to display cooking and/or preparation directions for each sub list
-//so, map through sublistNames array and display UI to add cooking / prep directions for each sublist name
-//if no sublist name exists, then just display UI to add cooking / prep directions for the single ingredient list
-const CookingDirections = () => {
+//If there are multiple lists for sub recipes, then this screen needs to display cooking and/or preparation instructions for each sub list
+//so, map through sublistNames array and display UI to add cooking / prep instructions for each sublist name
+//if no sublist name exists, then just display UI to add cooking / prep instructions for the single ingredient list
+const CookingInstructions = () => {
     const router = useRouter();
     const queryClient = useQueryClient();
 
@@ -49,12 +49,12 @@ const CookingDirections = () => {
         timeToCook,
         numberOfServings,
         specialEquipment,
-        selectedImageUri,
+        selectedImageUrl,
         base64Url,
         ingredientsList,
         subIngredients,
-        cookingDirections,
-        subDirections,
+        cookingInstructions,
+        subInstructions,
         resetRecipeState
     } = useContext(RecipeContext);
 
@@ -67,11 +67,11 @@ const CookingDirections = () => {
         timeToCook,
         numberOfServings,
         specialEquipment,
-        imageUri: selectedImageUri,
+        imageUrl: selectedImageUrl,
         ingredients: ingredientsList,
         subIngredients,
-        cookingDirections,
-        subDirections,
+        cookingInstructions,
+        subInstructions,
     };
 
     //helper function to image + signed preset to cloudinary
@@ -143,7 +143,7 @@ const CookingDirections = () => {
                     accessToken,
                     recipeData: {
                         ...recipeData,
-                        imageUri: data.secure_url
+                        imageUrl: data.secure_url
                     }
                 })
             }
@@ -151,24 +151,6 @@ const CookingDirections = () => {
         onError: (error) => {
             console.error("Cloudinary upload failed:", error)
         },
-
-        // // old code we were previously just creating a recipe using the createCloudinaryUrl helper function using accessToken and base64Url as inputs, then sending base64Url to specific back end api endpoint that handled uploading image to cloudinary using UNSIGNED preset, and finally grabbing the secure url to send back to the front end
-        // mutationFn: createCloudinaryURL,
-        // onSuccess: (data) => {
-        //     if(data?.imageUrl){
-        //         console.log(data);
-        //         createNewRecipeMutation.mutate({
-        //             accessToken,
-        //             recipeData: {
-        //                 ...recipeData,
-        //                 imageUri: data.imageUrl,
-        //             }
-        //         })
-        //     }
-        // },
-        // onError: (error) => {
-        //     console.error(error);
-        // },
     });
 
     const createNewRecipeMutation = useMutation({
@@ -194,7 +176,7 @@ const CookingDirections = () => {
 
     const handleCreateRecipe = async () => {
         try {
-            if(selectedImageUri && selectedImageUri.length > 0){
+            if(selectedImageUrl && selectedImageUrl.length > 0){
                 console.log("Sending base64 length:", base64Url?.length);
 
                 createCloudinaryUrlMutation.mutate({
@@ -206,7 +188,7 @@ const CookingDirections = () => {
                     accessToken,
                     recipeData: {
                         ...recipeData,
-                        imageUri: process.env.default_image as string,
+                        imageUrl: process.env.default_image as string,
                     }
                 })
             }
@@ -220,7 +202,7 @@ const CookingDirections = () => {
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
-                <Text style={styles.header}>Cooking Directions</Text>
+                <Text style={styles.header}>Cooking Instructions</Text>
             </View>
 
             {
@@ -234,8 +216,8 @@ const CookingDirections = () => {
                             <FontAwesome5 name="lightbulb" size={24} color="black" />
                         </View>
                     </View>
-                        <Text style={styles.tips}>{`* Swipe left or right on the screen to move between lists of directions for each of your individual sub recipes`}</Text>
-                        <Text style={styles.tips}>{`* Tap on individual direction items to make edits to that direction `}</Text>
+                        <Text style={styles.tips}>{`* Swipe left or right on the screen to move between lists of instructions for each of your individual sub recipes`}</Text>
+                        <Text style={styles.tips}>{`* Tap on individual instruction items to make edits to that instruction `}</Text>
                     </View>
                 ) : null
             }
@@ -252,7 +234,7 @@ const CookingDirections = () => {
                                     data={sublistNames}
                                     keyExtractor={(item) => item.id}
                                     renderItem={({item}) => (
-                                        <Subdirections name={item.name} key={item.id} id={item.id}></Subdirections>
+                                        <SubInstructions name={item.name} key={item.id} id={item.id}></SubInstructions>
                                     )}
                                     // to add gap between each sublist
                                     ItemSeparatorComponent={() => (
@@ -261,7 +243,7 @@ const CookingDirections = () => {
                                 >
                                 </FlatList>
                             ) : (
-                                <CookingDirectionsList cookingDirections={cookingDirections}></CookingDirectionsList>
+                                <CookingInstructionsList></CookingInstructionsList>
                             )
                 }
 
@@ -290,7 +272,7 @@ const CookingDirections = () => {
     )
 };
 
-export default CookingDirections;
+export default CookingInstructions;
 
 const styles = StyleSheet.create({
     container: {
