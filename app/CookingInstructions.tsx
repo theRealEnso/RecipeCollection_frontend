@@ -74,7 +74,7 @@ const CookingInstructions = () => {
         subInstructions,
     };
 
-    //helper function to image + signed preset to cloudinary
+    //helper function to upload image + sign preset to cloudinary, ultimately to get a secure_url
     const uploadToCloudinarySigned = async (
         base64Url: string,
         signature: string,
@@ -102,8 +102,8 @@ const CookingInstructions = () => {
             return data;
         } catch(error: any){
             if (axios.isAxiosError(error)) {
-                console.error("Cloudinary error response:", error.response?.data); // 👈 actual message
-                console.error("Cloudinary error status:", error.response?.status); // 👈 400
+                console.error("Cloudinary error response:", error.response?.data); // actual message
+                console.error("Cloudinary error status:", error.response?.status); // 400
             } else {
                 console.error("Unexpected error:", error);
             }
@@ -133,7 +133,7 @@ const CookingInstructions = () => {
                 folder,
             } = data;
 
-            console.log("Upload preset is:", uploadPreset);
+            // console.log("Upload preset is:", uploadPreset);
 
             return await uploadToCloudinarySigned(base64Url, signature, timestamp, apikey, cloudname, uploadPreset, folder);
         },
@@ -145,7 +145,9 @@ const CookingInstructions = () => {
                         ...recipeData,
                         imageUrl: data.secure_url
                     }
-                })
+                });
+
+                resetRecipeState();
             }
         },
         onError: (error) => {
@@ -188,7 +190,7 @@ const CookingInstructions = () => {
                     accessToken,
                     recipeData: {
                         ...recipeData,
-                        imageUrl: process.env.default_image as string,
+                        imageUrl: process.env.EXPO_PUBLIC_DEFAULT_RECIPE_IMAGE as string,
                     }
                 })
             }

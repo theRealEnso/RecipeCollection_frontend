@@ -42,5 +42,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         width: "100%",
         // backgroundColor: "black",
+        // marginVertical: 10
     }
 });
