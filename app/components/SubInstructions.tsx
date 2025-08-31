@@ -5,7 +5,7 @@ import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from "react-na
 // import FormInput from "./FormInput";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CustomButton from "./CustomButton";
-import Instruction from "./Instruction";
+import SubInstruction from "./SubInstruction";
 
 // import Recipe context
 import { RecipeContext } from "@/context/RecipeContext";
@@ -113,7 +113,7 @@ const SubInstructions = ({name, id,}: SubInstructionsProp) => {
                                 data={filteredSubInstructions}
                                 keyExtractor={(item) => item.instruction_id}
                                 renderItem={({item}) => (
-                                    <Instruction
+                                    <SubInstruction
                                         sublistName={item.sublistName}
                                         sublistId={item.sublistId}
                                         instruction={item.instruction}
@@ -124,7 +124,7 @@ const SubInstructions = ({name, id,}: SubInstructionsProp) => {
                                         setInstructionID={setInstructionID}
                 
                                     >
-                                    </Instruction>
+                                    </SubInstruction>
                                 )}
                             >
                             </FlatList>

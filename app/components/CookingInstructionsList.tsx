@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 
 //import context
 import { RecipeContext } from "@/context/RecipeContext";
@@ -8,11 +8,10 @@ import { RecipeContext } from "@/context/RecipeContext";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CustomButton from "./CustomButton";
 import FormInput from "./FormInput";
+import Instruction from "./Instruction";
 
-// define types
-// type CookingInstructions = {
-//     cookingInstructions: string[];
-// };
+//import utility function(s)
+import { generateUUID } from "@/utils/generateUUID";
 
 const CookingInstructionsList = () => {
     const { cookingInstructions, setCookingInstructions } = useContext(RecipeContext);
@@ -26,10 +25,22 @@ const CookingInstructionsList = () => {
             setError("Cannot add an empty instruction!");
             return;
         };
+
+        const newId = generateUUID();
+        const newInstruction = {
+            instruction: instructionsInput,
+            instruction_id: newId,
+        };
         
-        const updatedCookingInstructions = [...cookingInstructions, instructionsInput];
+        const updatedCookingInstructions = [...cookingInstructions, newInstruction];
         setCookingInstructions(updatedCookingInstructions);
         setInstructionsInput("");
+    };
+
+    const removeCookingInstruction = (instructionId: string) => {
+        const updatedCookingInstructions = cookingInstructions.filter((cookingInstruction) => cookingInstruction.instruction_id !== instructionId);
+
+        setCookingInstructions(updatedCookingInstructions);
     };
 
     // console.log(instructionsInput);
@@ -39,17 +50,17 @@ const CookingInstructionsList = () => {
         <View style={{flex: 1}}>
             {/* text input and button to add cooking instructions to the list */}
             <View style={styles.inputContainer}>
-                <View style={{marginHorizontal: 5}}>
+                <View>
                     <FormInput 
                         placeholder="Enter step-by-step cooking instructions" 
                         value={instructionsInput} 
-                        width={280}
+                        width={300}
                         onChangeText={(typedValue) => setInstructionsInput(typedValue)}
                     >
                     </FormInput>
                 </View>
 
-                <View style={{marginHorizontal: 5}}>
+                <View>
                     <CustomButton
                         value={<MaterialIcons name="add-task" size={24} color="black" />}
                         width={40}
@@ -66,7 +77,17 @@ const CookingInstructionsList = () => {
 
             {
                 cookingInstructions.length > 0 &&
-                    cookingInstructions.map((cookingInstruction, index) => (<Text key={index}>{cookingInstruction}</Text>))
+                    <FlatList
+                        data={cookingInstructions}
+                        keyExtractor={(item) => item.instruction_id}
+                        renderItem={({item}) => {
+                            return (
+                                <Instruction instructionData={item} onDelete={removeCookingInstruction}></Instruction>
+                            )
+                        }}
+                    >
+
+                    </FlatList>
             }
 
         </View>
@@ -79,7 +100,9 @@ const styles = StyleSheet.create({
     inputContainer: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between",
+        justifyContent: "space-evenly",
+        marginVertical: 10,
+        width: "100%",
     },
 
     errorMessage: {

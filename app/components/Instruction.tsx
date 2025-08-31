@@ -1,86 +1,42 @@
-import { useState } from "react";
-import {
-    KeyboardAvoidingView,
-    Platform,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableWithoutFeedback,
-    View,
-} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
-// import component(s)
-import Ionicons from '@expo/vector-icons/Ionicons';
+//import component(s)
 import CustomButton from "./CustomButton";
 
-// import colors
+//import type(s)
+import { CookingInstructions } from "@/types/Recipe";
+
+// import expo icons
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+
+//import colors
 import colors from "../constants/colors";
 
 
-// define types
-type SubIngredientProps = {
-    sublistName: string;
-    sublistId: string;
-    instruction: string;
-    instructionId: string;
-    onEdit: (instructionId: string, updatedInstruction: string) => void;
+type InstructionProps = {
+    instructionData: CookingInstructions;
     onDelete: (instructionId: string) => void;
-    instructionID: string;
-    setInstructionID: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const Instruction = ({sublistName, sublistId, instruction, instructionId, onEdit, onDelete, instructionID, setInstructionID}: SubIngredientProps) => {
-    const [instructionText, setInstructionText] = useState<string>("");
-    
-    const pressSubInstruction = () => {
-        setInstructionID(instructionId);
-    };
+const Instruction = ({instructionData, onDelete}: InstructionProps) => {
 
-    const handleTextSubmit = (instructionId: string) => {
-        onEdit(instructionId, instructionText);
-        setInstructionID("");
-    };
-
+    const { instruction, instruction_id } = instructionData;
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={{flex: 1}}
-        >
-            <TouchableWithoutFeedback onPress={() => setInstructionID("")}>
-                <View style={styles.container}>
-                    {
-                        instructionId === instructionID 
-                        ? (
-                            <View style={styles.textInputContainer}>
-                                <TextInput 
-                                    style={styles.textInput} 
-                                    value={instructionText}
-                                    onChangeText={(typedValue) => setInstructionText(typedValue)}
-                                    onSubmitEditing={() => handleTextSubmit(instructionId)}
-                                >
-                                </TextInput>
-                            </View>
-                        ) : (
-                            <View style={styles.container}>
-                                <View style={styles.listItem}>
-                                    <Text style={{color: "white"}} onPress={pressSubInstruction}>{instruction}</Text>
-                                </View>
-                                <View style={{marginHorizontal: 5}}>
-                                    <CustomButton
-                                        value={<Ionicons name="trash" size={20} color="black" />}
-                                        width={30}
-                                        color={colors.primaryAccent900}
-                                        radius={50}
-                                        onButtonPress={() => onDelete(instructionId)}
-                                    >
-                                    </CustomButton>
-                                </View>
-                            </View>
-                        )
-                    }
-                </View>
-            </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+        <View style={styles.container}>
+            <View style={styles.instructionItem}>
+                <Text style={{fontSize: 16, padding: 10,}}>{instruction}</Text>
+            </View>
+            
+
+            <CustomButton
+                value={<FontAwesome name="trash" size={24} color="black" />}
+                onButtonPress={() => onDelete(instruction_id)}
+                width={35}
+                radius={25}
+            >
+            </CustomButton>
+            
+        </View>
     );
 };
 
@@ -91,32 +47,16 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-evenly",
-        marginTop: 5,
+        width: "100%",
     },
 
-    listItem: {
-        borderRadius: 15,
-        backgroundColor: colors.primaryAccent600,
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        width: 300,
+    instructionItem: {
+        backgroundColor: colors.primaryAccent500,
         alignItems: "center",
         justifyContent: "center",
-    },
-
-    textInputContainer: {
-        marginTop: 10,
-        alignItems: "center",
-        justifyContent: "center",
-
-    },
-
-    textInput: {
-        borderWidth: 2,
+        width: "75%",
+        height: "auto",
         borderRadius: 10,
-        borderColor: colors.primaryAccent600,
-        paddingHorizontal: 15,
-        paddingVertical: 5,
-        width: 200,
+        marginVertical: 10,
     },
 });
