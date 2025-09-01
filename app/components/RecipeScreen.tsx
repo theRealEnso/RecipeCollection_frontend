@@ -44,6 +44,7 @@ const RecipeScreen = () => {
                         subIngredients,
                         cookingInstructions,
                         subInstructions, 
+                        sublists,
                     } = data.recipeDetails;
 
                     return (
@@ -56,6 +57,7 @@ const RecipeScreen = () => {
                             subIngredients={subIngredients}
                             cookingInstructions={cookingInstructions}
                             subInstructions={subInstructions}
+                            sublists={sublists}
                         >
                         </RecipeDetails>
                     );
@@ -68,7 +70,7 @@ const RecipeScreen = () => {
         }
         
         {/* navigation buttons */}
-        <View>
+        <View style={{marginBottom: 20,}}>
             <CustomButton
                 value="Go back"
                 width={100}

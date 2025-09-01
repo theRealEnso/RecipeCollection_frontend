@@ -24,7 +24,7 @@ type FormErrors = {
 export default function LoginScreen() {
   const {handleSetUser, handleSetTokens, accessToken, refreshToken} = useContext(UserContext);
   const [navigationReady, setNavigationReady] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -97,10 +97,12 @@ export default function LoginScreen() {
       try {
         loginUserMutation.mutate({...formInputs});
       } catch(error){
-        console.error(`Error: ${error}`)
+        console.error(`Error: ${error}`);
       }
     }
   };
+
+  // console.log(errorMessage);
 
   return (
     <View style={styles.container}>
@@ -156,6 +158,12 @@ export default function LoginScreen() {
         <Text>Don&apos;t have an account?</Text>
         <Link href="/RegisterScreen" style={styles.registerText}>Register!</Link>
       </View>
+
+      {
+        errorMessage && (
+          <Text style={styles.errorText}>{errorMessage}</Text>
+        )
+      }
     </View>
   );
 }
@@ -210,21 +218,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginTop: 5,
   },
-
-  // pressable: {
-  //   backgroundColor: "#D6654F",
-  //   borderColor: "#D6654F",
-  //   borderWidth: 2,
-  //   padding: 4,
-  //   width: 250,
-  //   alignItems: "center",
-  //   justifyContent: "center",
-  //   // borderRadius: 12,
-  // },
-
-  // pressed: {
-  //   opacity: 0.75,
-  // },
 
   subTextContainer: {
     paddingVertical: 5,

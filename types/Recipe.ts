@@ -7,7 +7,7 @@ export type RecipeForm = {
     specialEquipment?: string;
 };
 
-export type ListNameProps = {
+export type ListName = {
     name: string;
     id: string;
 };
@@ -34,10 +34,10 @@ export type RecipeContextTypes = {
     setBase64Url: React.Dispatch<React.SetStateAction<string>>;
     ingredientInput: string;
     setIngredientInput: React.Dispatch<React.SetStateAction<string>>;
-    ingredientsList: string[];
-    setIngredientsList: React.Dispatch<React.SetStateAction<string[]>>;
-    sublistNames: ListNameProps[];
-    setSublistNames: React.Dispatch<React.SetStateAction<ListNameProps[]>>;
+    ingredientsList: Ingredient[];
+    setIngredientsList: React.Dispatch<React.SetStateAction<Ingredient[]>>;
+    sublistNames: ListName[];
+    setSublistNames: React.Dispatch<React.SetStateAction<ListName[]>>;
     subIngredients: SubIngredient[];
     setSubIngredients: React.Dispatch<React.SetStateAction<SubIngredient[]>>;
     cookingInstructions: CookingInstructions[],
@@ -74,9 +74,9 @@ export type RecipeSubInstructions = {
 export type RecipeData = RecipeForm & {
     categoryName: string;
     categoryId: string;
-    cookingInstructions: string[],
+    cookingInstructions: CookingInstructions[],
     subInstructions: RecipeSubInstructions[],
-    ingredients: string[],
+    ingredients: Ingredient[],
     subIngredients: SubIngredient[],
     imageUrl: string;
 };

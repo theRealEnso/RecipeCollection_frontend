@@ -72,6 +72,7 @@ const CookingInstructions = () => {
         subIngredients,
         cookingInstructions,
         subInstructions,
+        sublist: sublistNames,
     };
 
     //helper function to upload image + sign preset to cloudinary, ultimately to get a secure_url
@@ -143,7 +144,7 @@ const CookingInstructions = () => {
                     accessToken,
                     recipeData: {
                         ...recipeData,
-                        imageUrl: data.secure_url
+                        imageUrl: data.secure_url,
                     }
                 });
 

@@ -13,6 +13,9 @@ import IngredientList from "./IngredientList";
 // import colors
 import colors from "../constants/colors";
 
+//import utility function
+import { generateUUID } from "@/utils/generateUUID";
+
 const SingleIngredientList = () => {
     const [error, setError] = useState<string>("");
 
@@ -29,21 +32,27 @@ const SingleIngredientList = () => {
             return;
         };
 
-        const updatedIngredientList = [...ingredientsList, ingredientInput];
+        const newId = generateUUID();
+        const newIngredient = {
+            nameOfIngredient: ingredientInput,
+            ingredient_id: newId,
+        };
+
+        const updatedIngredientList = [...ingredientsList, newIngredient];
         setIngredientsList(updatedIngredientList);
         setIngredientInput("");
         setError("");
     };
 
     //function to capture user updates to a list item in the IngredientList component and update the ingredientsList array. Pass as props to IngredientList component
-    const updateIngredients = (index: number, updatedIngredient: string) => {
-        const updatedIngredientsList = ingredientsList.map((ingredient, i) => index === i ? updatedIngredient : ingredient);
+    const updateIngredients = (ingredientId: string, updatedIngredient: string) => {
+        const updatedIngredientsList = ingredientsList.map((ingredient) => ingredient.ingredient_id === ingredientId ? updatedIngredient : ingredient.nameOfIngredient);
         setIngredientsList(updatedIngredientsList);
     };
 
     //function to remove an ingredient from the list. Pass as props to IngredientList component
-    const removeIngredient = (index: number) => {
-        const updatedIngredientsList = ingredientsList.filter((_, i) => i !== index);
+    const removeIngredient = (ingredientId: string) => {
+        const updatedIngredientsList = ingredientsList.filter((ingredient) => ingredient.ingredient_id !== ingredientId);
         setIngredientsList(updatedIngredientsList);
     };
 

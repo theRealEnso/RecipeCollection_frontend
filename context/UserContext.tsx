@@ -18,6 +18,8 @@ type UserContextTypes = {
     handleSetTokens: (accessToken: string, refreshToken: string) => Promise<void>;
     isHydrated: boolean;
     setIsHydrated: React.Dispatch<React.SetStateAction<boolean>>;
+    loginError: null | string;
+    setLoginError: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const UserContext = createContext<UserContextTypes>({
@@ -30,6 +32,8 @@ export const UserContext = createContext<UserContextTypes>({
     handleSetTokens: async () => {},
     isHydrated: false,
     setIsHydrated: () => {},
+    loginError: null,
+    setLoginError: () => {}
 });
 
 export const UserProvider: FC<UserProviderProps> = ({children}) => {
@@ -38,6 +42,7 @@ export const UserProvider: FC<UserProviderProps> = ({children}) => {
     const [accessToken, setAccessToken] = useState<string>("");
     const [refreshToken, setRefreshToken] = useState<string>("");
     const [isHydrated, setIsHydrated] = useState<boolean>(false);
+    const [loginError, setLoginError] = useState<string | null>(null);
 
     useEffect(() => {
         const loadUserFromStorage = async () => {
@@ -87,6 +92,8 @@ export const UserProvider: FC<UserProviderProps> = ({children}) => {
         handleSetTokens,
         isHydrated,
         setIsHydrated,
+        loginError,
+        setLoginError,
     };
 
     return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

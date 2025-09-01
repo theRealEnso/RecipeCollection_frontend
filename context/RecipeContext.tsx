@@ -3,7 +3,8 @@ import { createContext, ReactNode, useState } from "react";
 //import types
 import {
     CookingInstructions,
-    ListNameProps,
+    Ingredient,
+    ListName,
     RecipeContextTypes,
     RecipeForm,
     RecipeSubInstructions,
@@ -57,8 +58,8 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
     const [categoryName, setCategoryName] = useState<string>("");
     const [categoryId, setCategoryId] = useState<string>("");
     const [ingredientInput, setIngredientInput] = useState<string>("");
-    const [ingredientsList, setIngredientsList] = useState<string[]>([]);
-    const [sublistNames, setSublistNames] = useState<ListNameProps[]>([]);
+    const [ingredientsList, setIngredientsList] = useState<Ingredient[]>([]);
+    const [sublistNames, setSublistNames] = useState<ListName[]>([]);
     const [subIngredients, setSubIngredients] = useState<SubIngredient[]>([]);
     const [cookingInstructions, setCookingInstructions] = useState<CookingInstructions[]>([]);
     const [subInstructions, setSubInstructions] = useState<RecipeSubInstructions[]>([]);

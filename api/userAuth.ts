@@ -1,5 +1,6 @@
 import axios, { isAxiosError } from "axios";
 
+
 //import types
 import { UserInfoFromServer } from "@/types/User";
 import { UserData } from "../app/RegisterScreen";
@@ -27,6 +28,10 @@ export const loginUser = async (userData: UserData): Promise<UserInfoFromServer 
     const {data} = await axios.post(`${AUTH_ENDPOINT}/login`, userData);
     return data;
   } catch(error){
-    console.error(`ERROR: ${error}`)
+    // console.log(typeof error);
+    // console.log(typeof error.message)
+    // console.error("Error:", error.message);
+    console.error("Error:", error);
+    
   }
 };

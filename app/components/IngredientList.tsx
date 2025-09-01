@@ -16,28 +16,31 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import colors from "../constants/colors";
 
+//import type(s);
+import { Ingredient } from "@/types/Recipe";
+
 type IngredientListProps = {
-    ingredients: string[];
-    onEdit: (index: number, updatedIngredient: string) => void;
-    onDelete: (index: number) => void;
+    ingredients: Ingredient[];
+    onEdit: (ingredientId: string, updatedIngredient: string) => void;
+    onDelete: (ingredientId: string) => void;
 };
 
 const IngredientList = ({ingredients, onEdit, onDelete}: IngredientListProps) => {
-    const [itemIndex, setItemIndex] = useState<number | null>(null);
+    const [itemId, setItemId] = useState<string>("");
     const [itemText, setItemText] = useState<string>("");
 
-    const handleItemPress = (itemText: string, index: number) => {
+    const handleItemPress = (itemText: string, ingredientId: string) => {
         setItemText(itemText);
-        setItemIndex(index);
+        setItemId(ingredientId);
     };
 
-    const handleTextSubmit = (index: number) => {
-        onEdit(index, itemText);
-        setItemIndex(null);
+    const handleTextSubmit = (ingredientId: string) => {
+        onEdit(ingredientId, itemText);
+        setItemId("");
     };
 
-    const handleItemDelete = (index: number) => {
-        onDelete(index);
+    const handleItemDelete = (ingredientId: string) => {
+        onDelete(ingredientId);
     };
 
     return (
@@ -48,24 +51,24 @@ const IngredientList = ({ingredients, onEdit, onDelete}: IngredientListProps) =>
             <TouchableWithoutFeedback
                 onPress={() => {
                     Keyboard.dismiss();
-                    setItemIndex(null);
+                    setItemId("");
                 }}
             >
                 <View>                    
                     <FlatList
                         data={ingredients}
-                        renderItem={({item, index}) => {
+                        renderItem={({item}) => {
                             return (
                                 <View style={styles.listContainer}>
                                     <View style={styles.touchableContainer}>
                                         {
-                                            itemIndex === index 
+                                            itemId === item.ingredient_id 
                                             ? (
                                                 <TextInput
                                                     style={styles.textInput} 
                                                     value={itemText}
                                                     onChangeText={(newText) => setItemText(newText)}
-                                                    onSubmitEditing={() => handleTextSubmit(index)}
+                                                    onSubmitEditing={() => handleTextSubmit(item.ingredient_id)}
                                                 ></TextInput>
                                             ) 
                                             : (
@@ -74,10 +77,10 @@ const IngredientList = ({ingredients, onEdit, onDelete}: IngredientListProps) =>
                                                         <TouchableOpacity style={styles.touchable}>
                                                             <Text 
                                                                 style={styles.text2} 
-                                                                onPress={() => handleItemPress(item, index)}
+                                                                onPress={() => handleItemPress(item.nameOfIngredient, item.ingredient_id)}
                                                                 
                                                             >
-                                                                {item}
+                                                                {item.nameOfIngredient}
                                                             </Text>
                                                         </TouchableOpacity>
                                                     </View>
@@ -86,7 +89,7 @@ const IngredientList = ({ingredients, onEdit, onDelete}: IngredientListProps) =>
                                                         <FontAwesome 
                                                             name="trash-o" 
                                                             size={24} color="black" 
-                                                            onPress={() => handleItemDelete(index)} 
+                                                            onPress={() => handleItemDelete(item.ingredient_id)} 
                                                         />
                                                     </View>
 
