@@ -34,7 +34,7 @@ const RECIPES_ENDPOINT = `${RECIPE_COLLECTION_ENDPOINT}/recipes`;
 //If there are multiple lists for sub recipes, then this screen needs to display cooking and/or preparation instructions for each sub list
 //so, map through sublistNames array and display UI to add cooking / prep instructions for each sublist name
 //if no sublist name exists, then just display UI to add cooking / prep instructions for the single ingredient list
-const CookingInstructions = () => {
+const CookingInstructionsScreen = () => {
     const router = useRouter();
     const queryClient = useQueryClient();
 
@@ -164,7 +164,7 @@ const CookingInstructions = () => {
                 resetRecipeState(); // clear recipe form 
                 queryClient.invalidateQueries({queryKey: ["categoryRecipes"]}); // force refetch of recipes to display updated list
                 router.push({
-                    pathname: "/RecipesOverview",
+                    pathname: "/RecipesOverviewScreen",
                     params: {
                         categoryName,
                         categoryId,
@@ -275,7 +275,7 @@ const CookingInstructions = () => {
     )
 };
 
-export default CookingInstructions;
+export default CookingInstructionsScreen;
 
 const styles = StyleSheet.create({
     container: {

@@ -17,9 +17,9 @@ const RecipeCard = ({recipe}: Recipe) => {
 
     const { _id } = recipe;
 
-    const navigateToRecipeDetails = () => {
+    const navigateToRecipeScreen = () => {
         router.push({
-            pathname: "/components/RecipeScreen",
+            pathname: "/RecipeScreen",
             params: {
                 _id,
             }
@@ -28,7 +28,7 @@ const RecipeCard = ({recipe}: Recipe) => {
 
     return (
         <View style={styles.container}> 
-            <Pressable onPress={navigateToRecipeDetails}>
+            <Pressable onPress={navigateToRecipeScreen}>
                 {/* image container */}
                 <View style={styles.imageContainer}>
                     <Image src={recipe.imageUrl} style={styles.image}></Image>

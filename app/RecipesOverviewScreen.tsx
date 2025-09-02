@@ -16,7 +16,7 @@ import { UserContext } from "@/context/UserContext";
 
 import colors from "./constants/colors";
 
-const RecipesOverview = () => {
+const RecipesOverviewScreen = () => {
 
     const { categoryId, categoryName } = useLocalSearchParams();
     const { accessToken } = useContext(UserContext);
@@ -87,7 +87,7 @@ const RecipesOverview = () => {
     )
 };
 
-export default RecipesOverview;
+export default RecipesOverviewScreen;
 
 const styles = StyleSheet.create({
     container: {

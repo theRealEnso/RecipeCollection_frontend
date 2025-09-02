@@ -122,7 +122,8 @@ const styles = StyleSheet.create({
 
     pressable: {
         flex: 1,
-        marginVertical: 60,
+        // marginVertical: 20,
+        paddingVertical: 30,
     },
 
     grid: {

@@ -11,6 +11,8 @@ type CustomButtonProps = {
     mutationPending?: boolean;
     color?: string;
     radius?: number;
+    textSize?: number;
+    textPadding?: number;
 };
 
 const CustomButton = ({
@@ -20,6 +22,8 @@ const CustomButton = ({
     mutationPending,
     color,
     radius,
+    textSize,
+    textPadding,
 }: CustomButtonProps) => {
     return (
         <View style={[styles.buttonOuterContainer, {width: width, borderRadius: radius}]}>
@@ -53,7 +57,7 @@ const CustomButton = ({
             {
                 mutationPending
                 ? <ActivityIndicator color="#fff"></ActivityIndicator>
-                : <Text style={{color: "#fff"}}>{value}</Text>
+                : <Text style={[{color: "#fff"}, {fontSize: textSize ? textSize : 14, padding: textPadding ? textPadding : 2}]}>{value}</Text>
             }
             </Pressable>
         </View>

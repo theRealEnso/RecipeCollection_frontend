@@ -138,7 +138,7 @@ const AddRecipeScreen = () => {
 
     // function that cancels recipe creation, resets recipe state, and navigates user back to Recipes Overview
     const cancelRecipeCreation = () => {
-        router.replace("/RecipesOverview");
+        router.replace("/RecipesOverviewScreen");
         resetRecipeState();
     };
 
@@ -230,7 +230,13 @@ const AddRecipeScreen = () => {
                 {/* Button to select an image */}
                 <View style={styles.selectImageContainer}>
                     <Text>Select a photo of your dish (optional)</Text>
-                    <CustomButton value="Choose Image" width={150} radius={10} onButtonPress={pickImage}></CustomButton>
+                    <CustomButton 
+                        value="Choose Image" 
+                        width={150} 
+                        radius={10} 
+                        onButtonPress={pickImage}
+                    >
+                    </CustomButton>
                     {
                         selectedImageUrl && (
                             <View style={styles.imageContainer}>

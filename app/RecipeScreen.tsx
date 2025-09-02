@@ -9,8 +9,8 @@ import { UserContext } from "@/context/UserContext";
 import { StyleSheet, Text, View } from "react-native";
 
 //import component(s)
-import CustomButton from "./CustomButton";
-import RecipeDetails from "./RecipeDetails";
+import CustomButton from "./components/CustomButton";
+import RecipeDetails from "./components/RecipeDetails";
 
 // import colors
 
@@ -24,10 +24,6 @@ const RecipeScreen = () => {
         queryKey: ["recipeData"],
         queryFn: () => getDetailedRecipe(accessToken, _id as string),
     });
-
-    // if(data && Object.keys(data.recipeDetails).length > 0){
-    //     const {}
-    // }
 
     return (
     <View style={styles.container}>

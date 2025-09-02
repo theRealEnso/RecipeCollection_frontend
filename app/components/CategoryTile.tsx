@@ -32,7 +32,7 @@ const CategoryTile = ({cuisineData, onLongPress, isSelected, setShowWarningModal
     useEffect(() => {
         if(tileId){
             router.push({
-                pathname: "/RecipesOverview",
+                pathname: "/RecipesOverviewScreen",
                 params: {
                     categoryId,
                     categoryName,

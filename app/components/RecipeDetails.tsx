@@ -207,6 +207,7 @@ const styles = StyleSheet.create({
     mainContentContainer: {
         alignItems: "center",
         flex: 1,
+        paddingVertical: 30,
     },
 
     imageContainer: {

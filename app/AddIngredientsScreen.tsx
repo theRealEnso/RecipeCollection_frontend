@@ -48,7 +48,7 @@ const AddRecipeScreen = () => {
     };
 
     const continueToCookingInstructions = () => {
-        router.push("/CookingInstructions");
+        router.push("/CookingInstructionsScreen");
     };
 
     return (
