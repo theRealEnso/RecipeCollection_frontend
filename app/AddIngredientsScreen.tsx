@@ -104,10 +104,20 @@ const AddRecipeScreen = () => {
             {/* navigation buttons */}
             <View style={styles.buttonNavContainer}>
                 <View>
-                    <CustomButton  value="Go back" width={100} onButtonPress={goBack}></CustomButton>
+                    <CustomButton 
+                        value="Go back" 
+                        width={100}
+                        radius={50} 
+                        onButtonPress={goBack}>
+                    </CustomButton>
                 </View>
                 <View>
-                    <CustomButton  value="Continue" width={100} onButtonPress={continueToCookingInstructions}></CustomButton>
+                    <CustomButton 
+                        value="Continue" 
+                        width={100}
+                        radius={50} 
+                        onButtonPress={continueToCookingInstructions}>
+                    </CustomButton>
                 </View>
                 
             </View>

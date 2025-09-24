@@ -26,6 +26,7 @@ const RecipeCardList = ({recipesData}: RecipesData) => {
                 data={recipesData}
                 keyExtractor={(item) => item._id}
                 renderItem={({item}) => (<RecipeCard recipe={item}></RecipeCard>)}
+                showsVerticalScrollIndicator={false}
             >
             </FlatList>
         </View>

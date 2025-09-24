@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     FlatList,
     Keyboard,
@@ -29,8 +29,10 @@ const IngredientList = ({ingredients, onEdit, onDelete}: IngredientListProps) =>
     const [itemId, setItemId] = useState<string>("");
     const [itemText, setItemText] = useState<string>("");
 
-    const handleItemPress = (itemText: string, ingredientId: string) => {
-        setItemText(itemText);
+    const ingredientRef = useRef(null);
+
+    const handleItemPress = (ingredientName: string, ingredientId: string) => {
+        setItemText(ingredientName);
         setItemId(ingredientId);
     };
 
@@ -42,6 +44,14 @@ const IngredientList = ({ingredients, onEdit, onDelete}: IngredientListProps) =>
     const handleItemDelete = (ingredientId: string) => {
         onDelete(ingredientId);
     };
+
+    useEffect(() => {
+        if(ingredientRef.current){
+            ingredientRef.current.scrollToEnd({
+                animated: true,
+            });
+        };
+    }, [ingredients]);
 
     return (
         <KeyboardAvoidingView
@@ -56,7 +66,9 @@ const IngredientList = ({ingredients, onEdit, onDelete}: IngredientListProps) =>
             >
                 <View>                    
                     <FlatList
+                        ref={ingredientRef}
                         data={ingredients}
+                        keyExtractor={(item) => item.ingredient_id}
                         renderItem={({item}) => {
                             return (
                                 <View style={styles.listContainer}>
@@ -74,14 +86,11 @@ const IngredientList = ({ingredients, onEdit, onDelete}: IngredientListProps) =>
                                             : (
                                                 <View style={styles.listItem}>
                                                     <View>
-                                                        <TouchableOpacity style={styles.touchable}>
-                                                            <Text 
-                                                                style={styles.text2} 
-                                                                onPress={() => handleItemPress(item.nameOfIngredient, item.ingredient_id)}
-                                                                
+                                                        <TouchableOpacity
+                                                            style={styles.touchable}
+                                                            onPress={() => handleItemPress(item.nameOfIngredient, item.ingredient_id)}
                                                             >
-                                                                {item.nameOfIngredient}
-                                                            </Text>
+                                                            <Text style={styles.text2}>{item.nameOfIngredient}</Text>
                                                         </TouchableOpacity>
                                                     </View>
 
@@ -100,7 +109,6 @@ const IngredientList = ({ingredients, onEdit, onDelete}: IngredientListProps) =>
                                 </View>
                             )
                         }}
-                        keyExtractor={(_, index) => index.toString()}
                     >
                     </FlatList>
                 </View>

@@ -32,6 +32,7 @@ const ListItem = ({subItemName, subItemId, onEdit, onDelete, itemId, setItemId}:
     
     const pressSubItem = () => {
         setItemId(subItemId);
+        setIngredient(subItemName);
     };
 
     const handleTextSubmit = (itemId: string) => {
@@ -62,9 +63,9 @@ const ListItem = ({subItemName, subItemId, onEdit, onDelete, itemId, setItemId}:
                             <View style={{marginHorizontal: 5}}>
                                 <CustomButton
                                     value={<FontAwesome name="remove" size={15} color="black" />}
-                                    width={25}
+                                    width={30}
                                     color={colors.primaryAccent900}
-                                    radius={50}
+                                    radius={15}
                                     onButtonPress={() => onDelete(subItemId)}
                                 >
                                 </CustomButton>

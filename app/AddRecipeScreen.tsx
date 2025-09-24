@@ -44,7 +44,9 @@ const AddRecipeScreen = () => {
         setSelectedImageUrl,
         setSelectedImageName,
         setSelectedImageType,
-        resetRecipeState
+        resetRecipeState,
+        categoryName,
+        categoryId,
     } = useContext(RecipeContext);
 
     const [formErrors, setFormErrors] = useState<FormErrors>({
@@ -138,7 +140,10 @@ const AddRecipeScreen = () => {
 
     // function that cancels recipe creation, resets recipe state, and navigates user back to Recipes Overview
     const cancelRecipeCreation = () => {
-        router.replace("/RecipesOverviewScreen");
+        router.replace({
+            pathname: "/RecipesOverviewScreen",
+            params: {categoryId, categoryName},
+        });
         resetRecipeState();
     };
 

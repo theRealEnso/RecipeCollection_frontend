@@ -1,5 +1,5 @@
-import { useContext, useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { useContext, useRef, useState } from "react";
+import { Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
 
 // import Recipe context
 import { RecipeContext } from "@/context/RecipeContext";
@@ -22,7 +22,11 @@ import colors from "../constants/colors";
 //import utility function to generate random ID
 import { generateUUID } from "@/utils/generateUUID";
 
+const { width } = Dimensions.get("window");
+
 const MultipleIngredientsList = () => {
+    const flatListRef = useRef(null);
+
     const [listName, setListName] = useState<string>(""); // for controlled input
     const [itemId, setItemId] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("");
@@ -114,6 +118,7 @@ const MultipleIngredientsList = () => {
                             <CustomButton 
                                 value={<FontAwesome6 name="add" size={30} color="white"></FontAwesome6>} 
                                 width={50}
+                                radius={25}
                                 onButtonPress={addListName}
                             >
                             </CustomButton>
@@ -131,9 +136,20 @@ const MultipleIngredientsList = () => {
             </View>
 
             <FlatList
+                ref={flatListRef}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
                 pagingEnabled={true}
+                decelerationRate="fast"
+                snapToInterval={width}
+                snapToAlignment="center"
+                disableIntervalMomentum={true}
+                getItemLayout={(data, index) => ({
+                    length: width,
+                    offset: width * index,
+                    index,
+                })}
+                showsVerticalScrollIndicator={false}
                 data={sublistNames}
                 keyExtractor={(item) => item.id}
                 renderItem={({item}) => (
@@ -144,10 +160,6 @@ const MultipleIngredientsList = () => {
                         setItemId={setItemId}
                         deleteList={removeSublistAndIngredients}
                     />
-                )}
-                // to add gap between each sublist
-                ItemSeparatorComponent={() => (
-                    <View style={{width: 10}}></View>
                 )}
             >
             </FlatList>
@@ -168,21 +180,8 @@ const MultipleIngredientsList = () => {
 export default MultipleIngredientsList;
 
 const styles = StyleSheet.create({
-    // swipeable: {
-    //     marginTop: 10,
-    //     borderRadius: 10,
-    //     backgroundColor: "white",
-    // },
-
-    sublistContainer: {
-        flex: 1,
-        overflow: "hidden",
-        borderRadius: 12,
-    },
 
     ingredientInputOuterContainer: {
-        // alignItems: "center",
-        // justifyContent: "center",
         marginTop: 20,
     },
 

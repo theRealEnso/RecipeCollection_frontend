@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
     selectable: {
         flexDirection: "row",
         marginVertical: 20,
+        alignItems: "center",
     },
 
     text: {

@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View, } from "react-native";
 
+// import context
 // import component(s)
 import CustomButton from "./CustomButton";
 
@@ -25,6 +26,7 @@ type CuisineCategoryProps = {
 const CategoryTile = ({cuisineData, onLongPress, isSelected, setShowWarningModal, setShowEditModal}: CuisineCategoryProps) => {
     const router = useRouter();
     const [tileId, setTileId] = useState<string | null>(null);
+    // const { tileId, setTileId } = useContext(RecipeContext);
 
     const categoryId = cuisineData._id;
     const categoryName = cuisineData.cuisineName;

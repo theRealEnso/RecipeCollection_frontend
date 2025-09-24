@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Dimensions, FlatList, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 //import components
 // import FormInput from "./FormInput";
@@ -23,8 +23,11 @@ type SubInstructionsProp = {
     id: string;
 };
 
+const { width } = Dimensions.get("window");
+
 const SubInstructions = ({name, id,}: SubInstructionsProp) => {
-    const subInstructionsRef = useRef(null)
+
+    const subInstructionsRef = useRef(null);
     const {subInstructions, setSubInstructions} = useContext(RecipeContext);
 
     const [input, setInput] = useState<string>("");
@@ -83,7 +86,7 @@ const SubInstructions = ({name, id,}: SubInstructionsProp) => {
                 </View>
 
                 <View style={styles.inputContainer}>
-                    <View style={{width: 280, marginHorizontal: 5}}>
+                    <View style={{width: "80%", marginHorizontal: 5}}>
                         <TextInput 
                             placeholder="Add food handling instructions" 
                             value={input}
@@ -95,7 +98,7 @@ const SubInstructions = ({name, id,}: SubInstructionsProp) => {
                     <View style={{marginHorizontal: 5}}>
                         <CustomButton
                             value={<MaterialIcons name="add-task" size={24} color="black" />}
-                            width={35}
+                            width={40}
                             color={colors.primaryAccent900}
                             radius={20}
                             onButtonPress={addInstructions}
@@ -126,6 +129,8 @@ const SubInstructions = ({name, id,}: SubInstructionsProp) => {
                                     >
                                     </SubInstruction>
                                 )}
+                                // contentContainerStyle={{alignItems: "center"}}
+                                showsVerticalScrollIndicator={false}
                             >
                             </FlatList>
                         )
@@ -140,7 +145,7 @@ export default SubInstructions;
 const styles = StyleSheet.create({
     outerContainer: {
         height: "100%",
-        width: "80%",
+        width: width,
         flex: 1,
         padding: 30,
     },

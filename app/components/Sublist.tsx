@@ -1,7 +1,7 @@
 import { RecipeContext } from "@/context/RecipeContext";
 import { useContext, useEffect, useRef, useState } from "react";
 
-import { FlatList, StyleSheet, Text, TextInput, View } from "react-native";
+import { Dimensions, FlatList, StyleSheet, Text, TextInput, View } from "react-native";
 
 //import component(s)
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -12,9 +12,10 @@ import ListItem from "./ListItem";
 
 //import icons
 
-
 // import utility function(s)
 import { generateUUID } from "@/utils/generateUUID";
+
+const { width } = Dimensions.get("window");
 
 type SublistProps = {
     name: string;
@@ -85,12 +86,12 @@ const Sublist = ({ name, id, itemId, setItemId, deleteList }: SublistProps) => {
             <View style={styles.trashIcon}>
                 <MaterialCommunityIcons name="delete-forever" size={32} color="red" onPress={() => deleteList(id)} />
             </View>
-            <View style={{ marginTop: 25, marginBottom: 10, }}>
+            <View style={{ marginTop: 25, marginBottom: 10, alignItems: "center" }}>
                 <Text style={styles.listLabel}>{`Ingredients for ${name}`}</Text>
             </View>
 
             <View style={styles.inputContainer}>
-                <View style={{paddingHorizontal: 2}}>
+                <View style={{marginHorizontal: 5}}>
                     <TextInput
                         placeholder="Add ingredient name and quantity"
                         value={input}
@@ -98,10 +99,10 @@ const Sublist = ({ name, id, itemId, setItemId, deleteList }: SublistProps) => {
                         style={styles.textInputStyles}
                     />
                 </View>
-                <View style={{paddingHorizontal: 2}}>
+                <View style={{marginHorizontal: 5}}>
                     <CustomButton
                         value={<MaterialIcons name="add-task" size={24} color="black" />}
-                        width={35}
+                        width={40}
                         color={colors.primaryAccent900}
                         radius={20}
                         onButtonPress={addIngredient}
@@ -114,7 +115,7 @@ const Sublist = ({ name, id, itemId, setItemId, deleteList }: SublistProps) => {
             <FlatList
                 ref={subIngredientsRef}
                 nestedScrollEnabled={true}
-                showsVerticalScrollIndicator={true}
+                showsVerticalScrollIndicator={false}
                 scrollEnabled={true}
                 keyboardShouldPersistTaps="handled"
                 data={filteredSubIngredients}
@@ -130,6 +131,7 @@ const Sublist = ({ name, id, itemId, setItemId, deleteList }: SublistProps) => {
                         setItemId={setItemId}
                     />
                 )}
+                
             />
         </View>
     );
@@ -140,28 +142,29 @@ export default Sublist;
 const styles = StyleSheet.create({
     container: {
         marginTop: 5,
-        height: 380,
+        height: "100%",
+        width: width,
         borderRadius: 10,
         backgroundColor: "white",
         padding: 5,
         alignItems: "center",
-        overflow: "hidden",
-        width: 340,
+        // overflow: "hidden",
         position: "relative",
     },
+
+    inputContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-evenly",
+    },
+
     textInputStyles: {
         borderRadius: 10,
         borderColor: colors.textPrimary600,
         borderWidth: 2,
         paddingHorizontal: 15,
         paddingVertical: 10,
-        width: 250,
-    },
-    inputContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-evenly",
-        // marginVertical: 5,
+        width: width * 0.6,
     },
     listLabel: {
         color: colors.textPrimary700,
@@ -175,6 +178,6 @@ const styles = StyleSheet.create({
     
     trashIcon: {
         position: "absolute",
-        left: 300,
+        left: 350,
     },
 });

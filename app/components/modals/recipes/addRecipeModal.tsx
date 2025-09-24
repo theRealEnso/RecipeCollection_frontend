@@ -9,6 +9,12 @@ import IngredientList from "../../IngredientList";
 
 import colors from "@/app/constants/colors";
 
+// import type(s)
+import { Ingredient } from "@/types/Recipe";
+
+// import utility function
+
+
 type AddRecipeModalProps = {
     categoryId: string;
     setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,8 +27,6 @@ type RecipeProps = {
     timeToCook: string;
     numberOfServings: string;
     specialEquipment?: string;
-    // ingredientsList: string[];
-    components: string[];
 };
 
 const AddRecipeModal = ({categoryId, setShowForm}: AddRecipeModalProps) => {
@@ -33,12 +37,10 @@ const AddRecipeModal = ({categoryId, setShowForm}: AddRecipeModalProps) => {
         timeToCook: "",
         numberOfServings: "",
         specialEquipment: "",
-        // ingredientsList: [],
-        components: [],
     });
 
     const [ingredientInput, setIngredientInput] = useState<string>("");
-    const [ingredientsList, setIngredientsList] = useState<string[]>([]);
+    const [ingredientsList, setIngredientsList] = useState<Ingredient[]>([]);
 
     let {
         recipeOwner,
@@ -46,9 +48,7 @@ const AddRecipeModal = ({categoryId, setShowForm}: AddRecipeModalProps) => {
         difficultyLevel,
         timeToCook,
         numberOfServings,
-        // ingredientsList,
         specialEquipment,
-        components
     } = recipeForm;
 
     const closeForm = () => {

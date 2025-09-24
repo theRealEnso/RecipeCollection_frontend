@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext } from "react";
+import { useContext, } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import { useRouter } from "expo-router";
@@ -40,7 +40,6 @@ const CookingInstructionsScreen = () => {
 
     const { accessToken } = useContext(UserContext);
     const {
-        sublistNames,
         categoryName,
         categoryId,
         recipeOwner,
@@ -55,6 +54,7 @@ const CookingInstructionsScreen = () => {
         subIngredients,
         cookingInstructions,
         subInstructions,
+        sublistNames,
         resetRecipeState
     } = useContext(RecipeContext);
 
@@ -72,7 +72,7 @@ const CookingInstructionsScreen = () => {
         subIngredients,
         cookingInstructions,
         subInstructions,
-        sublist: sublistNames,
+        sublists: sublistNames,
     };
 
     //helper function to upload image + sign preset to cloudinary, ultimately to get a secure_url
@@ -113,7 +113,7 @@ const CookingInstructionsScreen = () => {
         }
     };
 
-    const createCloudinaryUrlMutation = useMutation({
+    const createNewRecipeWithCloudinaryUrl = useMutation({
         // need to first get signature from api endpoint,
         // then upload the image to cloudinary with the signature to get the secure url,
         // and finally create the recipe with the secure url
@@ -182,7 +182,7 @@ const CookingInstructionsScreen = () => {
             if(selectedImageUrl && selectedImageUrl.length > 0){
                 console.log("Sending base64 length:", base64Url?.length);
 
-                createCloudinaryUrlMutation.mutate({
+                createNewRecipeWithCloudinaryUrl.mutate({
                     accessToken,
                     base64Url,
                 });
@@ -241,8 +241,9 @@ const CookingInstructionsScreen = () => {
                                     )}
                                     // to add gap between each sublist
                                     ItemSeparatorComponent={() => (
-                                        <View style={{width: 10}}></View>
+                                        <View style={{width: 5}}></View>
                                     )}
+                                    showsVerticalScrollIndicator={false}
                                 >
                                 </FlatList>
                             ) : (
@@ -265,10 +266,22 @@ const CookingInstructionsScreen = () => {
             {/* navigation buttons */}
             <View style={styles.buttonNavContainer}>
                 <View style={{marginHorizontal: 20}}>
-                    <CustomButton  value="Go back" width={100} onButtonPress={goBack}></CustomButton>
+                    <CustomButton 
+                        value="Go back" 
+                        width={100}
+                        radius={50} 
+                        onButtonPress={goBack}
+                        >
+                    </CustomButton>
                 </View>
                 <View style={{marginHorizontal: 20}}>
-                    <CustomButton  value="Create Recipe" width={100} onButtonPress={handleCreateRecipe}></CustomButton>
+                    <CustomButton 
+                        value="Create Recipe" 
+                        width={120}
+                        radius={60} 
+                        onButtonPress={handleCreateRecipe}
+                        >
+                    </CustomButton>
                 </View>
             </View>
         </View>
@@ -314,8 +327,8 @@ const styles = StyleSheet.create({
     buttonNavContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
-        // flex: 1,
         marginBottom: 20,
+        padding: 5,
     },
 
     sublistContainer: {

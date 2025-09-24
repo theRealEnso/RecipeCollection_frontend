@@ -20,11 +20,12 @@ const RecipesOverviewScreen = () => {
 
     const { categoryId, categoryName } = useLocalSearchParams();
     const { accessToken } = useContext(UserContext);
-    const { setCategoryName, setCategoryId } = useContext(RecipeContext);
+    const { setCategoryName, setCategoryId, setTileId } = useContext(RecipeContext);
 
     const router = useRouter(); 
 
     const returnToHomeScreen = () => {
+        // setTileId("");
         router.replace("/HomeScreen");
     };
 

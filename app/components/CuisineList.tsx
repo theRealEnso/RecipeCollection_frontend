@@ -66,6 +66,7 @@ const CuisineList = ({categoriesData}: CategoriesData) => {
                     keyExtractor={(item) => {
                         return item._id;
                     }}
+                    showsVerticalScrollIndicator={false}
                 >
                 </FlatList>
 

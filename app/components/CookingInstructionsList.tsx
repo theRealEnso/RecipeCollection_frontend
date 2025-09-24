@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 //import context
@@ -14,6 +14,8 @@ import Instruction from "./Instruction";
 import { generateUUID } from "@/utils/generateUUID";
 
 const CookingInstructionsList = () => {
+    const instructionsListRef = useRef(null);
+
     const { cookingInstructions, setCookingInstructions } = useContext(RecipeContext);
 
     const [instructionsInput, setInstructionsInput] = useState<string>("");
@@ -35,13 +37,23 @@ const CookingInstructionsList = () => {
         const updatedCookingInstructions = [...cookingInstructions, newInstruction];
         setCookingInstructions(updatedCookingInstructions);
         setInstructionsInput("");
+        setError("");
     };
 
     const removeCookingInstruction = (instructionId: string) => {
         const updatedCookingInstructions = cookingInstructions.filter((cookingInstruction) => cookingInstruction.instruction_id !== instructionId);
 
         setCookingInstructions(updatedCookingInstructions);
-    };
+
+    }
+
+    useEffect(() => {
+        if(instructionsListRef && instructionsListRef.current){
+            instructionsListRef.current.scrollToEnd({
+                animated: true,
+            })
+        }
+    }, [cookingInstructions]);
 
     // console.log(instructionsInput);
     // console.log(cookingInstructions);
@@ -72,12 +84,17 @@ const CookingInstructionsList = () => {
             </View>
 
             {
-                error && <Text style={styles.errorMessage}>{error}</Text>
+                error && (
+                    <View style={{alignItems: "center"}}>
+                        <Text style={styles.errorMessage}>{error}</Text>
+                    </View>
+                )
             }
 
             {
                 cookingInstructions.length > 0 &&
                     <FlatList
+                        ref={instructionsListRef}
                         data={cookingInstructions}
                         keyExtractor={(item) => item.instruction_id}
                         renderItem={({item}) => {
@@ -85,6 +102,7 @@ const CookingInstructionsList = () => {
                                 <Instruction instructionData={item} onDelete={removeCookingInstruction}></Instruction>
                             )
                         }}
+                        showsVerticalScrollIndicator={false}
                     >
 
                     </FlatList>

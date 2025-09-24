@@ -6,6 +6,7 @@ import {
     Ingredient,
     ListName,
     RecipeContextTypes,
+    RecipeData,
     RecipeForm,
     RecipeSubInstructions,
     SubIngredient,
@@ -20,6 +21,8 @@ type RecipeProviderProps = {
 ////////////////////////////////////////////////////////////////
 
 export const RecipeContext = createContext<RecipeContextTypes>({
+    tileId: "",
+    setTileId: () => {},
     categoryName: "",
     setCategoryName: () => {},
     categoryId: "",
@@ -52,9 +55,11 @@ export const RecipeContext = createContext<RecipeContextTypes>({
     base64Url: "",
     setBase64Url: () => {},
     resetRecipeState: () => {},
+    setGeneratedRecipe: () => {},
 });
 
 export const RecipeProvider = ({children}: RecipeProviderProps) => {
+    const [tileId, setTileId] = useState<string>("");
     const [categoryName, setCategoryName] = useState<string>("");
     const [categoryId, setCategoryId] = useState<string>("");
     const [ingredientInput, setIngredientInput] = useState<string>("");
@@ -85,6 +90,7 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         specialEquipment,
     } = recipeForm;
 
+    //to reset state
     const resetRecipeState = () => {
         setCookingInstructions([]);
         setIngredientsList([]);
@@ -104,8 +110,54 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         });
     };
 
+    // function to store AI generated recipes inside of this context
+    const setGeneratedRecipe = async (recipe: RecipeData) => {
+        try {
+            const {
+                nameOfDish,
+                difficultyLevel,
+                numberOfServings,
+                specialEquipment,
+                timeToCook,
+                ingredients,
+                cookingInstructions,
+                sublists,
+                subIngredients,
+                subInstructions,
+            } = recipe;
+
+            if(cookingInstructions.length > 0 || ingredients.length > 0){
+                await setRecipeForm({
+                    recipeOwner: "",
+                    nameOfDish,
+                    difficultyLevel,
+                    timeToCook,
+                    numberOfServings,
+                    specialEquipment,
+                });
+                await setIngredientsList(ingredients);
+                await setCookingInstructions(cookingInstructions);
+            } else {
+                await setRecipeForm({
+                    recipeOwner: "",
+                    nameOfDish,
+                    difficultyLevel,
+                    timeToCook,
+                    numberOfServings,
+                    specialEquipment,
+                });
+                await setSublistNames(sublists);
+                await setSubIngredients(subIngredients);
+                await setSubInstructions(subInstructions);
+            }
+        } catch(error){
+            console.error(error);
+        }
+    };
 
     const value = {
+        tileId,
+        setTileId,
         categoryName,
         setCategoryName,
         categoryId,
@@ -138,6 +190,7 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         subInstructions,
         setSubInstructions,
         resetRecipeState,
+        setGeneratedRecipe
     };
 
     return <RecipeContext.Provider value={value}>{children}</RecipeContext.Provider>

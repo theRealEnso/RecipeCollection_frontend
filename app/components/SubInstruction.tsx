@@ -34,6 +34,7 @@ const SubInstruction = ({sublistName, sublistId, instruction, instructionId, onE
     
     const pressSubInstruction = () => {
         setInstructionID(instructionId);
+        setInstructionText(instruction);
     };
 
     const handleTextSubmit = (instructionId: string) => {
@@ -68,9 +69,9 @@ const SubInstruction = ({sublistName, sublistId, instruction, instructionId, onE
                                 <View style={{marginHorizontal: 5}}>
                                     <CustomButton
                                         value={<Ionicons name="trash" size={20} color="black" />}
-                                        width={30}
+                                        width={40}
                                         color={colors.primaryAccent900}
-                                        radius={50}
+                                        radius={20}
                                         onButtonPress={() => onDelete(instructionId)}
                                     >
                                     </CustomButton>
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.primaryAccent600,
         paddingHorizontal: 10,
         paddingVertical: 5,
-        width: 300,
+        width: "85%",
         alignItems: "center",
         justifyContent: "center",
     },

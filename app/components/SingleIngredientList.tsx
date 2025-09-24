@@ -46,7 +46,7 @@ const SingleIngredientList = () => {
 
     //function to capture user updates to a list item in the IngredientList component and update the ingredientsList array. Pass as props to IngredientList component
     const updateIngredients = (ingredientId: string, updatedIngredient: string) => {
-        const updatedIngredientsList = ingredientsList.map((ingredient) => ingredient.ingredient_id === ingredientId ? updatedIngredient : ingredient.nameOfIngredient);
+        const updatedIngredientsList = ingredientsList.map((ingredient) => ingredient.ingredient_id === ingredientId ? {...ingredient, nameOfIngredient: updatedIngredient}: ingredient);
         setIngredientsList(updatedIngredientsList);
     };
 
@@ -73,9 +73,9 @@ const SingleIngredientList = () => {
                 </View>
                 <View style={styles.ingredientInputInnerContainer}>
                     <CustomButton 
-                        value={<FontAwesome6 name="add" size={30} color="white"></FontAwesome6>} 
-                        width={50}
-                        radius={12}
+                        value={<FontAwesome6 name="add" size={25} color="white"></FontAwesome6>} 
+                        width={40}
+                        radius={20}
                         onButtonPress={addIngredientToList}
                     >
                     </CustomButton>

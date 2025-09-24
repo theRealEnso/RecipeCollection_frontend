@@ -1,9 +1,13 @@
 import { useRouter } from "expo-router";
-import { useContext } from "react";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { useContext, useEffect, useState } from "react";
+import { ActivityIndicator, Image, Pressable, StyleSheet, View } from "react-native";
 
 //import context(s)
 import { RecipeContext } from "@/context/RecipeContext";
+import { UserContext } from "@/context/UserContext";
+
+import { generateRecipeFromImage } from "@/api/recipes";
+import { useMutation } from "@tanstack/react-query";
 
 //import component(s)
 import CustomButton from "./components/CustomButton";
@@ -19,15 +23,24 @@ import { getFileType } from "@/utils/getFileType";
 
 const RecipeFromImageScreen = () => {
     const router = useRouter();
+
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [navigationReady, setNavigationReady] = useState<boolean>(false);
+
+    const { accessToken } = useContext(UserContext);
     
     const { 
         setBase64Url, 
         setSelectedImageUrl, 
         setSelectedImageName, 
         setSelectedImageType,
-        selectedImageUrl,
+        selectedImageUrl, // use to display in Image tag to render image on device
+        base64Url, // use to send to api endpoint that handles recipe generation
+        setGeneratedRecipe,
+        resetRecipeState
     } = useContext(RecipeContext);
 
+    // function that allows user to pick an image, then store base 64 url in state
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if(status !== "granted"){
@@ -51,17 +64,48 @@ const RecipeFromImageScreen = () => {
             const imageName = asset.fileName || uri.split("/").pop();
             const fileType = getFileType(uri);
 
+            // ** for cloudinary only **
             //need to add correct prefix in format that cloudinary will accept
-            const base64WithPrefix = `data:${fileType};base64,${base64_url}`;
+            // const base64WithPrefix = `data:${fileType};base64,${base64_url}`;
 
-            setBase64Url(base64WithPrefix);
+            setBase64Url(base64_url as string);
             setSelectedImageUrl(uri);
             setSelectedImageName(imageName as string);
             setSelectedImageType(fileType);
         }
     };
 
+    const generateRecipeFromImageMutation = useMutation({
+        mutationFn: ({accessToken, base64Url} : {accessToken: string, base64Url: string}) => generateRecipeFromImage(accessToken, base64Url),
+        onSuccess: (data) => {
+            // console.log(data);
+            console.log(data.recipe);
+            setGeneratedRecipe(data.recipe);
+            setIsLoading(false);
+            setNavigationReady(true);
+        },
+        onError: (error) => {
+            console.error(error)
+        }
+    });
+
     // function to send base 64 image url to back end api endpoint
+    const generateRecipe = async () => {
+        try {
+            setIsLoading(true);
+            generateRecipeFromImageMutation.mutate({accessToken, base64Url})
+        } catch(error){
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        if(navigationReady){
+            router.push("/RecipeGeneratedScreen");
+            setNavigationReady(false);
+        }
+    }, [router, navigationReady]);
+
     return (
         <View style={styles.container}>
             <View style={styles.mainContent}>
@@ -99,17 +143,20 @@ const RecipeFromImageScreen = () => {
 
                             <View style={{marginVertical: 20}}>
                                 <CustomButton
-                                    value="Generate Recipe!"
+                                    value={
+                                        isLoading ? 
+                                        <ActivityIndicator size="small" color="white"></ActivityIndicator>
+                                        : "Generate Recipe!"
+                                    }
                                     width={150}
                                     radius={5}
+                                    onButtonPress={generateRecipe}
                                 >
                                 </CustomButton>
                             </View>
                         </View>
                     )
                 }
-
-
             </View>
 
             <View style={styles.buttonContainer}>
@@ -117,7 +164,10 @@ const RecipeFromImageScreen = () => {
                     value="Go back"
                     width={100}
                     radius={50}
-                    onButtonPress={() => router.back()}
+                    onButtonPress={() => {
+                        resetRecipeState();
+                        router.back()
+                    }}
                 >
 
                 </CustomButton>
