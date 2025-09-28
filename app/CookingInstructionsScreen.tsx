@@ -24,7 +24,10 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import colors from "./constants/colors";
 
 // environment variables
-const RECIPE_COLLECTION_ENDPOINT = process.env.EXPO_PUBLIC_RECIPE_COLLECTION_ENDPOINT_3
+const RECIPE_COLLECTION_ENDPOINT = process.env.EXPO_PUBLIC_RECIPE_COLLECTION_ENDPOINT_4 // use this if code and back end server is running in WSL + android studio / emulator is running in Windows 11
+
+// const RECIPE_COLLECTION_ENDPOINT = process.env.EXPO_PUBLIC_RECIPE_COLLECTION_ENDPOINT_3 // use this if code and back end server is running in Ubuntu + android studio / emulator is running in Ubuntu
+
 const RECIPES_ENDPOINT = `${RECIPE_COLLECTION_ENDPOINT}/recipes`;
 // const cloudinary_name = process.env.EXPO_PUBLIC_CLOUDINARY_API_NAME;
 // const cloudinary_key = process.env.EXPO_PUBLIC_CLOUDINARY_UNSIGNED_UPLOAD_PRESET_NAME;
@@ -113,10 +116,10 @@ const CookingInstructionsScreen = () => {
         }
     };
 
-    const createNewRecipeWithCloudinaryUrl = useMutation({
+    const createNewRecipeWithCloudinaryUrlMutation = useMutation({
         // need to first get signature from api endpoint,
         // then upload the image to cloudinary with the signature to get the secure url,
-        // and finally create the recipe with the secure url
+        // and finally create the recipe with the secure url for the image
 
         mutationFn: async ({accessToken, base64Url}: {accessToken: string, base64Url: string}) => {
             const { data } = await axios.get(`${RECIPES_ENDPOINT}/get-cloudinary-signature`, {
@@ -136,7 +139,7 @@ const CookingInstructionsScreen = () => {
 
             // console.log("Upload preset is:", uploadPreset);
 
-            return await uploadToCloudinarySigned(base64Url, signature, timestamp, apikey, cloudname, uploadPreset, folder);
+            return await uploadToCloudinarySigned(base64Url, signature, timestamp, apikey, cloudname, uploadPreset, folder); // returns the data from cloudinary which includes the secure_url for uploaded image
         },
         onSuccess: (data) => {
             if(data?.secure_url){
@@ -177,12 +180,14 @@ const CookingInstructionsScreen = () => {
         }
     });
 
+    const isLoading = createNewRecipeWithCloudinaryUrlMutation.isPending || createNewRecipeMutation.isPending;
+
     const handleCreateRecipe = async () => {
         try {
             if(selectedImageUrl && selectedImageUrl.length > 0){
                 console.log("Sending base64 length:", base64Url?.length);
 
-                createNewRecipeWithCloudinaryUrl.mutate({
+                createNewRecipeWithCloudinaryUrlMutation.mutate({
                     accessToken,
                     base64Url,
                 });
@@ -201,6 +206,8 @@ const CookingInstructionsScreen = () => {
     };
 
     const goBack = () => router.back();
+
+    console.log("isLoading", isLoading);
 
     return (
         <View style={styles.container}>
@@ -280,6 +287,7 @@ const CookingInstructionsScreen = () => {
                         width={120}
                         radius={60} 
                         onButtonPress={handleCreateRecipe}
+                        mutationPending={isLoading} // display spinner
                         >
                     </CustomButton>
                 </View>

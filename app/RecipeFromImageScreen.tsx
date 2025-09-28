@@ -106,6 +106,8 @@ const RecipeFromImageScreen = () => {
         }
     }, [router, navigationReady]);
 
+    // console.log(base64Url);
+
     return (
         <View style={styles.container}>
             <View style={styles.mainContent}>
