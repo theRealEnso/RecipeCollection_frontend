@@ -12,6 +12,7 @@ import FormInput from "./components/FormInput";
 //import icon(s)
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
+import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from "expo-image-picker";
 
 // import utility function(s);
@@ -75,28 +76,46 @@ const AddRecipeScreen = () => {
         };
 
         const result = await ImagePicker.launchImageLibraryAsync({
-            base64: true,
+            base64: false,
             mediaTypes: ["images"],
             allowsEditing: true,
             aspect: [4,3],
             quality: 1,
         });
 
+        // console.log(result);
+
         if(!result.canceled){
             const asset = result.assets[0];
             // console.log(asset);
             const base64_url = asset.base64;
-            const uri = asset.uri; // local uri link
-            const imageName = asset.fileName || uri.split("/").pop();
-            const fileType = getFileType(uri);
+            const fileUri = asset.uri; // local uri link
+            const imageName = asset.fileName || fileUri.split("/").pop();
+            const originalFileType = getFileType(fileUri);
 
-            //need to add correct prefix in format that cloudinary will accept
-            const base64WithPrefix = `data:${fileType};base64,${base64_url}`;
+            //if sending base64 to cloudinary, then we need to add correct prefix to the base64 string so that it is in a format that cloudinary will accept
+            const base64WithPrefix = `data:${originalFileType};base64,${base64_url}`;
 
+            const imageContext = ImageManipulator.ImageManipulator.manipulate(fileUri);
+            imageContext.resize({
+                width: 1200,
+            });
+
+            const renderedImage = await imageContext.renderAsync();
+            const finalImage = await renderedImage.saveAsync({
+                compress: 0.7,
+                format: ImageManipulator.SaveFormat.JPEG,
+            });
+
+            const modifiedFileType = getFileType(finalImage.uri);
+
+            console.log("the original file uri is: ", fileUri);
+            console.log("the modified and compressed file uri is: ", finalImage);
+    
             setBase64Url(base64WithPrefix);
-            setSelectedImageUrl(uri);
+            setSelectedImageUrl(finalImage.uri);
             setSelectedImageName(imageName as string);
-            setSelectedImageType(fileType);
+            setSelectedImageType(modifiedFileType);
         }
     };
 

@@ -3,7 +3,7 @@ import axios from "axios";
 //import types
 import { RecipeData } from "@/types/Recipe";
 
-const RECIPE_COLLECTION_ENDPOINT = process.env.EXPO_PUBLIC_RECIPE_COLLECTION_ENDPOINT_3
+const RECIPE_COLLECTION_ENDPOINT = process.env.EXPO_PUBLIC_RECIPE_COLLECTION_ENDPOINT_4;
 const RECIPES_ENDPOINT = `${RECIPE_COLLECTION_ENDPOINT}/recipes`;
 
 // define types

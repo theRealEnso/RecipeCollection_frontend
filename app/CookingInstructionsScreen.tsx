@@ -24,7 +24,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import colors from "./constants/colors";
 
 // environment variables
-const RECIPE_COLLECTION_ENDPOINT = process.env.EXPO_PUBLIC_RECIPE_COLLECTION_ENDPOINT_4 // use this if code and back end server is running in WSL + android studio / emulator is running in Windows 11
+const RECIPE_COLLECTION_ENDPOINT = process.env.EXPO_PUBLIC_RECIPE_COLLECTION_ENDPOINT_4 // use this if code and back end server is running in WSL + android studio and emulator is running in Windows 11
 
 // const RECIPE_COLLECTION_ENDPOINT = process.env.EXPO_PUBLIC_RECIPE_COLLECTION_ENDPOINT_3 // use this if code and back end server is running in Ubuntu + android studio / emulator is running in Ubuntu
 
@@ -52,6 +52,8 @@ const CookingInstructionsScreen = () => {
         numberOfServings,
         specialEquipment,
         selectedImageUrl,
+        selectedImageName,
+        selectedImageType,
         base64Url,
         ingredientsList,
         subIngredients,
@@ -70,7 +72,7 @@ const CookingInstructionsScreen = () => {
         timeToCook,
         numberOfServings,
         specialEquipment,
-        imageUrl: selectedImageUrl,
+        imageUrl: "",
         ingredients: ingredientsList,
         subIngredients,
         cookingInstructions,
@@ -80,7 +82,7 @@ const CookingInstructionsScreen = () => {
 
     //helper function to upload image + sign preset to cloudinary, ultimately to get a secure_url
     const uploadToCloudinarySigned = async (
-        base64Url: string,
+        selectedImageUrl: string,
         signature: string,
         timestamp: number,
         apikey: string,
@@ -90,17 +92,15 @@ const CookingInstructionsScreen = () => {
     ) => {
         try {
             const formData = new FormData();
-            formData.append("file", base64Url);
+            formData.append("file", {uri: selectedImageUrl, name: selectedImageName, type: selectedImageType} as any);
             formData.append("api_key", apikey);
             formData.append("timestamp", timestamp.toString());
             formData.append("upload_preset", uploadPreset);
             formData.append("signature", signature);
             formData.append("folder", folder)
 
-            const { data } = await axios.post(`https://api.cloudinary.com/v1_1/${cloudname}/image/upload`, formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                },
+            const { data } = await axios.post(`https://api.cloudinary.com/v1_1/${cloudname}/image/upload`, formData, { 
+                headers: { "Content-Type": "multipart/form-data" }, 
             });
 
             return data;
@@ -121,7 +121,7 @@ const CookingInstructionsScreen = () => {
         // then upload the image to cloudinary with the signature to get the secure url,
         // and finally create the recipe with the secure url for the image
 
-        mutationFn: async ({accessToken, base64Url}: {accessToken: string, base64Url: string}) => {
+        mutationFn: async ({accessToken, selectedImageUrl}: {accessToken: string, selectedImageUrl: string}) => {
             const { data } = await axios.get(`${RECIPES_ENDPOINT}/get-cloudinary-signature`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`
@@ -139,7 +139,7 @@ const CookingInstructionsScreen = () => {
 
             // console.log("Upload preset is:", uploadPreset);
 
-            return await uploadToCloudinarySigned(base64Url, signature, timestamp, apikey, cloudname, uploadPreset, folder); // returns the data from cloudinary which includes the secure_url for uploaded image
+            return await uploadToCloudinarySigned(selectedImageUrl, signature, timestamp, apikey, cloudname, uploadPreset, folder); // returns the data from cloudinary which includes the secure_url for uploaded image
         },
         onSuccess: (data) => {
             if(data?.secure_url){
@@ -150,8 +150,6 @@ const CookingInstructionsScreen = () => {
                         imageUrl: data.secure_url,
                     }
                 });
-
-                resetRecipeState();
             }
         },
         onError: (error) => {
@@ -185,11 +183,11 @@ const CookingInstructionsScreen = () => {
     const handleCreateRecipe = async () => {
         try {
             if(selectedImageUrl && selectedImageUrl.length > 0){
-                console.log("Sending base64 length:", base64Url?.length);
+                // console.log("Sending base64 length:", base64Url?.length);   
 
                 createNewRecipeWithCloudinaryUrlMutation.mutate({
                     accessToken,
-                    base64Url,
+                    selectedImageUrl,
                 });
             } else {
                 createNewRecipeMutation.mutate({
