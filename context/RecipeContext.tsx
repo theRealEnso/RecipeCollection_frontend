@@ -52,6 +52,8 @@ export const RecipeContext = createContext<RecipeContextTypes>({
     setSelectedImageType: () => {},
     selectedImageName: "",
     setSelectedImageName: () => {},
+    selectedImageSize: "",
+    setSelectedImageSize: () => {},
     base64Url: "",
     setBase64Url: () => {},
     resetRecipeState: () => {},
@@ -71,6 +73,7 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
     const [selectedImageUrl, setSelectedImageUrl] = useState<string>("");
     const [selectedImageType, setSelectedImageType] = useState<string>("");
     const [selectedImageName, setSelectedImageName] = useState<string>("");
+    const [selectedImageSize, setSelectedImageSize] = useState<number>(0);
     const [base64Url, setBase64Url] = useState<string>("");
     const [recipeForm, setRecipeForm] = useState<RecipeForm>({
         recipeOwner: "",
@@ -190,7 +193,9 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         subInstructions,
         setSubInstructions,
         resetRecipeState,
-        setGeneratedRecipe
+        setGeneratedRecipe,
+        selectedImageSize,
+        setSelectedImageSize,
     };
 
     return <RecipeContext.Provider value={value}>{children}</RecipeContext.Provider>

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext, } from "react";
+import { useContext, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import { useRouter } from "expo-router";
@@ -40,6 +40,8 @@ const RECIPES_ENDPOINT = `${RECIPE_COLLECTION_ENDPOINT}/recipes`;
 const CookingInstructionsScreen = () => {
     const router = useRouter();
     const queryClient = useQueryClient();
+    
+    const [uploadProgress, setUploadProgress] = useState<number | null>(null);
 
     const { accessToken } = useContext(UserContext);
     const {
@@ -54,6 +56,7 @@ const CookingInstructionsScreen = () => {
         selectedImageUrl,
         selectedImageName,
         selectedImageType,
+        selectedImageSize,
         base64Url,
         ingredientsList,
         subIngredients,
@@ -89,6 +92,7 @@ const CookingInstructionsScreen = () => {
         cloudname: string,
         uploadPreset: string,
         folder: string,
+        onProgress: (percent: number) => void,
     ) => {
         try {
             const formData = new FormData();
@@ -100,7 +104,19 @@ const CookingInstructionsScreen = () => {
             formData.append("folder", folder)
 
             const { data } = await axios.post(`https://api.cloudinary.com/v1_1/${cloudname}/image/upload`, formData, { 
-                headers: { "Content-Type": "multipart/form-data" }, 
+                headers: { "Content-Type": "multipart/form-data" },
+                onUploadProgress: (progressEvent) => {
+                    let percentCompleted = 0;
+
+                    if(progressEvent.total){
+                       percentCompleted = Math.min(Math.floor((progressEvent.loaded / progressEvent.total) * 100), 100);
+                    } else {
+                        // calculate percent completed based on the original file size, not the modified file size, and cap it to 100%
+                        percentCompleted = Math.min(Math.floor((progressEvent.loaded / selectedImageSize) * 100), 100)
+                    }
+                    // set state
+                    onProgress(percentCompleted);
+                } 
             });
 
             return data;
@@ -121,7 +137,16 @@ const CookingInstructionsScreen = () => {
         // then upload the image to cloudinary with the signature to get the secure url,
         // and finally create the recipe with the secure url for the image
 
-        mutationFn: async ({accessToken, selectedImageUrl}: {accessToken: string, selectedImageUrl: string}) => {
+        mutationFn: async (
+            {
+                accessToken, 
+                selectedImageUrl, 
+                onProgress
+            }: {
+                accessToken: string, 
+                selectedImageUrl: string, 
+                onProgress: (percent: number) => void}
+            ) => {
             const { data } = await axios.get(`${RECIPES_ENDPOINT}/get-cloudinary-signature`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`
@@ -139,7 +164,7 @@ const CookingInstructionsScreen = () => {
 
             // console.log("Upload preset is:", uploadPreset);
 
-            return await uploadToCloudinarySigned(selectedImageUrl, signature, timestamp, apikey, cloudname, uploadPreset, folder); // returns the data from cloudinary which includes the secure_url for uploaded image
+            return await uploadToCloudinarySigned(selectedImageUrl, signature, timestamp, apikey, cloudname, uploadPreset, folder, onProgress); // returns the data from cloudinary which includes the secure_url for uploaded image
         },
         onSuccess: (data) => {
             if(data?.secure_url){
@@ -188,6 +213,7 @@ const CookingInstructionsScreen = () => {
                 createNewRecipeWithCloudinaryUrlMutation.mutate({
                     accessToken,
                     selectedImageUrl,
+                    onProgress: (percent: number) => setUploadProgress(percent),
                 });
             } else {
                 createNewRecipeMutation.mutate({
@@ -205,7 +231,8 @@ const CookingInstructionsScreen = () => {
 
     const goBack = () => router.back();
 
-    console.log("isLoading", isLoading);
+    // console.log("isLoading", isLoading);
+    console.log(uploadProgress);
 
     return (
         <View style={styles.container}>

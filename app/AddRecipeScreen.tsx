@@ -12,6 +12,7 @@ import FormInput from "./components/FormInput";
 //import icon(s)
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
+import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from "expo-image-picker";
 
@@ -45,6 +46,7 @@ const AddRecipeScreen = () => {
         setSelectedImageUrl,
         setSelectedImageName,
         setSelectedImageType,
+        setSelectedImageSize,
         resetRecipeState,
         categoryName,
         categoryId,
@@ -105,17 +107,24 @@ const AddRecipeScreen = () => {
             const finalImage = await renderedImage.saveAsync({
                 compress: 0.7,
                 format: ImageManipulator.SaveFormat.JPEG,
+                base64: false,
             });
 
             const modifiedFileType = getFileType(finalImage.uri);
+            const originalFileData = await FileSystem.getInfoAsync(fileUri);
+            console.log(originalFileData);
+            const originalFileSize = originalFileData.size;
+            console.log(originalFileSize);
+            console.log(typeof(originalFileSize));
 
-            console.log("the original file uri is: ", fileUri);
-            console.log("the modified and compressed file uri is: ", finalImage);
+            // console.log("the original file uri is: ", fileUri);
+            // console.log("the modified and compressed file uri is: ", finalImage);
     
             setBase64Url(base64WithPrefix);
             setSelectedImageUrl(finalImage.uri);
             setSelectedImageName(imageName as string);
             setSelectedImageType(modifiedFileType);
+            setSelectedImageSize(originalFileSize);
         }
     };
 

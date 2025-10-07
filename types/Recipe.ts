@@ -1,3 +1,5 @@
+import React from "react";
+
 export type RecipeForm = {
     recipeOwner?: string;
     nameOfDish: string;
@@ -27,6 +29,8 @@ export type RecipeContextTypes = {
     setSelectedImageType: React.Dispatch<React.SetStateAction<string>>;
     selectedImageName: string;
     setSelectedImageName: React.Dispatch<React.SetStateAction<string>>;
+    selectedImageSize: number,
+    setSelectedImageSize: React.Dispatch<React.SetStateAction<number>>,
     base64Url: string;
     setBase64Url: React.Dispatch<React.SetStateAction<string>>;
     ingredientInput: string;
