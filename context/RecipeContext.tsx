@@ -52,7 +52,7 @@ export const RecipeContext = createContext<RecipeContextTypes>({
     setSelectedImageType: () => {},
     selectedImageName: "",
     setSelectedImageName: () => {},
-    selectedImageSize: "",
+    selectedImageSize: 0,
     setSelectedImageSize: () => {},
     base64Url: "",
     setBase64Url: () => {},
