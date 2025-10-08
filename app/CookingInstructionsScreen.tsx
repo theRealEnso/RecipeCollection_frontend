@@ -15,6 +15,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CookingInstructionsList from "./components/CookingInstructionsList";
 import CustomButton from "./components/CustomButton";
 import SubInstructions from "./components/SubInstructions";
+import UploadSpinnerModal from "./components/modals/spinnerModal";
 
 //import icons
 import Entypo from '@expo/vector-icons/Entypo';
@@ -168,6 +169,7 @@ const CookingInstructionsScreen = () => {
         },
         onSuccess: (data) => {
             if(data?.secure_url){
+                setUploadProgress(null);
                 createNewRecipeMutation.mutate({
                     accessToken,
                     recipeData: {
@@ -317,7 +319,18 @@ const CookingInstructionsScreen = () => {
                     </CustomButton>
                 </View>
             </View>
+
+            {/* if uploadProgress !=null, then display the modal spinner */}
+
+            {
+                uploadProgress !== null && 
+                <View>
+                    <UploadSpinnerModal percentCompleted={uploadProgress}></UploadSpinnerModal>
+                </View>
+            }
         </View>
+
+        
     )
 };
 
