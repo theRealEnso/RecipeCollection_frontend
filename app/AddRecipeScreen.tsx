@@ -162,14 +162,14 @@ const AddRecipeScreen = () => {
         const formHasErrors = Object.values(validationErrors).some(field => field !== null);
 
         if(!formHasErrors){
-            router.push("/AddIngredientsScreen");
+            router.push("./AddIngredientsScreen");
         };
     };
 
     // function that cancels recipe creation, resets recipe state, and navigates user back to Recipes Overview
     const cancelRecipeCreation = () => {
         router.replace({
-            pathname: "/RecipesOverviewScreen",
+            pathname: "./RecipesOverviewScreen",
             params: {categoryId, categoryName},
         });
         resetRecipeState();

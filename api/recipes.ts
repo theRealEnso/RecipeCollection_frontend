@@ -54,11 +54,23 @@ export const createNewRecipe = async ({accessToken, recipeData}: CreateRecipePro
     };
 };
 
-export const generateRecipeFromImage = async (accessToken: string, base64url: string) => {
+export const generateRecipeFromImage = async (accessToken: string, base64url: string, selectedImageSize: number, updateProgress: (percent: number) => void) => {
     try {
         const { data } = await axios.post(`${RECIPES_ENDPOINT}/generate-recipe-from-image`, {base64Image: base64url}, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
+            },
+
+            onUploadProgress: (progressEvent) => {
+                let percentCompleted = 0;
+
+                if(progressEvent.total){
+                    percentCompleted = Math.min(Math.floor((progressEvent.loaded / progressEvent.total) * 100), 100);
+                } else {
+                    percentCompleted = Math.min(Math.floor((progressEvent.loaded / selectedImageSize) * 100), 100)
+                }
+
+                updateProgress(percentCompleted);
             }
         });
 

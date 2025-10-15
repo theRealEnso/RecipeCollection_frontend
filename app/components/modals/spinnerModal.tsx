@@ -1,4 +1,4 @@
-import { Modal, StyleSheet, View } from "react-native";
+import { Modal, StyleSheet, Text, View } from "react-native";
 
 import * as Progress from 'react-native-progress';
 
@@ -6,15 +6,24 @@ import colors from "@/app/constants/colors";
 
 type Percent = {
     percentCompleted: number,
+    value?: string;
 };
 
-const UploadSpinnerModal = ({percentCompleted}: Percent) => {
+const UploadSpinnerModal = ({percentCompleted, value}: Percent) => {
     return (
         <Modal
             transparent={true}
             animationType="fade"
         >
             <View style={styles.overlay}>
+                {
+                    value && (
+                        <View style={{marginVertical: 30}}>
+                            <Text style={styles.text}>{value}</Text>
+                        </View>
+                        
+                    )
+                }
                 <View style={styles.spinnerContainer}>
                     <Progress.Circle 
                         size={150} 
@@ -37,7 +46,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "rgba(0,0,0,0.5)",
+        backgroundColor: "rgba(0,0,0,0.9)",
     },
 
     spinnerContainer: {
@@ -45,5 +54,9 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         backgroundColor: "rgba(0,0,0,0.5)",
         borderRadius: 100,
+    },
+
+    text: {
+        color: colors.primaryAccent500
     }
 })

@@ -1,13 +1,13 @@
+import { UserContext } from '@/context/UserContext';
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { UserContext } from '../context/UserContext';
 
 import { Link, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Image, StyleSheet, Text, TextInput, View } from 'react-native';
 
 // import api function to login user
+import { loginUser } from '@/api/userAuth';
 import { useMutation } from '@tanstack/react-query';
-import { loginUser } from '../api/userAuth';
 
 // import component(s)
 import CustomButton from './components/CustomButton';
@@ -31,7 +31,7 @@ export default function LoginScreen() {
   useEffect(() => {
     if(navigationReady && accessToken && refreshToken){
       // console.log(accessToken);
-      router.replace("/HomeScreen");
+      router.replace("./HomeScreen");
     }
   }, [router, navigationReady, accessToken, refreshToken]);
 
@@ -156,7 +156,7 @@ export default function LoginScreen() {
 
       <View style={styles.subTextContainer}>
         <Text>Don&apos;t have an account?</Text>
-        <Link href="/RegisterScreen" style={styles.registerText}>Register!</Link>
+        <Link href="./RegisterScreen" style={styles.registerText}>Register!</Link>
       </View>
 
       {

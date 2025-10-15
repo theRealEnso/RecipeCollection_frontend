@@ -192,7 +192,7 @@ const CookingInstructionsScreen = () => {
                 resetRecipeState(); // clear recipe form 
                 queryClient.invalidateQueries({queryKey: ["categoryRecipes"]}); // force refetch of recipes to display updated list
                 router.push({
-                    pathname: "/RecipesOverviewScreen",
+                    pathname: "./RecipesOverviewScreen",
                     params: {
                         categoryName,
                         categoryId,
@@ -325,7 +325,12 @@ const CookingInstructionsScreen = () => {
             {
                 uploadProgress !== null && 
                 <View>
-                    <UploadSpinnerModal percentCompleted={uploadProgress}></UploadSpinnerModal>
+                    <UploadSpinnerModal 
+                        percentCompleted={uploadProgress}
+                        value="Creating new recipe..."
+                        >
+
+                    </UploadSpinnerModal>
                 </View>
             }
         </View>

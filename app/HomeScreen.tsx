@@ -4,15 +4,15 @@ import { ActivityIndicator, Button, StyleSheet, Text, View } from "react-native"
 
 //import context
 import { RecipeContext } from "@/context/RecipeContext";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "@/context/UserContext";
 
 //import components(s)
 import CuisineList from "./components/CuisineList";
 import CustomButton from "./components/CustomButton";
 
 //import api function to fetch categories of cuisines belonging to the user
+import { getAllCategories } from "@/api/categories";
 import { useQuery } from "@tanstack/react-query";
-import { getAllCategories } from "../api/categories";
 
 import colors from "./constants/colors";
 
@@ -35,7 +35,7 @@ const HomeScreen = () => {
     };
 
     const navigateToAIOptionsScreen = () => {
-        router.push("/AIOptionsScreen")
+        router.push("./AIOptionsScreen")
     };
 
     // useEffect to handle signing out and re-directing to the login screen
@@ -44,7 +44,7 @@ const HomeScreen = () => {
             (!currentUser || currentUser === null) ||
             (!accessToken || !accessToken.length)
         ){
-            router.replace("/LoginScreen");  
+            router.replace("./LoginScreen");  
         }  
     }, [router, currentUser, accessToken]);
 

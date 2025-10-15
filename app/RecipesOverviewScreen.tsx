@@ -26,13 +26,13 @@ const RecipesOverviewScreen = () => {
 
     const returnToHomeScreen = () => {
         // setTileId("");
-        router.replace("/HomeScreen");
+        router.replace("./HomeScreen");
     };
 
     const navigateToAddRecipe = () => {
         setCategoryName(categoryName as string);
         setCategoryId(categoryId as string);
-        router.replace("/AddRecipeScreen");
+        router.replace("./AddRecipeScreen");
     };
 
     const {data, isLoading, error,} = useQuery({

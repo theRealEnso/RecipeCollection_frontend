@@ -10,7 +10,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 //import component(s)
 import CustomButton from "./components/CustomButton";
-import RecipeDetails from "./components/RecipeDetails";
+import RecipeDetails from "./RecipeDetailsScreen";
 
 // import colors
 

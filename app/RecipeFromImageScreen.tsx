@@ -12,6 +12,7 @@ import { useMutation } from "@tanstack/react-query";
 //import component(s)
 import CustomButton from "./components/CustomButton";
 
+import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
 import * as ImagePicker from "expo-image-picker";
 
@@ -26,6 +27,7 @@ const RecipeFromImageScreen = () => {
     const router = useRouter();
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [uploadProgress, setUploadProgress] = useState<number | null>(null);
     const [navigationReady, setNavigationReady] = useState<boolean>(false);
 
     const { accessToken } = useContext(UserContext);
@@ -35,7 +37,9 @@ const RecipeFromImageScreen = () => {
         setSelectedImageUrl, 
         setSelectedImageName, 
         setSelectedImageType,
+        setSelectedImageSize,
         selectedImageUrl, // use to display in Image tag to render image on device
+        selectedImageSize,
         base64Url, // use to send to api endpoint that handles recipe generation
         setGeneratedRecipe,
         resetRecipeState
@@ -70,7 +74,7 @@ const RecipeFromImageScreen = () => {
             const originalFileType = getFileType(fileUri);
 
             //if sending base64 to cloudinary, then we need to add correct prefix to the base64 string so that it is in a format that cloudinary will accept
-            // const base64WithPrefix = `data:${originalFileType};base64,${base64_url}`;
+            const base64WithPrefix = `data:${originalFileType};base64,${base64_url}`;
 
             const imageContext = ImageManipulator.ImageManipulator.manipulate(fileUri);
             imageContext.resize({
@@ -85,27 +89,50 @@ const RecipeFromImageScreen = () => {
             });
 
             const modifiedFileType = getFileType(finalImage.uri);
+            const originalFileData = await FileSystem.getInfoAsync(fileUri);
 
-            // console.log(finalImage);
+            console.log(originalFileData);
+
+            const originalFileSize = originalFileData.size;
+            console.log(originalFileSize);
+
+            // console.log("the original file uri is: ", fileUri);
+            // console.log("the modified and compressed file uri is: ", finalImage);
     
             setBase64Url(finalImage.base64 as string);
             setSelectedImageUrl(finalImage.uri);
             setSelectedImageName(imageName as string);
             setSelectedImageType(modifiedFileType);
-    
+            setSelectedImageSize(originalFileSize);
         }
     };
 
+    const updateProgress = (percent: number) => setUploadProgress(percent);
+
     const generateRecipeFromImageMutation = useMutation({
-        mutationFn: ({accessToken, base64Url} : {accessToken: string, base64Url: string}) => generateRecipeFromImage(accessToken, base64Url),
+        mutationFn: (
+            {
+                accessToken,
+                base64Url, 
+                selectedImageSize,
+                updateProgress, 
+            } : {
+                    accessToken: string,
+                    base64Url: string, 
+                    selectedImageSize: number, 
+                    updateProgress: (percent: number) => void,
+                }
+            ) => generateRecipeFromImage(accessToken, base64Url, selectedImageSize, updateProgress),
         onSuccess: (data) => {
             // console.log(data);
+            setUploadProgress(null);
             console.log(data.recipe);
             setGeneratedRecipe(data.recipe);
             setIsLoading(false);
             setNavigationReady(true);
         },
         onError: (error) => {
+            setIsLoading(false);
             console.error(error)
         }
     });
@@ -114,7 +141,7 @@ const RecipeFromImageScreen = () => {
     const generateRecipe = async () => {
         try {
             setIsLoading(true);
-            generateRecipeFromImageMutation.mutate({accessToken, base64Url})
+            generateRecipeFromImageMutation.mutate({accessToken, base64Url, selectedImageSize, updateProgress})
         } catch(error){
             console.error(error);
         }
@@ -122,7 +149,7 @@ const RecipeFromImageScreen = () => {
 
     useEffect(() => {
         if(navigationReady){
-            router.push("/RecipeGeneratedScreen");
+            router.push("./RecipeGeneratedScreen");
             setNavigationReady(false);
         }
     }, [router, navigationReady]);
@@ -195,6 +222,20 @@ const RecipeFromImageScreen = () => {
 
                 </CustomButton>
             </View>
+
+            {/* conditionally render progress bar modal */}
+            {/* {
+                uploadProgress !== null && (
+                    <View>
+                        <UploadSpinnerModal 
+                            percentCompleted={uploadProgress}
+                            value="Generating a recipe..."
+                            >
+
+                        </UploadSpinnerModal>
+                    </View>
+                )
+            } */}
         </View>
     );
 };

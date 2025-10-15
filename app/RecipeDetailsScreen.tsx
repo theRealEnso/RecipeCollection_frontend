@@ -3,7 +3,7 @@ import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 // import { useRouter } from "expo-router";
 
 // import colors
-import colors from "../constants/colors";
+import colors from "./constants/colors";
 
 // import icon(s)
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -25,7 +25,7 @@ type RecipeDetailsProps = {
     sublists: ListName[];
 };
 
-const RecipeDetails = (
+const RecipeDetailsScreen = (
     {
         recipeOwner, 
         nameOfDish, 
@@ -222,7 +222,7 @@ const RecipeDetails = (
         );
 };
 
-export default RecipeDetails;
+export default RecipeDetailsScreen;
 
 const styles = StyleSheet.create({
     mainContentContainer: {

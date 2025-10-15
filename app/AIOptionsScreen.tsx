@@ -12,7 +12,7 @@ const AIOptionsScreen = () => {
     const router = useRouter();
 
     const navigateToGenerateRecipeFromImage = () => {
-        router.push("/RecipeFromImageScreen")
+        router.push("./RecipeFromImageScreen")
     };
 
     return (

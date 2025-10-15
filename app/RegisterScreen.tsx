@@ -33,7 +33,7 @@ const RegisterScreen = () => {
   const [navigationReady, setNavigationReady] = useState<boolean>(false);
   useEffect(() => {
     if(navigationReady){
-      router.replace("/HomeScreen");
+      router.replace("./HomeScreen");
     }
   }, [navigationReady, router])
 
@@ -233,7 +233,7 @@ const RegisterScreen = () => {
 
       <View style={styles.subTextContainer}>
         <Text>Already have an account?</Text>
-        <Link href="/LoginScreen" style={styles.registerText}>Login!</Link>
+        <Link href="./LoginScreen" style={styles.registerText}>Login!</Link>
       </View>
     </View>
   );
