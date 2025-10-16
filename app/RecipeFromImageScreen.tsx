@@ -1,16 +1,17 @@
 import { useRouter } from "expo-router";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Image, Pressable, StyleSheet, View } from "react-native";
 
 //import context(s)
 import { RecipeContext } from "@/context/RecipeContext";
 import { UserContext } from "@/context/UserContext";
 
-import { generateRecipeFromImage } from "@/api/recipes";
-import { useMutation } from "@tanstack/react-query";
+import { getGeneratedRecipeResult, getRecipeGenerationJobStatus, startRecipeGenerationJob } from "@/api/recipes";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 //import component(s)
 import CustomButton from "./components/CustomButton";
+import UploadSpinnerModal from "./components/modals/spinnerModal";
 
 import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
@@ -23,12 +24,18 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 // import utility function(s)
 import { getFileType } from "@/utils/getFileType";
 
+const POLL_TIMEOUT = 60 * 1000 * 2; //2 minutes
+
 const RecipeFromImageScreen = () => {
     const router = useRouter();
 
+    const[jobId, setJobId] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [uploadProgress, setUploadProgress] = useState<number | null>(null);
     const [navigationReady, setNavigationReady] = useState<boolean>(false);
+
+    const pollStartedAtRef = useRef<number>(0); // use this ref to track global timer
+    const pollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const { accessToken } = useContext(UserContext);
     
@@ -107,41 +114,88 @@ const RecipeFromImageScreen = () => {
         }
     };
 
-    const updateProgress = (percent: number) => setUploadProgress(percent);
+    // define helper polling function(s)
 
-    const generateRecipeFromImageMutation = useMutation({
-        mutationFn: (
-            {
-                accessToken,
-                base64Url, 
-                selectedImageSize,
-                updateProgress, 
-            } : {
-                    accessToken: string,
-                    base64Url: string, 
-                    selectedImageSize: number, 
-                    updateProgress: (percent: number) => void,
-                }
-            ) => generateRecipeFromImage(accessToken, base64Url, selectedImageSize, updateProgress),
-        onSuccess: (data) => {
-            // console.log(data);
-            setUploadProgress(null);
-            console.log(data.recipe);
-            setGeneratedRecipe(data.recipe);
-            setIsLoading(false);
-            setNavigationReady(true);
+    const stopPollingForUpdates = () => {
+        if(pollTimerRef.current){
+            clearTimeout(pollTimerRef.current);
+            pollTimerRef.current = null;
+        };
+    };
+    const startPollingForUpdates = async (jobId: string) => {
+        // needs to continuously poll the server
+        //for sure needs to make get requests to the endpoint that provides the update(s)
+        pollStartedAtRef.current = Date.now();
+
+        const poll = async () => {
+            // stop polling altogether if it takes longer than 2 minutes
+            if(Date.now() - pollStartedAtRef.current > POLL_TIMEOUT ) {
+                stopPollingForUpdates();
+                setUploadProgress(null);
+                return;
+            };
+
+            const { data } = recipeGenerationStatusQuery.refetch();
+            const { phase, progress} = data;
+
+            setUploadProgress(progress);
+
+            if(phase === "completed"){
+                //stop polling
+                stopPollingForUpdates();
+
+                // get the recipe from our API endpoint, store the recipe in state
+                const generatedRecipe = await getGeneratedRecipeResult(accessToken, jobId);
+                setIsLoading(false);
+                setUploadProgress(100);
+                setGeneratedRecipe(generatedRecipe);
+                setNavigationReady(true);
+                return;
+            };
+
+            if(phase === "error"){
+                // stop polling
+                stopPollingForUpdates();
+                setUploadProgress(null);
+            };
+
+            pollTimerRef.current = setTimeout(poll, 500);
+        }
+
+        poll();
+    };
+
+    const recipeGenerationStatusQuery = useQuery({
+        queryKey: ["jobStatus", jobId],
+        queryFn: () => {
+            if(!jobId) throw new Error("no job");
+            return getRecipeGenerationJobStatus(accessToken, jobId);
         },
-        onError: (error) => {
-            setIsLoading(false);
-            console.error(error)
+        enabled: false, // tell react query to not automatically fetch, we will manually control
+    });
+
+    // define mutation to start the recipe generation job
+    const startRecipeGenerationMutation = useMutation({
+        mutationFn: () => startRecipeGenerationJob(accessToken, base64Url),
+        onSuccess: (data) => {
+            console.log(data)
+            setJobId(data.job_id);
+            // need to write some code that starts polling the server continuously
+            startPollingForUpdates(data.job_id);
+        },
+        onError: (error: any) => {
+            setUploadProgress(null);
+            console.log(error);
         }
     });
+
 
     // function to send base 64 image url to back end api endpoint
     const generateRecipe = async () => {
         try {
             setIsLoading(true);
-            generateRecipeFromImageMutation.mutate({accessToken, base64Url, selectedImageSize, updateProgress})
+            startRecipeGenerationMutation.mutate();
+
         } catch(error){
             console.error(error);
         }
@@ -155,6 +209,11 @@ const RecipeFromImageScreen = () => {
     }, [router, navigationReady]);
 
     // console.log(base64Url);
+
+    //cleanup when component unmounts
+    useEffect(() => {
+        return () => stopPollingForUpdates();
+    });
 
     return (
         <View style={styles.container}>
@@ -224,7 +283,7 @@ const RecipeFromImageScreen = () => {
             </View>
 
             {/* conditionally render progress bar modal */}
-            {/* {
+            {
                 uploadProgress !== null && (
                     <View>
                         <UploadSpinnerModal 
@@ -235,7 +294,7 @@ const RecipeFromImageScreen = () => {
                         </UploadSpinnerModal>
                     </View>
                 )
-            } */}
+            }
         </View>
     );
 };
@@ -278,3 +337,33 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     }
 });
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// const generateRecipeFromImageMutation = useMutation({
+//         mutationFn: (
+//             {
+//                 accessToken,
+//                 base64Url, 
+//                 selectedImageSize,
+//                 updateProgress, 
+//             } : {
+//                     accessToken: string,
+//                     base64Url: string, 
+//                     selectedImageSize: number, 
+//                     updateProgress: (percent: number) => void,
+//                 }
+//             ) => generateRecipeFromImage(accessToken, base64Url, selectedImageSize, updateProgress),
+//         onSuccess: (data) => {
+//             // console.log(data);
+//             setUploadProgress(null);
+//             console.log(data.recipe);
+//             setGeneratedRecipe(data.recipe);
+//             setIsLoading(false);
+//             setNavigationReady(true);
+//         },
+//         onError: (error) => {
+//             setIsLoading(false);
+//             console.error(error)
+//         }
+//     });

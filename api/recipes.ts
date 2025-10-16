@@ -54,32 +54,6 @@ export const createNewRecipe = async ({accessToken, recipeData}: CreateRecipePro
     };
 };
 
-export const generateRecipeFromImage = async (accessToken: string, base64url: string, selectedImageSize: number, updateProgress: (percent: number) => void) => {
-    try {
-        const { data } = await axios.post(`${RECIPES_ENDPOINT}/generate-recipe-from-image`, {base64Image: base64url}, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`
-            },
-
-            onUploadProgress: (progressEvent) => {
-                let percentCompleted = 0;
-
-                if(progressEvent.total){
-                    percentCompleted = Math.min(Math.floor((progressEvent.loaded / progressEvent.total) * 100), 100);
-                } else {
-                    percentCompleted = Math.min(Math.floor((progressEvent.loaded / selectedImageSize) * 100), 100)
-                }
-
-                updateProgress(percentCompleted);
-            }
-        });
-
-        return data;
-    } catch(error){
-        console.error(error);
-    };
-};
-
 export const generateCloudinarySignature = async (accessToken: string) => {
     try {
         const { data } = await axios.get(`${RECIPES_ENDPOINT}/get-cloudinary-signature`, {
@@ -102,6 +76,75 @@ export const createCloudinaryURL = async ({accessToken, base64Url}: {accessToken
                 "Content-Type": "application/json",
             },
         });
+        return data;
+    } catch(error){
+        console.error(error);
+    };
+};
+
+export const startRecipeGenerationJob = async (accessToken: string, base64Url: string) => {
+    try {
+        const { data } = await axios.post(`${RECIPES_ENDPOINT}/start-recipe-generation`, {base64Image: base64Url}, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+
+        return data; // data should be the jobId that we get back at this specific endpoint
+    } catch(error){
+        console.error(error);
+    }
+};
+
+export const getRecipeGenerationJobStatus = async (accessToken: string, jobId: string) => {
+    try {
+        const { data } = await axios.get(`${RECIPES_ENDPOINT}/get-updated-recipe-generation-status/${jobId}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+        });
+
+        return data; // data should be object representation of the Job map object (job status)
+    } catch(error){
+        console.error(error);
+    }
+};
+
+export const getGeneratedRecipeResult = async (accessToken: string, jobId: string) => {
+    try {
+        const { data } = await axios.get(`${RECIPES_ENDPOINT}/get-generated-recipe/${jobId}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+
+        return data; // data should contain the fully generated recipe
+    } catch(error){
+        console.error(error);
+    }
+}
+
+// legacy function
+export const generateRecipeFromImage = async (accessToken: string, base64Url: string, selectedImageSize: number, updateProgress: (percent: number) => void) => {
+    try {
+        const { data } = await axios.post(`${RECIPES_ENDPOINT}/generate-recipe-from-image`, {base64Image: base64Url}, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+
+            onUploadProgress: (progressEvent) => {
+                let percentCompleted = 0;
+
+                if(progressEvent.total){
+                    percentCompleted = Math.min(Math.floor((progressEvent.loaded / progressEvent.total) * 100), 100);
+                } else {
+                    percentCompleted = Math.min(Math.floor((progressEvent.loaded / selectedImageSize) * 100), 100)
+                }
+
+                updateProgress(percentCompleted);
+            }
+        });
+
         return data;
     } catch(error){
         console.error(error);
