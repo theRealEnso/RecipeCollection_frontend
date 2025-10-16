@@ -114,6 +114,28 @@ const RecipeFromImageScreen = () => {
         }
     };
 
+    const recipeGenerationStatusQuery = useQuery({
+        queryKey: ["jobStatus", jobId],
+        queryFn: () =>  getRecipeGenerationJobStatus(accessToken, jobId),
+        enabled: false, // tell react query to not automatically fetch, we will manually control
+    });
+
+    // define mutation to start the recipe generation job
+    const startRecipeGenerationMutation = useMutation({
+        mutationFn: () => startRecipeGenerationJob(accessToken, base64Url),
+        onSuccess: (data) => {
+            console.log(data)
+            setJobId(data.job_id);
+            // need to write some code that starts polling the server continuously
+            startPollingForUpdates(data.job_id);
+        },
+        onError: (error: any) => {
+            setUploadProgress(null);
+            console.log(error);
+        }
+    });
+
+
     // define helper polling function(s)
 
     const stopPollingForUpdates = () => {
@@ -135,8 +157,8 @@ const RecipeFromImageScreen = () => {
                 return;
             };
 
-            const { data } = recipeGenerationStatusQuery.refetch();
-            const { phase, progress} = data;
+            const { data } = await recipeGenerationStatusQuery.refetch();
+            const { phase, progress } = data;
 
             setUploadProgress(progress);
 
@@ -164,31 +186,6 @@ const RecipeFromImageScreen = () => {
 
         poll();
     };
-
-    const recipeGenerationStatusQuery = useQuery({
-        queryKey: ["jobStatus", jobId],
-        queryFn: () => {
-            if(!jobId) throw new Error("no job");
-            return getRecipeGenerationJobStatus(accessToken, jobId);
-        },
-        enabled: false, // tell react query to not automatically fetch, we will manually control
-    });
-
-    // define mutation to start the recipe generation job
-    const startRecipeGenerationMutation = useMutation({
-        mutationFn: () => startRecipeGenerationJob(accessToken, base64Url),
-        onSuccess: (data) => {
-            console.log(data)
-            setJobId(data.job_id);
-            // need to write some code that starts polling the server continuously
-            startPollingForUpdates(data.job_id);
-        },
-        onError: (error: any) => {
-            setUploadProgress(null);
-            console.log(error);
-        }
-    });
-
 
     // function to send base 64 image url to back end api endpoint
     const generateRecipe = async () => {
