@@ -107,7 +107,7 @@ export const getRecipeGenerationJobStatus = async (accessToken: string, jobId: s
         return data; // data should be object representation of the Job map object (job status)
     } catch(error){
         console.error(error);
-    }
+    };
 };
 
 export const getGeneratedRecipeResult = async (accessToken: string, jobId: string) => {
@@ -121,8 +121,8 @@ export const getGeneratedRecipeResult = async (accessToken: string, jobId: strin
         return data; // data should contain the fully generated recipe
     } catch(error){
         console.error(error);
-    }
-}
+    };
+};
 
 // legacy function
 export const generateRecipeFromImage = async (accessToken: string, base64Url: string, selectedImageSize: number, updateProgress: (percent: number) => void) => {

@@ -7,7 +7,7 @@ import { RecipeContext } from "@/context/RecipeContext";
 import { UserContext } from "@/context/UserContext";
 
 import { getGeneratedRecipeResult, getRecipeGenerationJobStatus, startRecipeGenerationJob } from "@/api/recipes";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 //import component(s)
 import CustomButton from "./components/CustomButton";
@@ -24,10 +24,11 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 // import utility function(s)
 import { getFileType } from "@/utils/getFileType";
 
-const POLL_TIMEOUT = 60 * 1000 * 2; //2 minutes
+const POLL_TIMEOUT = 60 * 1000 * 2; // 2 minutes
 
 const RecipeFromImageScreen = () => {
     const router = useRouter();
+    const queryClient = useQueryClient();
 
     const[jobId, setJobId] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -35,7 +36,7 @@ const RecipeFromImageScreen = () => {
     const [navigationReady, setNavigationReady] = useState<boolean>(false);
 
     const pollStartedAtRef = useRef<number>(0); // use this ref to track global timer
-    const pollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const pollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null); // timer for polling
 
     const { accessToken } = useContext(UserContext);
     
@@ -115,8 +116,8 @@ const RecipeFromImageScreen = () => {
     };
 
     const recipeGenerationStatusQuery = useQuery({
-        queryKey: ["jobStatus", jobId],
-        queryFn: () =>  getRecipeGenerationJobStatus(accessToken, jobId),
+        queryKey: ["jobStatus", jobId], // initially created with empty jobId
+        queryFn: () => getRecipeGenerationJobStatus(accessToken, jobId),
         enabled: false, // tell react query to not automatically fetch, we will manually control
     });
 
@@ -125,7 +126,7 @@ const RecipeFromImageScreen = () => {
         mutationFn: () => startRecipeGenerationJob(accessToken, base64Url),
         onSuccess: (data) => {
             console.log(data)
-            setJobId(data.job_id);
+            // setJobId(data.job_id);
             // need to write some code that starts polling the server continuously
             startPollingForUpdates(data.job_id);
         },
@@ -135,30 +136,38 @@ const RecipeFromImageScreen = () => {
         }
     });
 
-
     // define helper polling function(s)
 
-    const stopPollingForUpdates = () => {
-        if(pollTimerRef.current){
-            clearTimeout(pollTimerRef.current);
-            pollTimerRef.current = null;
-        };
-    };
     const startPollingForUpdates = async (jobId: string) => {
         // needs to continuously poll the server
         //for sure needs to make get requests to the endpoint that provides the update(s)
+
         pollStartedAtRef.current = Date.now();
 
         const poll = async () => {
-            // stop polling altogether if it takes longer than 2 minutes
+            // stop polling altogether if the recipe generation takes longer than 2 minutes
             if(Date.now() - pollStartedAtRef.current > POLL_TIMEOUT ) {
                 stopPollingForUpdates();
                 setUploadProgress(null);
                 return;
             };
 
-            const { data } = await recipeGenerationStatusQuery.refetch();
-            const { phase, progress } = data;
+            console.log("starting poll with jobId of: ", jobId); // correctly logs the right job id...
+
+            // const { data } = await recipeGenerationStatusQuery.refetch(); //issue(?) useQuery initializes with jobId from state, which starts off as an empty string (?) and makes request with empty string instead of the correct jobId (?);
+
+            const statusUpdate = await queryClient.fetchQuery({
+                queryKey: ["jobStatus", jobId],
+                queryFn: () => getRecipeGenerationJobStatus(accessToken, jobId),
+                staleTime: 0,
+            });
+
+            console.log(statusUpdate);
+
+            const { phase, progress } = statusUpdate;
+
+            console.log("current phase is: ", phase);
+            console.log("current progress is: ", progress);
 
             setUploadProgress(progress);
 
@@ -168,9 +177,10 @@ const RecipeFromImageScreen = () => {
 
                 // get the recipe from our API endpoint, store the recipe in state
                 const generatedRecipe = await getGeneratedRecipeResult(accessToken, jobId);
+                // console.log(generatedRecipe);
                 setIsLoading(false);
                 setUploadProgress(100);
-                setGeneratedRecipe(generatedRecipe);
+                setGeneratedRecipe(generatedRecipe.recipe);
                 setNavigationReady(true);
                 return;
             };
@@ -187,10 +197,18 @@ const RecipeFromImageScreen = () => {
         poll();
     };
 
+        const stopPollingForUpdates = () => {
+        if(pollTimerRef.current){
+            clearTimeout(pollTimerRef.current);
+            pollTimerRef.current = null;
+        };
+    };
+
     // function to send base 64 image url to back end api endpoint
     const generateRecipe = async () => {
         try {
             setIsLoading(true);
+            setUploadProgress(0);
             startRecipeGenerationMutation.mutate();
 
         } catch(error){
@@ -200,17 +218,18 @@ const RecipeFromImageScreen = () => {
 
     useEffect(() => {
         if(navigationReady){
-            router.push("./RecipeGeneratedScreen");
-            setNavigationReady(false);
+            setTimeout(() => {
+                router.push("./RecipeGeneratedScreen");
+                setNavigationReady(false);
+                setUploadProgress(null);
+            }, 2000)
         }
     }, [router, navigationReady]);
 
-    // console.log(base64Url);
-
-    //cleanup when component unmounts
+    //cleanup to stop polling when component unmounts
     useEffect(() => {
         return () => stopPollingForUpdates();
-    });
+    }, []);
 
     return (
         <View style={styles.container}>
