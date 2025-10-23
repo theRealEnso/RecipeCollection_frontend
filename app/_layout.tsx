@@ -3,6 +3,10 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { useState } from 'react';
 
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+// import context provider(s)
 import { RecipeProvider } from '@/context/RecipeContext';
 import { UserProvider } from '../context/UserContext';
 
@@ -18,12 +22,16 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <UserProvider>
-        <RecipeProvider>
-          <Stack screenOptions={{ headerShown: false }} />
-        </RecipeProvider>
-      </UserProvider>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <SafeAreaProvider>
+        <QueryClientProvider client={queryClient}>
+          <UserProvider>
+            <RecipeProvider>
+              <Stack screenOptions={{ headerShown: false }} />
+            </RecipeProvider>
+          </UserProvider>
+      </QueryClientProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
-}
+};

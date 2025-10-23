@@ -43,7 +43,7 @@ const RecipeGeneratedScreen = () => {
         <View style={styles.outerContainer}>
             <ScrollView style={{flexGrow: 1}}>
                 <View style={styles.mainContentContainer}>
-                    {/* header */}
+                    {/* header */} 
                     <View style={{alignItems: "center",}}>
                         <Text style={styles.header}>{nameOfDish}</Text>
                     </View>

@@ -5,7 +5,6 @@ import { FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, View }
 
 //import component(s)
 import CategoryTile from "./CategoryTile";
-import CustomButton from "./CustomButton";
 
 //import Modal component(s)
 import AddCategoryModal from "./modals/category/AddCategoryModal";
@@ -13,7 +12,6 @@ import ConfirmDeletionModal from "./modals/category/ConfirmDeletionModal";
 import EditCategoryModal from "./modals/category/EditCategoryModal";
 
 // import icons
-import Entypo from '@expo/vector-icons/Entypo';
 
 // import types
 import { Cuisine } from "@/types/Category";
@@ -69,15 +67,6 @@ const CuisineList = ({categoriesData}: CategoriesData) => {
                     showsVerticalScrollIndicator={false}
                 >
                 </FlatList>
-
-                <View style={styles.addButtonContainer}>
-                    <CustomButton 
-                        width={40} 
-                        value={<Entypo name="add-to-list" size={24} color="#fff"></Entypo>}
-                        onButtonPress={displayAddModal}
-                    >
-                    </CustomButton>
-                </View>
             </Pressable>
 
             {
@@ -123,8 +112,7 @@ const styles = StyleSheet.create({
 
     pressable: {
         flex: 1,
-        // marginVertical: 20,
-        paddingVertical: 30,
+        // paddingVertical: 30,
     },
 
     grid: {
@@ -142,6 +130,7 @@ const styles = StyleSheet.create({
         overflow: "hidden",
         flexDirection: "row",
         justifyContent: "flex-end",
-        marginHorizontal: 30
+        marginHorizontal: 30,
+        marginVertical: 5,
     },
 });
