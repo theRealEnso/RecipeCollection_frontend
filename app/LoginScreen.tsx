@@ -22,18 +22,18 @@ type FormErrors = {
 };
 
 export default function LoginScreen() {
-  const {handleSetUser, handleSetTokens, accessToken, refreshToken} = useContext(UserContext);
+  const {handleSetUser, handleSetTokens, accessToken,} = useContext(UserContext);
   const [navigationReady, setNavigationReady] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const router = useRouter();
 
   useEffect(() => {
-    if(navigationReady && accessToken && refreshToken){
+    if(navigationReady && accessToken){
       // console.log(accessToken);
       router.replace("./HomeScreen");
     }
-  }, [router, navigationReady, accessToken, refreshToken]);
+  }, [router, navigationReady, accessToken,]);
 
   const [formErrors, setFormErrors] = useState<FormErrors>({
     email: null,

@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { useRouter } from "expo-router";
 
-import { StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 
 // import context(s);
 import { UserContext } from "@/context/UserContext";
@@ -25,6 +25,7 @@ const CustomDrawerContent = (props: any) => {
     const navigation = props.navigation;
 
     const [showAddCategoryModal, setShowAddCategoryModal] = useState<boolean>(false);
+    const [activeItem, setActiveItem] = useState<string | null>(null);
 
     const {
         handleSetUser, 
@@ -44,6 +45,8 @@ const CustomDrawerContent = (props: any) => {
         }
     }, [currentUser, accessToken]);
 
+    // console.log(currentUser);
+
     return (
         <DrawerContentScrollView {...props} style={styles.drawerContent}>
             <View style={styles.titleContainer}>
@@ -55,25 +58,84 @@ const CustomDrawerContent = (props: any) => {
             </View>
 
             <DrawerItem
+                label="Profile"
+                labelStyle={
+                    activeItem === "Profile"
+                    ? {color: "white"} 
+                    : {color: "black"}
+                }
+                onPress={() => {
+                    setActiveItem("Profile");
+                    navigation.navigate("ProfilePage");
+                }}
+                icon={({focused}) => (
+                    <View>
+                        {
+                            currentUser && currentUser.picture && (
+                                <Image
+                                    source={{uri: currentUser.picture}}
+                                    style={{
+                                        width: 32, 
+                                        height: 32, 
+                                        borderRadius: 16,
+                                        backgroundColor: focused ? colors.primaryAccent900 : ""
+                                    }}
+                                    resizeMode="cover"
+                                >
+                                </Image>
+                            )
+                        }
+                    </View>
+                )}
+                style={
+                    activeItem === "Profile" 
+                    ? {backgroundColor: colors.primaryAccent700} 
+                    : {backgroundColor: colors.backgroundPrimary}
+                }
+            />
+
+            <DrawerItem
                 label="Home"
-                onPress={() => navigation.navigate("HomeScreen")}
+                labelStyle={
+                    activeItem === "Home"
+                    ? {color: "white"} 
+                    : {color: "black"}
+                }
+                onPress={() => {
+                    setActiveItem("Home");
+                    navigation.navigate("HomeScreen")
+                }}
                 icon={({focused}) => <Feather name="home" size={24} color={focused ? colors.primaryAccent500 : "black"} />}
-                activeBackgroundColor={colors.primaryAccent900}
-                // inactiveBackgroundColor="white"
-                activeTintColor={colors.primaryAccent900}
+                style={
+                    activeItem === "Home" 
+                    ? {backgroundColor: colors.primaryAccent700} 
+                    : {backgroundColor: colors.backgroundPrimary}
+                }
             />
 
             <DrawerItem 
                 label="Add a cuisine category"
-                onPress={() => setShowAddCategoryModal(true)}
+                labelStyle={
+                    activeItem === "Add a cuisine category"
+                    ? {color: "white"} 
+                    : {color: "black"}
+                }
+                onPress={() => {
+                    setActiveItem("Add a cuisine category");
+                    setShowAddCategoryModal(true)
+                }}
                 icon={({focused}) => <MaterialCommunityIcons name="silverware-fork-knife" size={24} color={focused ? colors.primaryAccent500 : "black"} />}
-                activeBackgroundColor={colors.primaryAccent900}
-                activeTintColor={colors.primaryAccent900}
+                // activeBackgroundColor={colors.primaryAccent900}
+                // activeTintColor={colors.primaryAccent900}
                 // inactiveBackgroundColor="white"
+                style={
+                    activeItem === "Add a cuisine category" 
+                    ? {backgroundColor: colors.primaryAccent700} 
+                    : {backgroundColor: colors.backgroundPrimary}
+                }
             />
 
             
-
             <View style={styles.borderLine}></View>
 
             <DrawerItem
@@ -96,6 +158,8 @@ const AuthenticatedLayout = () => {
         <Drawer
             drawerContent={(props) => <CustomDrawerContent {...props}></CustomDrawerContent>}
             screenOptions={{
+                // drawerActiveTintColor: colors.primaryAccent900,
+                // drawerActiveBackgroundColor: colors.primaryAccent900,
                 drawerStyle: {
                     width: 350,
                 },
@@ -104,10 +168,19 @@ const AuthenticatedLayout = () => {
         >
 
             <Drawer.Screen
+                name="ProfilePage"
+                options={{
+                    title: "Profile Page",
+                    drawerLabel: "Profile Page",
+                }} 
+            />
+
+            <Drawer.Screen
                 name="HomeScreen"
                 options={{
                     title: "Home",
-                    drawerLabel: "Home"
+                    drawerLabel: "Home",
+                    
                 }} 
             />
         </Drawer>

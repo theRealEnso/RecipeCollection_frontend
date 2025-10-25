@@ -133,7 +133,8 @@ const CookingInstructionsScreen = () => {
         }
     };
 
-    const createNewRecipeWithCloudinaryUrlMutation = useMutation({
+    //mutation that creates a recipe if user selects a photo
+    const makeNewRecipeWithCloudinaryUrl = useMutation({
         // need to first get signature from api endpoint,
         // then upload the image to cloudinary with the signature to get the secure url,
         // and finally create the recipe with the secure url for the image
@@ -170,7 +171,7 @@ const CookingInstructionsScreen = () => {
         onSuccess: (data) => {
             if(data?.secure_url){
                 setUploadProgress(null);
-                createNewRecipeMutation.mutate({
+                makeNewRecipe.mutate({
                     accessToken,
                     recipeData: {
                         ...recipeData,
@@ -184,7 +185,8 @@ const CookingInstructionsScreen = () => {
         },
     });
 
-    const createNewRecipeMutation = useMutation({
+    //mutation that creates recipe
+    const makeNewRecipe = useMutation({
         mutationFn: createNewRecipe,
         onSuccess: (data) => {
             if(data){
@@ -205,20 +207,18 @@ const CookingInstructionsScreen = () => {
         }
     });
 
-    const isLoading = createNewRecipeWithCloudinaryUrlMutation.isPending || createNewRecipeMutation.isPending;
+    const isLoading = makeNewRecipeWithCloudinaryUrl.isPending || makeNewRecipe.isPending;
 
     const handleCreateRecipe = async () => {
         try {
-            if(selectedImageUrl && selectedImageUrl.length > 0){
-                // console.log("Sending base64 length:", base64Url?.length);   
-
-                createNewRecipeWithCloudinaryUrlMutation.mutate({
+            if(selectedImageUrl && selectedImageUrl.length > 0){  
+                makeNewRecipeWithCloudinaryUrl.mutate({
                     accessToken,
                     selectedImageUrl,
                     onProgress: (percent: number) => setUploadProgress(percent),
                 });
             } else {
-                createNewRecipeMutation.mutate({
+                makeNewRecipe.mutate({
                     accessToken,
                     recipeData: {
                         ...recipeData,
