@@ -24,7 +24,7 @@ const Instruction = ({instructionData, onDelete}: InstructionProps) => {
     return (
         <View style={styles.container}>
             <View style={styles.instructionItem}>
-                <Text style={{fontSize: 16, padding: 10,}}>{instruction}</Text>
+                <Text style={{fontSize: 16, padding: 10, color: "white"}}>{instruction}</Text>
             </View>
             
 
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     },
 
     instructionItem: {
-        backgroundColor: colors.primaryAccent500,
+        backgroundColor: colors.primaryAccent000,
         alignItems: "center",
         justifyContent: "center",
         width: "75%",

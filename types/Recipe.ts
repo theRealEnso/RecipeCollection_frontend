@@ -16,6 +16,10 @@ export type RecipeContextTypes = {
     setCategoryName: React.Dispatch<React.SetStateAction<string>>;
     categoryId: string;
     setCategoryId: React.Dispatch<React.SetStateAction<string>>;
+    isPublic: boolean;
+    setIsPublic: React.Dispatch<React.SetStateAction<boolean>>;
+    isClaimed: boolean;
+    setIsClaimed: React.Dispatch<React.SetStateAction<boolean>>;
     recipeOwner?: string;
     nameOfDish: string;
     difficultyLevel: string;

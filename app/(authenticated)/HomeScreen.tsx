@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
-import { useContext, useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { ActivityIndicator, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 //import context
@@ -19,24 +19,55 @@ import { getAllCategories } from "@/api/categories";
 import { useQuery } from "@tanstack/react-query";
 
 // import icons
+import Feather from '@expo/vector-icons/Feather';
 
 import colors from "../constants/colors";
 
 const HomeScreen = () => {
-    const [showAddCategoryModal, setShowAddCategoryModal] = useState<boolean>(false);
-
-    const {data, isLoading, error} = useQuery({
-        queryKey: ["userCategories"],
-        queryFn: () => getAllCategories(accessToken),
-        // refetchOnMount: "always",
-    });
-
     const router = useRouter();
     const {currentUser, handleSetUser, handleSetTokens, accessToken,} = useContext(UserContext);
     const { resetRecipeState, } = useContext(RecipeContext);
 
+    const [showAddCategoryModal, setShowAddCategoryModal] = useState<boolean>(false);
+    const [searchInput, setSearchInput] = useState<string>("");
+
+    const {data, isLoading, error} = useQuery({
+        queryKey: ["userCategories"],
+        queryFn: () => getAllCategories(accessToken),
+        enabled: !!accessToken,
+    });
+
     const displayAddModal = () => setShowAddCategoryModal(true);
-    
+
+    // debounce function (helper)
+    const debounce = (func: Function, delay: number) => {
+        let timeoutId: ReturnType<typeof setTimeout>;
+        return (...args: any[]) => { // the returned debounced function that wraps the original function that was passed in
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func(...args);
+            }, delay)
+        };
+    };
+
+    // logSearch ends up being the returned function from debounce
+    // in other words, logSearch is now: (...args: any[]) => {
+    //     clearTimeout(timeoutId);
+    //     timeout = setTimeout(() => {
+    //         func(...args)
+    //     }, delay)
+    // }, and this returned function "remembers" whatever was passed in as the argument to `func` in debounce, as well as the delay. This is also where userInput gets captured as args. Because of closures, this returned function "closes" over the func and delay variables from the outer scope
+    const logSearch = useCallback(debounce((userInput: string) => {
+        if(!userInput.length) return;
+
+        console.log("the user typed: ", userInput);
+    }, 3000), []);
+
+    const handleSearch = (userInput: string) => {
+        setSearchInput(userInput);
+        logSearch(userInput);
+    };
+
     const logOut = () => {
         handleSetUser(null);
         handleSetTokens("", "");
@@ -59,6 +90,16 @@ const HomeScreen = () => {
     return (
         <SafeAreaView style={styles.safe}>
             <View style={styles.container}>
+                <View style={styles.searchBoxContainer}>
+                    {/* icon */}
+                    <Feather name="search" size={24} color="black" style={styles.searchIcon} />
+                    <TextInput
+                        style={styles.textInput}
+                        onChangeText={handleSearch}
+                        value={searchInput}
+                        placeholder="Search recipes..."
+                    />
+                </View>
                 {
                     isLoading
                         ? <ActivityIndicator size="large"></ActivityIndicator>
@@ -129,7 +170,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         flex: 1,
-        paddingVertical: 50,
     },
 
     contentContainer: {
@@ -137,4 +177,23 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         flex: 10,
     },
+
+    textInput: {
+        borderWidth: 2,
+        borderColor: colors.primaryAccent000,
+        width: 250,
+        borderRadius: 20,
+        paddingLeft: 35,
+    },
+
+    searchBoxContainer: {
+        position: "relative",
+        marginBottom: 20,
+    },
+
+    searchIcon: {
+        position: "absolute",
+        top: 10,
+        left: 10,
+    }
 });

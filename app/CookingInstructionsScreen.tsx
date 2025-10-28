@@ -44,7 +44,7 @@ const CookingInstructionsScreen = () => {
     
     const [uploadProgress, setUploadProgress] = useState<number | null>(null);
 
-    const { accessToken } = useContext(UserContext);
+    const { accessToken, currentUser } = useContext(UserContext);
     const {
         categoryName,
         categoryId,
@@ -64,7 +64,9 @@ const CookingInstructionsScreen = () => {
         cookingInstructions,
         subInstructions,
         sublistNames,
-        resetRecipeState
+        resetRecipeState,
+        isPublic,
+        isClaimed,
     } = useContext(RecipeContext);
 
     let recipeData = {
@@ -82,6 +84,9 @@ const CookingInstructionsScreen = () => {
         cookingInstructions,
         subInstructions,
         sublists: sublistNames,
+        isPublic,
+        ownerUserId: currentUser && currentUser.id,
+        isClaimed,
     };
 
     //helper function to upload image + sign preset to cloudinary, ultimately to get a secure_url
@@ -334,8 +339,6 @@ const CookingInstructionsScreen = () => {
                 </View>
             }
         </View>
-
-        
     )
 };
 

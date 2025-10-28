@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 
 //import Recipe context
 import { RecipeContext } from "@/context/RecipeContext";
@@ -10,6 +10,7 @@ import CustomButton from "./components/CustomButton";
 import FormInput from "./components/FormInput";
 
 //import icon(s)
+import Fontisto from '@expo/vector-icons/Fontisto';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 import * as FileSystem from "expo-file-system";
@@ -18,6 +19,7 @@ import * as ImagePicker from "expo-image-picker";
 
 // import utility function(s);
 import { getFileType } from "@/utils/getFileType";
+import colors from "./constants/colors";
 
 // import colors from "@/app/constants/colors";
 
@@ -50,7 +52,13 @@ const AddRecipeScreen = () => {
         resetRecipeState,
         categoryName,
         categoryId,
+        isPublic,
+        setIsPublic,
+        setIsClaimed,
     } = useContext(RecipeContext);
+
+    const [toggleNo, setToggleNo] = useState<boolean>(true);
+    const [toggleYes, setToggleYes] = useState<boolean>(false);
 
     const [formErrors, setFormErrors] = useState<FormErrors>({
         dishName: null,
@@ -58,6 +66,22 @@ const AddRecipeScreen = () => {
         cookingTime: null,
         servingSize: null,
     });
+
+    // handle toggling switch
+    const toggleSwitch = () => setIsPublic((previousState) => !previousState);
+
+    // handling check box selection
+    const pressNo = () => {
+        setToggleNo(true);
+        setToggleYes(false);
+        setIsClaimed(false);
+    };
+
+    const pressYes = () => {
+        setToggleNo(false);
+        setToggleYes(true);
+        setIsClaimed(true);
+    };
 
     const handleInputChange = (fieldName: string, value: string) => {
         setRecipeForm((previousState) => {
@@ -113,8 +137,7 @@ const AddRecipeScreen = () => {
             const modifiedFileType = getFileType(finalImage.uri);
             const originalFileData = await FileSystem.getInfoAsync(fileUri);
             console.log(originalFileData);
-            const originalFileSize = originalFileData.size;
-            console.log(originalFileSize);
+            const originalFileSize = originalFileData.size
             console.log(typeof(originalFileSize));
 
             // console.log("the original file uri is: ", fileUri);
@@ -178,6 +201,55 @@ const AddRecipeScreen = () => {
     return (
         <ScrollView style={{flex: 1, position: "relative"}}>
             <View style={styles.container}>
+                {/* public switch */}
+                <View>
+                    <Text style={{marginLeft: "auto"}}>
+                        {
+                            isPublic ? "Mark as: Public" : "Mark as: Private"
+                        }
+                    </Text>
+                    <Switch
+                        onValueChange={toggleSwitch}
+                        value={isPublic}
+                    />
+                </View>
+
+                {/*recipe ownership toggle  */}
+                <View style={styles.checkboxOuter}>
+                        <View>
+                            <Text>Are you the original creator of this recipe?</Text>
+                        </View>
+
+                        <View style={styles.checkbox}>
+                            <View style={{marginHorizontal: 5}}>
+                                <Text>No</Text>
+                                <Fontisto 
+                                    name="checkbox-passive" 
+                                    size={24} color={colors.primaryAccent600} 
+                                    onPress={pressNo} 
+                                    style={
+                                        toggleYes 
+                                        ? {backgroundColor: "white"}
+                                        : {backgroundColor: colors.primaryAccent600}
+                                    }/>
+                            </View>
+                            <View style={{marginHorizontal: 5}}>
+                                <Text>Yes</Text>
+                                <Fontisto 
+                                    name="checkbox-passive" 
+                                    size={24} 
+                                    color={colors.primaryAccent600} onPress={pressYes}
+                                    style={
+                                        toggleNo 
+                                        ? {backgroundColor: "white"}
+                                        : {backgroundColor: colors.primaryAccent600}
+                                    }
+                                />
+                            </View>
+                            
+                        </View>
+                </View>
+
                 <View>
                     <View style={styles.inputContainer}>
                         <Text>Enter the name / title of your dish!</Text>
@@ -351,5 +423,15 @@ const styles = StyleSheet.create({
         zIndex: 10,
         backgroundColor: "white",
         borderRadius: 20,
-    }
+    },
+
+    checkboxOuter: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginVertical: 10,
+    },
+    checkbox: {
+        flexDirection: "row",
+    },
 });

@@ -5,6 +5,7 @@ const colors = {
   primaryAccent700: "#4A57D5",
   primaryAccent800: "#3C46B3",
   primaryAccent900: "#2D348F",
+  primaryAccent000: "#0E0E1A",
 
   // single secondary accent (used for highlights / mixed gradients)
   secondaryAccent500: "#FF79C6", // Bubblegum Pink

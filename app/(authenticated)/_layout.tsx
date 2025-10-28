@@ -25,7 +25,7 @@ const CustomDrawerContent = (props: any) => {
     const navigation = props.navigation;
 
     const [showAddCategoryModal, setShowAddCategoryModal] = useState<boolean>(false);
-    const [activeItem, setActiveItem] = useState<string | null>(null);
+    const [activeItem, setActiveItem] = useState<string | null>("Home");
 
     const {
         handleSetUser, 
@@ -58,11 +58,30 @@ const CustomDrawerContent = (props: any) => {
             </View>
 
             <DrawerItem
+                label="Home"
+                labelStyle={
+                    activeItem === "Home"
+                    ? {color: "white", paddingLeft: 8} 
+                    : {color: "black", paddingLeft: 8}
+                }
+                onPress={() => {
+                    setActiveItem("Home");
+                    navigation.navigate("HomeScreen")
+                }}
+                icon={({focused}) => <Feather name="home" size={24} color={focused ? colors.primaryAccent500 : "black"} />}
+                style={
+                    activeItem === "Home" 
+                    ? {backgroundColor: colors.primaryAccent700} 
+                    : {backgroundColor: colors.backgroundPrimary}
+                }
+            />
+
+            <DrawerItem
                 label="Profile"
                 labelStyle={
                     activeItem === "Profile"
-                    ? {color: "white"} 
-                    : {color: "black"}
+                    ? {color: "white",} 
+                    : {color: "black",}
                 }
                 onPress={() => {
                     setActiveItem("Profile");
@@ -94,31 +113,12 @@ const CustomDrawerContent = (props: any) => {
                 }
             />
 
-            <DrawerItem
-                label="Home"
-                labelStyle={
-                    activeItem === "Home"
-                    ? {color: "white"} 
-                    : {color: "black"}
-                }
-                onPress={() => {
-                    setActiveItem("Home");
-                    navigation.navigate("HomeScreen")
-                }}
-                icon={({focused}) => <Feather name="home" size={24} color={focused ? colors.primaryAccent500 : "black"} />}
-                style={
-                    activeItem === "Home" 
-                    ? {backgroundColor: colors.primaryAccent700} 
-                    : {backgroundColor: colors.backgroundPrimary}
-                }
-            />
-
             <DrawerItem 
                 label="Add a cuisine category"
                 labelStyle={
                     activeItem === "Add a cuisine category"
-                    ? {color: "white"} 
-                    : {color: "black"}
+                    ? {color: "white", paddingLeft: 8} 
+                    : {color: "black", paddingLeft: 8}
                 }
                 onPress={() => {
                     setActiveItem("Add a cuisine category");

@@ -58,12 +58,18 @@ export const RecipeContext = createContext<RecipeContextTypes>({
     setBase64Url: () => {},
     resetRecipeState: () => {},
     setGeneratedRecipe: () => {},
+    isPublic: false,
+    setIsPublic: () => {},
+    isClaimed: false,
+    setIsClaimed: () => {}
 });
 
 export const RecipeProvider = ({children}: RecipeProviderProps) => {
     const [tileId, setTileId] = useState<string>("");
     const [categoryName, setCategoryName] = useState<string>("");
     const [categoryId, setCategoryId] = useState<string>("");
+    const [isPublic, setIsPublic] = useState<boolean>(false);
+    const [isClaimed, setIsClaimed] = useState<boolean>(false);
     const [ingredientInput, setIngredientInput] = useState<string>("");
     const [ingredientsList, setIngredientsList] = useState<Ingredient[]>([]);
     const [sublistNames, setSublistNames] = useState<ListName[]>([]);
@@ -95,6 +101,8 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
 
     //to reset state
     const resetRecipeState = () => {
+        setIsClaimed(false);
+        setIsPublic(false);
         setCookingInstructions([]);
         setIngredientsList([]);
         setSubInstructions([]);
@@ -196,6 +204,10 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         setGeneratedRecipe,
         selectedImageSize,
         setSelectedImageSize,
+        isPublic,
+        setIsPublic,
+        isClaimed,
+        setIsClaimed,
     };
 
     return <RecipeContext.Provider value={value}>{children}</RecipeContext.Provider>
