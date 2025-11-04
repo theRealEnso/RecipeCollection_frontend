@@ -128,7 +128,7 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
                 nameOfDish,
                 difficultyLevel,
                 numberOfServings,
-                specialEquipment,
+                specialEquipment, 
                 timeToCook,
                 ingredients,
                 cookingInstructions,

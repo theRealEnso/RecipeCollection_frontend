@@ -6,30 +6,36 @@ import { useQuery } from "@tanstack/react-query";
 
 import { UserContext } from "@/context/UserContext";
 
-import { StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 //import component(s)
 import CustomButton from "./components/CustomButton";
-import RecipeDetails from "./RecipeDetailsScreen";
+import RecipeDetailsScreen from "./RecipeDetailsScreen";
 
-// import colors
-
+//import colors
+import colors from "./constants/colors";
 const RecipeScreen = () => {
     const { _id } = useLocalSearchParams();
     const router = useRouter();
 
-    const { accessToken } = useContext(UserContext);
+    const { accessToken, currentUser } = useContext(UserContext);
+    const userId = currentUser ? currentUser.id : null;
 
     const {data, isLoading, error} = useQuery({
-        queryKey: ["recipeData"],
+        queryKey: ["recipeData", _id],
         queryFn: () => getDetailedRecipe(accessToken, _id as string),
+        enabled: !!_id && !!userId,
+        gcTime: 0,
+        staleTime: 0,
     });
 
     return (
     <View style={styles.container}>
         
         {
-            data && data.recipeDetails && Object.keys(data.recipeDetails).length > 0 ? (
+            isLoading ? 
+            (<ActivityIndicator color={colors.primaryAccent000} size={24}></ActivityIndicator>)
+            : data && data.recipeDetails && Object.keys(data.recipeDetails).length > 0 ? (
                 (() => {
                     const {
                         recipeOwner, 
@@ -44,7 +50,7 @@ const RecipeScreen = () => {
                     } = data.recipeDetails;
 
                     return (
-                        <RecipeDetails
+                        <RecipeDetailsScreen
                             recipeOwner={recipeOwner}
                             nameOfDish={nameOfDish}
                             imageUrl={imageUrl}
@@ -55,7 +61,7 @@ const RecipeScreen = () => {
                             subInstructions={subInstructions}
                             sublists={sublists}
                         >
-                        </RecipeDetails>
+                        </RecipeDetailsScreen>
                     );
                 })()
             ) : isLoading ? (

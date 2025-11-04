@@ -83,12 +83,19 @@ export type RecipeSubInstructions = {
 };
 
 export type RecipeData = RecipeForm & {
+    _id: string;
     categoryName: string;
-    categoryId: string;
+    cuisineCategory: string;
     ingredients: Ingredient[],
     cookingInstructions: CookingInstructions[],
     sublists: ListName[];
     subIngredients: SubIngredient[];
     subInstructions: RecipeSubInstructions[];
     imageUrl: string;
+    isPublic: boolean;
+    ownerUserId: string;
+    isClaimed: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    __v: number
 };

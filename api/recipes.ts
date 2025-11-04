@@ -54,6 +54,22 @@ export const createNewRecipe = async ({accessToken, recipeData}: CreateRecipePro
     };
 };
 
+export const getUserSearchedRecipes = async (accessToken: string, searchQuery: string, signal?: AbortSignal) => {
+    try {
+        const { data } = await axios.get(`${RECIPES_ENDPOINT}/search-user-recipes/search?q=${searchQuery}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+            signal,
+        });
+
+        return data;
+    } catch(error){
+        console.error(error);
+        throw new Error(error as any);
+    };
+}; 
+
 export const generateCloudinarySignature = async (accessToken: string) => {
     try {
         const { data } = await axios.get(`${RECIPES_ENDPOINT}/get-cloudinary-signature`, {

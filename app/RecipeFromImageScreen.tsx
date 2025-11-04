@@ -49,7 +49,7 @@ const RecipeFromImageScreen = () => {
         selectedImageUrl, // use to display in Image tag to render image on device
         selectedImageSize,
         base64Url, // use to send to api endpoint that handles recipe generation
-        setGeneratedRecipe,
+        setRecipe,
         resetRecipeState
     } = useContext(RecipeContext);
 
@@ -180,7 +180,7 @@ const RecipeFromImageScreen = () => {
                 // console.log(generatedRecipe);
                 setIsLoading(false);
                 setUploadProgress(100);
-                setGeneratedRecipe(generatedRecipe.recipe);
+                setRecipe(generatedRecipe.recipe);
                 setNavigationReady(true);
                 return;
             };
@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
 //             // console.log(data);
 //             setUploadProgress(null);
 //             console.log(data.recipe);
-//             setGeneratedRecipe(data.recipe);
+//             setRecipe(data.recipe);
 //             setIsLoading(false);
 //             setNavigationReady(true);
 //         },

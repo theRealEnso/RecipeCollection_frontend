@@ -10,12 +10,14 @@ import { UserContext } from "@/context/UserContext";
 //import components(s)
 import CuisineList from "../components/CuisineList";
 import CustomButton from "../components/CustomButton";
+import SearchedRecipesList from "../components/SearchedRecipesList";
 
 //import Modal component(s)
 import AddCategoryModal from "../components/modals/category/AddCategoryModal";
 
 //import api function to fetch categories of cuisines belonging to the user
-import { getAllCategories } from "@/api/categories";
+import { getAllCategories, } from "@/api/categories";
+import { getUserSearchedRecipes } from "@/api/recipes";
 import { useQuery } from "@tanstack/react-query";
 
 // import icons
@@ -23,49 +25,75 @@ import Feather from '@expo/vector-icons/Feather';
 
 import colors from "../constants/colors";
 
+
+// define debounce function (helper)
+const debounce = <T,>(func: (value: T) => void, delay: number) => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    return (value: T) => { // the returned debounced function that wraps the original function that was passed in and accepts the original arguments. Not executed yet
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            //func and delay are "remembered" here due to closures
+            func(value);
+        }, delay)
+    };
+};
+
+// writing another function / custom hook that returns a debounced input
+const useDebouncedInput = <T,>(
+    value: T, 
+    delay: number, 
+    debounceFn: <X,>(func: (value: X) => void, delay: number) => (value: X) => void,
+    ) => {
+    const [debouncedInput, setDebouncedInput] = useState<T>(value) //  debouncedInput === searchInput
+    
+    // our function that debounces the searchInput
+    const debouncedSetter = useCallback(debounceFn((value: T) => {
+        setDebouncedInput(value);
+    }, delay), [delay, debounceFn]);
+
+    useEffect(() => {
+        debouncedSetter(value);
+    }, [value, debouncedSetter]);
+
+    // return a debounced input
+    return debouncedInput;
+};
+
 const HomeScreen = () => {
     const router = useRouter();
     const {currentUser, handleSetUser, handleSetTokens, accessToken,} = useContext(UserContext);
+    const userId = currentUser ? currentUser.id : null;
+
     const { resetRecipeState, } = useContext(RecipeContext);
 
     const [showAddCategoryModal, setShowAddCategoryModal] = useState<boolean>(false);
     const [searchInput, setSearchInput] = useState<string>("");
 
+    const debouncedSearchInput = useDebouncedInput(searchInput, 500, debounce);
+   
+    //to fetch user categories when signing in
     const {data, isLoading, error} = useQuery({
         queryKey: ["userCategories"],
         queryFn: () => getAllCategories(accessToken),
-        enabled: !!accessToken,
+        enabled: !!userId,
+    });
+
+    //to fetch user recipes based on what they search
+    const {
+        data: searchedRecipesData, 
+        isLoading: searchedRecipesIsLoading, 
+        error: searchedRecipesError,
+    } = useQuery({
+        queryKey: ["userSearchRecipes", userId, debouncedSearchInput],
+        queryFn: ({signal}) => getUserSearchedRecipes(accessToken, debouncedSearchInput, signal),
+        enabled: !!debouncedSearchInput && !!userId,
+        // placeholderData: {userRecipes: []},
     });
 
     const displayAddModal = () => setShowAddCategoryModal(true);
 
-    // debounce function (helper)
-    const debounce = (func: Function, delay: number) => {
-        let timeoutId: ReturnType<typeof setTimeout>;
-        return (...args: any[]) => { // the returned debounced function that wraps the original function that was passed in
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => {
-                func(...args);
-            }, delay)
-        };
-    };
-
-    // logSearch ends up being the returned function from debounce
-    // in other words, logSearch is now: (...args: any[]) => {
-    //     clearTimeout(timeoutId);
-    //     timeout = setTimeout(() => {
-    //         func(...args)
-    //     }, delay)
-    // }, and this returned function "remembers" whatever was passed in as the argument to `func` in debounce, as well as the delay. This is also where userInput gets captured as args. Because of closures, this returned function "closes" over the func and delay variables from the outer scope
-    const logSearch = useCallback(debounce((userInput: string) => {
-        if(!userInput.length) return;
-
-        console.log("the user typed: ", userInput);
-    }, 3000), []);
-
     const handleSearch = (userInput: string) => {
         setSearchInput(userInput);
-        logSearch(userInput);
     };
 
     const logOut = () => {
@@ -84,12 +112,14 @@ const HomeScreen = () => {
         }  
     }, [router, currentUser, accessToken]);
 
-    // if(accessToken) console.log("access token is:", accessToken);
-    // if(refreshToken) console.log("refresh token is: ", refreshToken);
+    if(searchedRecipesData){
+        console.log(searchedRecipesData.userRecipes);
+    };
 
     return (
         <SafeAreaView style={styles.safe}>
             <View style={styles.container}>
+                {/* display the search bar */}
                 <View style={styles.searchBoxContainer}>
                     {/* icon */}
                     <Feather name="search" size={24} color="black" style={styles.searchIcon} />
@@ -100,16 +130,37 @@ const HomeScreen = () => {
                         placeholder="Search recipes..."
                     />
                 </View>
+
+                {/* conditionally render cuisine categories and user search results */}
                 {
-                    isLoading
-                        ? <ActivityIndicator size="large"></ActivityIndicator>
-                        : error ? <Text>Error fetching user categories!</Text>
-                        : data && data.categories && Array.isArray(data.categories) && data.categories.length ? (
+                    // prioritize user search first
+                    !!debouncedSearchInput && !!userId 
+                    ? (
+                        searchedRecipesIsLoading ? (
+                            <ActivityIndicator color={colors.primaryAccent000} size={32} style={{flex: 1}}></ActivityIndicator>
+                        ) : searchedRecipesError ? (
+                            <Text>Error searching for recipes...</Text>
+                        )
+                        : searchedRecipesData.userRecipes.length > 0
+                        ? (<SearchedRecipesList recipesData={searchedRecipesData.userRecipes}></SearchedRecipesList>)
+            
+                        : (
+                            <View style={{flex: 1}}>
+                                <Text>No recipes found...</Text>
+                            </View>
+                        )  
+                    ) 
+                    : (
+                        // if there's no search happening, then show categories
+                        isLoading ? (
+                            <ActivityIndicator size="large"></ActivityIndicator>
+                        ): error ? (
+                            <Text>Error fetching user categories!</Text>
+                        ) : data && data.categories && Array.isArray(data.categories) && data.categories.length ? (
                             <View style={{flex: 1}}>
                                 <CuisineList categoriesData={data.categories}></CuisineList>
                             </View>
-                        )
-                        : (
+                        ) : (
                             <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
                                 <View style={styles.contentContainer}>
                                     <View style={{paddingHorizontal: 30, marginVertical: 10}}>
@@ -138,9 +189,8 @@ const HomeScreen = () => {
                                     </CustomButton>
                                 </View>
                             </View> 
-
                         )
-                                
+                    )
                 }
 
                 {
@@ -197,3 +247,35 @@ const styles = StyleSheet.create({
         left: 10,
     }
 });
+
+//  (
+//                             <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+//                                 <View style={styles.contentContainer}>
+//                                     <View style={{paddingHorizontal: 30, marginVertical: 10}}>
+//                                         <Text>You currently do not have any cuisine categories added. Press the button below to start adding!</Text>
+//                                     </View>
+
+//                                     <View style={{marginVertical: 10}}>
+//                                         <CustomButton 
+//                                             width={150} 
+//                                             value="Add Category"
+//                                             onButtonPress={displayAddModal}
+//                                             radius={75}
+//                                         >
+//                                         </CustomButton>
+//                                     </View>
+//                                 </View>
+
+//                                 <View style={{marginVertical: 10, flex: 1,}}>
+//                                     <CustomButton 
+//                                         width={100} 
+//                                         value="Sign out"
+//                                         onButtonPress={logOut}
+//                                         radius={50}
+//                                         color="#E95C3C"
+//                                     >
+//                                     </CustomButton>
+//                                 </View>
+//                             </View> 
+//                         ) 
+
