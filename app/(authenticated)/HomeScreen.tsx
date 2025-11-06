@@ -44,7 +44,7 @@ const useDebouncedInput = <T,>(
     delay: number, 
     debounceFn: <X,>(func: (value: X) => void, delay: number) => (value: X) => void,
     ) => {
-    const [debouncedInput, setDebouncedInput] = useState<T>(value) //  debouncedInput === searchInput
+    const [debouncedInput, setDebouncedInput] = useState<T>(value); //  debouncedInput === searchInput
     
     // our function that debounces the searchInput
     const debouncedSetter = useCallback(debounceFn((value: T) => {
@@ -87,7 +87,6 @@ const HomeScreen = () => {
         queryKey: ["userSearchRecipes", userId, debouncedSearchInput],
         queryFn: ({signal}) => getUserSearchedRecipes(accessToken, debouncedSearchInput, signal),
         enabled: !!debouncedSearchInput && !!userId,
-        // placeholderData: {userRecipes: []},
     });
 
     const displayAddModal = () => setShowAddCategoryModal(true);
@@ -247,35 +246,3 @@ const styles = StyleSheet.create({
         left: 10,
     }
 });
-
-//  (
-//                             <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-//                                 <View style={styles.contentContainer}>
-//                                     <View style={{paddingHorizontal: 30, marginVertical: 10}}>
-//                                         <Text>You currently do not have any cuisine categories added. Press the button below to start adding!</Text>
-//                                     </View>
-
-//                                     <View style={{marginVertical: 10}}>
-//                                         <CustomButton 
-//                                             width={150} 
-//                                             value="Add Category"
-//                                             onButtonPress={displayAddModal}
-//                                             radius={75}
-//                                         >
-//                                         </CustomButton>
-//                                     </View>
-//                                 </View>
-
-//                                 <View style={{marginVertical: 10, flex: 1,}}>
-//                                     <CustomButton 
-//                                         width={100} 
-//                                         value="Sign out"
-//                                         onButtonPress={logOut}
-//                                         radius={50}
-//                                         color="#E95C3C"
-//                                     >
-//                                     </CustomButton>
-//                                 </View>
-//                             </View> 
-//                         ) 
-

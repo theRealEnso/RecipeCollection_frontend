@@ -26,6 +26,21 @@ export const getAllCategoryRecipes = async (accessToken: string, categoryId: str
     };
 };
 
+export const getAllPublicRecipes = async (accessToken: string) => {
+    try {
+        const { data } = await axios.get(`${RECIPES_ENDPOINT}/get-public-recipes`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+        });
+
+        return data;
+    } catch(error){
+        console.error(`Error: ${error}`);
+        throw error;
+    };
+};
+
 export const getDetailedRecipe = async (accessToken: string, recipeId: string) => {
     try {
         const { data } = await axios.get(`${RECIPES_ENDPOINT}/get-category-recipes/recipe/${recipeId}`, {

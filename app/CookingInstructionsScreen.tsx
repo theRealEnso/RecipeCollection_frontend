@@ -24,6 +24,9 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 // import colors
 import colors from "./constants/colors";
 
+// import utility function(s)
+import { formatString } from "@/utils/formatString";
+
 // environment variables
 const RECIPE_COLLECTION_ENDPOINT = process.env.EXPO_PUBLIC_RECIPE_COLLECTION_ENDPOINT_4 // use this if code and back end server is running in WSL + android studio and emulator is running in Windows 11
 
@@ -70,11 +73,11 @@ const CookingInstructionsScreen = () => {
     } = useContext(RecipeContext);
 
     let recipeData = {
-        categoryName,
+        categoryName: formatString(categoryName),
         categoryId,
-        recipeOwner,
-        nameOfDish,
-        difficultyLevel,
+        recipeOwner: formatString(recipeOwner as string),
+        nameOfDish: formatString(nameOfDish),
+        difficultyLevel: formatString(difficultyLevel),
         timeToCook,
         numberOfServings,
         specialEquipment,

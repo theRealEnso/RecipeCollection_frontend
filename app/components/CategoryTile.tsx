@@ -1,7 +1,6 @@
-import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View, } from "react-native";
+import { ImageBackground, Pressable, StyleSheet, Text, View } from "react-native";
 
 // import context
 // import component(s)
@@ -9,7 +8,8 @@ import CustomButton from "./CustomButton";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import colors from "../constants/colors";
+
+import { LinearGradient } from "expo-linear-gradient";
 
 // import types
 import { Cuisine } from "@/types/Category";
@@ -53,43 +53,50 @@ const CategoryTile = ({cuisineData, onLongPress, isSelected, setShowWarningModal
 
     return (
         <View style={styles.tileOuterContainer}>
-            <Pressable 
-                android_ripple={{ color: colors.primaryAccent500 }}
-                style={styles.pressable}
-                onLongPress={() => onLongPress(cuisineData._id, cuisineData.cuisineName)}
-                delayLongPress={1000}
-                onPress={() => setTileId(categoryId)}
-            >
-                {({ pressed }) => (
-                    <LinearGradient
-                        colors={[colors.primaryAccent500, colors.primaryAccent700]}
-                        style={[styles.tileInnerContainer, pressed && styles.pressed]}
+            <View style={styles.tileInnerContainer}>
+                <Pressable 
+                    style={({pressed}) => [styles.pressable, pressed && styles.pressed]}
+                    android_ripple={{color: "rgba(0,0,0,0.1)", foreground: true}}
+                    onLongPress={() => onLongPress(cuisineData._id, cuisineData.cuisineName)}
+                    delayLongPress={1000}
+                    onPress={() => setTileId(categoryId)}
+                >
+                    <ImageBackground
+                        source={{uri: cuisineData.cuisineImage}}
+                        resizeMode="cover"
+                        style={styles.image}
+                        imageStyle={{borderRadius: 14}}
                     >
-                        <Text style={styles.tileText}>{cuisineData.cuisineName}</Text>
-                    </LinearGradient>
-                )}
-            </Pressable>
+                        <LinearGradient
+                            colors={["rgba(0,0,0,0.1)", "rgba(0,0,0,0.6)"]}
+                            style={styles.gradientOverlay}
+                        ></LinearGradient>
 
-            {
-                isSelected && (
-                    <View style={styles.buttonOuterContainer}>
-                        <View style={styles.buttonInnerContainer}>
-                            <CustomButton
-                                value={<AntDesign name="edit" size={24}></AntDesign>}
-                                width={40}
-                                onButtonPress={displayEdit}
-                            >
-                            </CustomButton>
-                            <CustomButton
-                                value={<Ionicons name="trash" size={24}></Ionicons>}
-                                width={40}
-                                onButtonPress={displayWarning}
-                            >
-                            </CustomButton>
+                        <Text style={styles.tileText}>{cuisineData.cuisineName}</Text>
+                    </ImageBackground>
+                </Pressable>
+
+                {
+                    isSelected && (
+                        <View style={styles.buttonOuterContainer}>
+                            <View style={styles.buttonInnerContainer}>
+                                <CustomButton
+                                    value={<AntDesign name="edit" size={24}></AntDesign>}
+                                    width={40}
+                                    onButtonPress={displayEdit}
+                                >
+                                </CustomButton>
+                                <CustomButton
+                                    value={<Ionicons name="trash" size={24}></Ionicons>}
+                                    width={40}
+                                    onButtonPress={displayWarning}
+                                >
+                                </CustomButton>
+                            </View>
                         </View>
-                    </View>
-                )
-            }
+                    )
+                }
+            </View>
         </View>
     )
 };
@@ -100,39 +107,43 @@ const styles = StyleSheet.create({
     tileOuterContainer: {
         margin: 10,
         overflow: "hidden",
-        borderRadius: 10,
+        borderRadius: 14,
         position: "relative",
-    },
-
-    pressable: {
-        borderRadius: 10,
+        shadowColor: "#000",
+        shadowOffset: {width: 0, height: 10},
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 4,
+        backgroundColor: "white",
     },
 
     tileInnerContainer: {
-        backgroundColor: colors.primaryAccent500,
+        borderRadius: 14,
+        overflow: "hidden",
+    },
+
+    pressable: {
+        borderRadius: 14
+    },
+
+    pressed: {
+        opacity: 0.9,
+        transform: [{scale: 0.995}]
+    },
+
+    image: {
         padding: 20,
         width: 150,
         height: 150,
         alignItems: "center",
         justifyContent: "center",
-        shadowColor: "#000",
-        shadowOffset: {width: 0, height: 4},
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 5,
-        borderColor: colors.primaryAccent500,
-        borderWidth: 1
     },
 
     tileText: {
         color: "#fff",
-        fontWeight: "600",
-        fontSize: 10,
-    },
+        fontWeight: "700",
+        fontSize: 16,
 
-    pressed: {
-        opacity: 0.75,
-        transform: [{ scale: 0.98 }],
     },
 
     buttonOuterContainer: {
@@ -145,5 +156,13 @@ const styles = StyleSheet.create({
 
     buttonInnerContainer: {
         flexDirection: "row"
+    },
+
+    gradientOverlay: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
     }
 });

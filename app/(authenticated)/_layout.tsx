@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { useRouter } from "expo-router";
 
-import { Image, StyleSheet, Text, View,  } from "react-native";
+import { Image, StyleSheet, Text, View, } from "react-native";
 
 // import context(s);
 import { UserContext } from "@/context/UserContext";
@@ -135,7 +135,28 @@ const CustomDrawerContent = (props: any) => {
                 }
             />
 
-            
+            <DrawerItem 
+                label="Discover"
+                labelStyle={
+                    activeItem === "Discover"
+                    ? {color: "white", paddingLeft: 8} 
+                    : {color: "black", paddingLeft: 8}
+                }
+                onPress={() => {
+                    setActiveItem("Discover");
+                    navigation.navigate("DiscoverScreen");
+                }}
+                icon={({focused}) => <MaterialCommunityIcons name="food-variant" size={24} color={focused ? colors.primaryAccent500 : "black"} />}
+                // activeBackgroundColor={colors.primaryAccent900}
+                // activeTintColor={colors.primaryAccent900}
+                // inactiveBackgroundColor="white"
+                style={
+                    activeItem === "Discover" 
+                    ? {backgroundColor: colors.primaryAccent700} 
+                    : {backgroundColor: colors.backgroundPrimary}
+                }
+            />
+
             <View style={styles.borderLine}></View>
 
             <DrawerItem
@@ -180,6 +201,15 @@ const AuthenticatedLayout = () => {
                 options={{
                     title: "Home",
                     drawerLabel: "Home",
+                    
+                }} 
+            />
+
+            <Drawer.Screen
+                name="DiscoverScreen"
+                options={{
+                    title: "Discover",
+                    drawerLabel: "Discover",
                     
                 }} 
             />
