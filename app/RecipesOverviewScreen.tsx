@@ -64,10 +64,10 @@ const RecipesOverviewScreen = () => {
                     ) : (
                         <View style={styles.emptyMessage}>
                             <View style={styles.icon}>
-                                <Entypo name="emoji-sad" size={150} color={colors.primaryAccent900} />
+                                <Entypo name="emoji-sad" size={150} color={colors.secondaryAccent500} />
                             </View>
                             <Text style={styles.message}>{`It's feeling a bit lonely in here without any recipes inside of your ${categoryName} collection...`}</Text>
-                            <Text style={styles.message}>Press on the <Text style={[styles.message, {color: colors.primaryAccent900, fontStyle: "italic", fontWeight: "bold"}]}>{`Add a recipe!`}</Text> button to start adding some zing!</Text>
+                            <Text style={styles.message}>Press on the <Text style={[styles.message, {color: colors.secondaryAccent500, fontStyle: "italic", fontWeight: "bold"}]}>{`Add a recipe!`}</Text> button to start adding some zing!</Text>
                         </View>
                     )
                 }
@@ -75,7 +75,15 @@ const RecipesOverviewScreen = () => {
 
             <View style={styles.buttonContainer}>
                 <View>
-                    <CustomButton value="Go back" width={100} radius={20} onButtonPress={returnToHomeScreen}></CustomButton>
+                    <CustomButton 
+                        value="Go back" 
+                        width={100} 
+                        radius={20} 
+                        onButtonPress={returnToHomeScreen}
+                        color={colors.secondaryAccent500}
+                    >
+
+                    </CustomButton>
                 </View>
                 <View>
                     <CustomButton value="Add a recipe!" width={100} radius={20} onButtonPress={navigateToAddRecipe}></CustomButton>

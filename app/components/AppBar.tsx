@@ -24,7 +24,7 @@ const AppBar = ({navigation}) => {
                 <Pressable
                     onPress={() => navigation.toggleDrawer()}
                     >
-                    <Feather name="menu" size={24} color="black" />
+                    <Feather name="menu" size={24} color={colors.secondaryAccent500} />
                 </Pressable>
 
                 <Text style={styles.title}>Kitchenary</Text>

@@ -68,7 +68,7 @@ const CustomDrawerContent = (props: any) => {
                     setActiveItem("Home");
                     navigation.navigate("HomeScreen")
                 }}
-                icon={({focused}) => <Feather name="home" size={24} color={focused ? colors.primaryAccent500 : "black"} />}
+                icon={({focused}) => <Feather name="home" size={24} color={focused || activeItem === "Home" ? colors.secondaryAccent500 : "black"} />}
                 style={
                     activeItem === "Home" 
                     ? {backgroundColor: colors.primaryAccent700} 
@@ -124,7 +124,7 @@ const CustomDrawerContent = (props: any) => {
                     setActiveItem("Add a cuisine category");
                     setShowAddCategoryModal(true)
                 }}
-                icon={({focused}) => <MaterialCommunityIcons name="silverware-fork-knife" size={24} color={focused ? colors.primaryAccent500 : "black"} />}
+                icon={({focused}) => <MaterialCommunityIcons name="silverware-fork-knife" size={24} color={focused || activeItem === "Add a cuisine category" ? colors.secondaryAccent500 : "black"} />}
                 // activeBackgroundColor={colors.primaryAccent900}
                 // activeTintColor={colors.primaryAccent900}
                 // inactiveBackgroundColor="white"
@@ -146,7 +146,7 @@ const CustomDrawerContent = (props: any) => {
                     setActiveItem("Discover");
                     navigation.navigate("DiscoverScreen");
                 }}
-                icon={({focused}) => <MaterialCommunityIcons name="food-variant" size={24} color={focused ? colors.primaryAccent500 : "black"} />}
+                icon={({focused}) => <MaterialCommunityIcons name="food-variant" size={24} color={focused || activeItem === "Discover" ? colors.secondaryAccent500 : "black"} />}
                 // activeBackgroundColor={colors.primaryAccent900}
                 // activeTintColor={colors.primaryAccent900}
                 // inactiveBackgroundColor="white"

@@ -9,7 +9,7 @@ import { UserContext } from "@/context/UserContext";
 
 //import components(s)
 import CuisineList from "../components/CuisineList";
-import CustomButton from "../components/CustomButton";
+import EmptyCategories from "../components/EmptyCategories";
 import SearchedRecipesList from "../components/SearchedRecipesList";
 
 //import Modal component(s)
@@ -89,17 +89,10 @@ const HomeScreen = () => {
         enabled: !!debouncedSearchInput && !!userId,
     });
 
-    const displayAddModal = () => setShowAddCategoryModal(true);
-
     const handleSearch = (userInput: string) => {
         setSearchInput(userInput);
     };
 
-    const logOut = () => {
-        handleSetUser(null);
-        handleSetTokens("", "");
-        resetRecipeState();
-    };
 
     // useEffect to handle signing out and re-directing to the login screen
     useEffect(() => {
@@ -160,34 +153,7 @@ const HomeScreen = () => {
                                 <CuisineList categoriesData={data.categories}></CuisineList>
                             </View>
                         ) : (
-                            <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-                                <View style={styles.contentContainer}>
-                                    <View style={{paddingHorizontal: 30, marginVertical: 10}}>
-                                        <Text>You currently do not have any cuisine categories added. Press the button below to start adding!</Text>
-                                    </View>
-
-                                    <View style={{marginVertical: 10}}>
-                                        <CustomButton 
-                                            width={150} 
-                                            value="Add Category"
-                                            onButtonPress={displayAddModal}
-                                            radius={75}
-                                        >
-                                        </CustomButton>
-                                    </View>
-                                </View>
-
-                                <View style={{marginVertical: 10, flex: 1,}}>
-                                    <CustomButton 
-                                        width={100} 
-                                        value="Sign out"
-                                        onButtonPress={logOut}
-                                        radius={50}
-                                        color="#E95C3C"
-                                    >
-                                    </CustomButton>
-                                </View>
-                            </View> 
+                            <EmptyCategories setShowAddCategoryModal={setShowAddCategoryModal}></EmptyCategories>
                         )
                     )
                 }
@@ -219,12 +185,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         flex: 1,
-    },
-
-    contentContainer: {
-        alignItems: "center",
-        justifyContent: "center",
-        flex: 10,
     },
 
     textInput: {
