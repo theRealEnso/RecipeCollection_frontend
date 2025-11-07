@@ -307,16 +307,17 @@ const CookingInstructionsScreen = () => {
 
             {/* navigation buttons */}
             <View style={styles.buttonNavContainer}>
-                <View style={{marginHorizontal: 20}}>
+                <View style={{marginHorizontal: 40}}>
                     <CustomButton 
                         value="Go back" 
                         width={100}
                         radius={50} 
                         onButtonPress={goBack}
+                        color={colors.secondaryAccent500}
                         >
                     </CustomButton>
                 </View>
-                <View style={{marginHorizontal: 20}}>
+                <View style={{marginHorizontal: 40}}>
                     <CustomButton 
                         value="Create Recipe" 
                         width={120}

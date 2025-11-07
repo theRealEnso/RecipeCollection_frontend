@@ -29,10 +29,11 @@ const Instruction = ({instructionData, onDelete}: InstructionProps) => {
             
 
             <CustomButton
-                value={<FontAwesome name="trash" size={24} color="black" />}
+                value={<FontAwesome name="trash" size={24} color={colors.primaryAccent700} />}
                 onButtonPress={() => onDelete(instruction_id)}
                 width={35}
                 radius={25}
+                color={colors.secondaryAccent500}
             >
             </CustomButton>
             

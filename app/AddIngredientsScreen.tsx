@@ -108,7 +108,9 @@ const AddRecipeScreen = () => {
                         value="Go back" 
                         width={100}
                         radius={50} 
-                        onButtonPress={goBack}>
+                        onButtonPress={goBack}
+                        color={colors.secondaryAccent500}
+                    >
                     </CustomButton>
                 </View>
                 <View>

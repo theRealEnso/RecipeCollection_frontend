@@ -97,7 +97,8 @@ const IngredientList = ({ingredients, onEdit, onDelete}: IngredientListProps) =>
                                                     <View>
                                                         <FontAwesome 
                                                             name="trash-o" 
-                                                            size={24} color="black" 
+                                                            size={24} 
+                                                            color={colors.secondaryAccent500} 
                                                             onPress={() => handleItemDelete(item.ingredient_id)} 
                                                         />
                                                     </View>

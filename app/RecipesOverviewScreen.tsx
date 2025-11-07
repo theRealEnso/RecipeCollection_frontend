@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     },
 
     header: {
-        color: colors.primaryAccent500,
+        color: colors.secondaryAccent500,
         fontWeight: "600",
         fontSize: 30,
     },

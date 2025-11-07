@@ -12,6 +12,7 @@ import Instruction from "./Instruction";
 
 //import utility function(s)
 import { generateUUID } from "@/utils/generateUUID";
+import colors from "../constants/colors";
 
 const CookingInstructionsList = () => {
     const instructionsListRef = useRef(null);
@@ -74,10 +75,11 @@ const CookingInstructionsList = () => {
 
                 <View>
                     <CustomButton
-                        value={<MaterialIcons name="add-task" size={24} color="black" />}
+                        value={<MaterialIcons name="add-task" size={24} color={colors.primaryAccent800} />}
                         width={40}
                         radius={25}
                         onButtonPress={addCookingInstruction}
+                        color={colors.secondaryAccent500}
                     >
                     </CustomButton>
                 </View>

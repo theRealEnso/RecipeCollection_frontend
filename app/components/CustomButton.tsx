@@ -57,7 +57,7 @@ const CustomButton = ({
             {
                 mutationPending
                 ? <ActivityIndicator color="#fff"></ActivityIndicator>
-                : <Text style={[{color: "#fff"}, {fontSize: textSize ? textSize : 14, padding: textPadding ? textPadding : 2}]}>{value}</Text>
+                : <Text style={[{color: "#fff"}, {fontSize: textSize ? textSize : 14, padding: textPadding ? textPadding : 2, fontWeight: "600"}]}>{value}</Text>
             }
             </Pressable>
         </View>

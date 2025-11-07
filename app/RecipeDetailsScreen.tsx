@@ -68,10 +68,10 @@ const RecipeDetailsScreen = (
                                             return (
                                                 <View key={ingredient.ingredient_id} style={styles.ingredientItem}>
                                                     <View style={{marginHorizontal: 5}}>
-                                                       <AntDesign name="star" size={8} color="black" /> 
+                                                       <AntDesign name="star" size={8} color={colors.secondaryAccent500} /> 
                                                     </View>
                                                     <View style={{marginHorizontal: 5}}>
-                                                        <Text style={{fontSize: 16}}>{ingredient.nameOfIngredient}</Text>
+                                                        <Text style={styles.text}>{ingredient.nameOfIngredient}</Text>
                                                     </View>
                                                 </View>
                                             )
@@ -101,11 +101,11 @@ const RecipeDetailsScreen = (
                                                                             style={styles.ingredientItem}
                                                                         >
                                                                             <View style={{paddingHorizontal: 2}}> 
-                                                                                <AntDesign name="star" size={8} color="black" />
+                                                                                <AntDesign name="star" size={8} color={colors.secondaryAccent500} />
                                                                             </View>
 
                                                                             <View style={{paddingHorizontal: 2}}>
-                                                                                <Text style={{fontSize: 16,}}>{ingredient.nameOfIngredient}</Text>
+                                                                                <Text style={styles.text}>{ingredient.nameOfIngredient}</Text>
                                                                             </View>
                                                                             
                                                                         </View>
@@ -134,9 +134,9 @@ const RecipeDetailsScreen = (
                         <View>
                             {
                                 specialEquipment.length > 0 ? (
-                                    <Text style={{marginVertical: 10,}}>{specialEquipment}</Text>
+                                    <Text style={[styles.text, {marginVertical: 10}]}>{specialEquipment}</Text>
                                 ) : (
-                                    <Text style={{marginVertical: 10,}}>None</Text>
+                                    <Text style={[styles.text, {marginVertical: 10}]}>None</Text>
                                 )
                             }
                         </View>
@@ -159,7 +159,7 @@ const RecipeDetailsScreen = (
                                             return (
                                                 <View key={instruction.instruction_id} style={styles.instructionItem}>
                                                     <View style={{marginHorizontal: 5}}>
-                                                        <AntDesign name="star" size={8} color="black" />
+                                                        <AntDesign name="star" size={8} color={colors.secondaryAccent500} />
                                                     </View>
                                                     <View style={{marginHorizontal: 5}}>
                                                         <Text>{instruction.instruction}</Text>
@@ -186,10 +186,10 @@ const RecipeDetailsScreen = (
                                                             return (
                                                                 <View key={instruction.instruction_id} style={styles.instructionItem}>
                                                                     <View style={{paddingHorizontal: 5}}>
-                                                                        <AntDesign name="star" size={8} color="black" />
+                                                                        <AntDesign name="star" size={8} color={colors.secondaryAccent500} />
                                                                     </View>
                                                                     <View style={{maxWidth: "95%", paddingHorizontal: 5}}>
-                                                                        <Text style={{fontSize: 16}}>{instruction.instruction}</Text>
+                                                                        <Text style={styles.text}>{instruction.instruction}</Text>
                                                                     </View>
                                                                 </View>
                                                             )
@@ -248,14 +248,14 @@ const styles = StyleSheet.create({
 
     header: {
         fontSize: 30,
-        color: colors.primaryAccent900,
+        color: colors.secondaryAccent900,
         fontWeight: "bold",
         marginVertical: 20,
     },
 
     subHeader: {
         fontSize: 40,
-        color: colors.primaryAccent600,
+        color: colors.secondaryAccent900,
         fontWeight: "bold",
     },
 
@@ -303,4 +303,10 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         maxWidth: "95%",
     },
+
+    text: {
+        color: colors.primaryAccent800,
+        fontSize: 16,
+        fontWeight: "700",
+    }
 });

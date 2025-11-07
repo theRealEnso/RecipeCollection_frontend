@@ -120,6 +120,7 @@ const MultipleIngredientsList = () => {
                                 width={50}
                                 radius={25}
                                 onButtonPress={addListName}
+                                color={colors.secondaryAccent500}
                             >
                             </CustomButton>
                         </View>

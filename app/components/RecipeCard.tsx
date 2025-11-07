@@ -110,15 +110,15 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         overflow: "hidden",
-        borderTopWidth: 1,
-        borderColor: colors.primaryAccent900,
+        borderTopWidth: 2,
+        borderColor: colors.secondaryAccent500,
     },
     
     recipeInfo: {
         paddingHorizontal: 5,
         paddingVertical: 5,
-        borderRightWidth: 1,
-        borderColor: colors.primaryAccent900,
+        borderRightWidth: 2,
+        borderColor: colors.secondaryAccent500,
         overflow: "hidden",
     },
 
@@ -132,5 +132,7 @@ const styles = StyleSheet.create({
     data: {
         marginTop: 5,
         paddingHorizontal: 8,
+        color: colors.secondaryAccent500,
+        fontWeight: "500",
     }
 });

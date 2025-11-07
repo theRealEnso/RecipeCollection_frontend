@@ -309,8 +309,8 @@ const RegisterScreen = () => {
       <View style={styles.innerContainer}>
         <StatusBar style="dark"></StatusBar>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>CozyKitch</Text>
-          <Text style={{color: colors.primaryAccent500}}>A place to store your favorite recipes!</Text>
+          <Text style={styles.title}>Kitchenary</Text>
+          <Text style={{color: colors.secondaryAccent900, fontWeight: "700", fontSize: 16}}>A place to store your favorite recipes!</Text>
         </View>
         
         <View style={styles.imageContainer}>
@@ -323,7 +323,8 @@ const RegisterScreen = () => {
           }
           <TextInput 
               style={styles.text} 
-              placeholder="First Name" 
+              placeholder="First Name"
+              placeholderTextColor={colors.secondaryAccent900} 
               value={firstName}
               onChangeText={(value) => handleInputChange("firstName", value)}
               keyboardType='default'
@@ -336,7 +337,8 @@ const RegisterScreen = () => {
           }
           <TextInput 
             style={styles.text} 
-            placeholder="Last Name" 
+            placeholder="Last Name"
+            placeholderTextColor={colors.secondaryAccent900} 
             value={lastName} 
             onChangeText={(value) => handleInputChange("lastName", value)}
             keyboardType="default"
@@ -349,7 +351,8 @@ const RegisterScreen = () => {
           }
           <TextInput 
             style={styles.text} 
-            placeholder="Email" 
+            placeholder="Email"
+            placeholderTextColor={colors.secondaryAccent900} 
             value={email} 
             onChangeText={(value) => handleInputChange("email", value)}
             keyboardType="default"
@@ -362,7 +365,8 @@ const RegisterScreen = () => {
           }
           <TextInput 
             style={styles.text} 
-            placeholder="Password" 
+            placeholder="Password"
+            placeholderTextColor={colors.secondaryAccent900} 
             value={password} 
             onChangeText={(value) => handleInputChange("password", value)}
             secureTextEntry={true} // equivalent of type="password" for input elements in web dev
@@ -376,7 +380,8 @@ const RegisterScreen = () => {
           }
           <TextInput 
             style={styles.text} 
-            placeholder="Confirm Password" 
+            placeholder="Confirm Password"
+            placeholderTextColor={colors.secondaryAccent900} 
             value={confirmPassword} 
             onChangeText={(value) => handleInputChange("confirmPassword", value)}
             secureTextEntry={true} // equivalent of type="password" for input elements in web dev
@@ -422,7 +427,7 @@ const RegisterScreen = () => {
       
 
         <View style={styles.subTextContainer}>
-          <Text>Already have an account?</Text>
+          <Text style={{color: colors.primaryAccent800, fontWeight: "800"}}>Already have an account?</Text>
           <Link href="./LoginScreen" style={styles.registerText}>Login!</Link>
         </View>
       </View>
@@ -499,13 +504,14 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    color: colors.textPrimary600,
+    color: colors.secondaryAccent500,
     width: 250,
-    borderWidth: 2,
+    borderWidth: 1.5,
     marginVertical: 3,
     borderRadius: 8,
-    borderColor: colors.textPrimary600,
+    borderColor: colors.primaryAccent800,
     height: 40,
+    fontWeight: "700",
   },
 
   button: {
@@ -516,8 +522,9 @@ const styles = StyleSheet.create({
 
   registerText: {
     textDecorationLine: "underline",
-    fontWeight: "bold",
     marginVertical: 5,
+    color: colors.secondaryAccent900,
+    fontWeight: "900",
   },
 
   errorText: {

@@ -77,6 +77,7 @@ const SingleIngredientList = () => {
                         width={40}
                         radius={20}
                         onButtonPress={addIngredientToList}
+                        color={colors.secondaryAccent500}
                     >
                     </CustomButton>
                 </View>

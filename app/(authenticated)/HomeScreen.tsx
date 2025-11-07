@@ -114,12 +114,13 @@ const HomeScreen = () => {
                 {/* display the search bar */}
                 <View style={styles.searchBoxContainer}>
                     {/* icon */}
-                    <Feather name="search" size={24} color="black" style={styles.searchIcon} />
+                    <Feather name="search" size={24} color={colors.primaryAccent700} style={styles.searchIcon} />
                     <TextInput
                         style={styles.textInput}
                         onChangeText={handleSearch}
                         value={searchInput}
                         placeholder="Search recipes..."
+                        placeholderTextColor={colors.secondaryAccent900}
                     />
                 </View>
 
@@ -188,11 +189,14 @@ const styles = StyleSheet.create({
     },
 
     textInput: {
+        color: colors.secondaryAccent900,
         borderWidth: 2,
-        borderColor: colors.primaryAccent000,
+        borderColor: colors.primaryAccent800,
         width: 250,
         borderRadius: 20,
         paddingLeft: 35,
+        fontWeight: "bold",
+        fontSize: 16,
     },
 
     searchBoxContainer: {

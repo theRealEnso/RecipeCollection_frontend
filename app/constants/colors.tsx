@@ -8,7 +8,12 @@ const colors = {
   primaryAccent000: "#0E0E1A",
 
   // single secondary accent (used for highlights / mixed gradients)
+  secondaryAccent400: "#f2b6d2",
   secondaryAccent500: "#FF79C6", // Bubblegum Pink
+  secondaryAccent600: "#e236eb",
+  secondaryAccent700: "#702073",
+  secondaryAccent800: "#2d0c2e",
+  secondaryAccent900: "#eb1e81",
 
   // text (cool neutral indigos for better contrast on lilac background)
   textPrimary500: "#1E1E2F", // default body / titles

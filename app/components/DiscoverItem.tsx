@@ -55,13 +55,13 @@ const styles = StyleSheet.create({
     card: {
         flex: 1,
         borderRadius: 14,
-        elevation: 4,
-        shadowColor: "#000",
-        shadowOpacity: 0.1,
+        elevation: 8,
+        shadowColor: colors.primaryAccent700,
+        shadowOpacity: 0.3,
         shadowRadius: 10,
-        shadowOffset: {width: 2, height: 10,},
+        shadowOffset: {width: 0, height: 6,},
         overflow: "hidden",
-        backgroundColor: "white",
+        backgroundColor: colors.primaryAccent000
     },
 
     pressable: {
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 16,
         fontWeight: "600",
-        color: colors.primaryAccent000,
+        color: colors.secondaryAccent400,
         padding: 10,
         width: "100%",
     }

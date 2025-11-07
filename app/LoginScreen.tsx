@@ -108,8 +108,8 @@ export default function LoginScreen() {
     <View style={styles.container}>
       <StatusBar style="dark"></StatusBar>
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>CozyKitch</Text>
-        <Text style={{color: colors.primaryAccent500}}>A place to store your favorite recipes!</Text>
+        <Text style={styles.title}>Kitchenary</Text>
+        <Text style={{color: colors.secondaryAccent900, fontWeight: "700", fontSize: 16}}>A place to store your favorite recipes!</Text>
       </View>
       
       <View style={styles.imageContainer}>
@@ -123,7 +123,8 @@ export default function LoginScreen() {
           }
           <TextInput 
             style={styles.text} 
-            placeholder="Email" 
+            placeholder="Email"
+            placeholderTextColor={colors.secondaryAccent900}
             value={email} 
             onChangeText={(value) => handleInputChange("email", value)}
             keyboardType='default'
@@ -136,7 +137,8 @@ export default function LoginScreen() {
           }
           <TextInput 
             style={styles.text} 
-            placeholder="Password" 
+            placeholder="Password"
+            placeholderTextColor={colors.secondaryAccent900} 
             value={password} 
             onChangeText={(value) => handleInputChange("password", value)}
             secureTextEntry={true} // equivalent of type="password" for input elements in web dev
@@ -149,13 +151,15 @@ export default function LoginScreen() {
             value="Login"
             width={250} 
             mutationPending={loginUserMutation.isPending} 
-            onButtonPress={handleLoginSubmit}>
+            onButtonPress={handleLoginSubmit}
+            color={colors.primaryAccent700}
+          >
           </CustomButton>
         </View>
       </View>
 
       <View style={styles.subTextContainer}>
-        <Text>Don&apos;t have an account?</Text>
+        <Text style={{color: colors.primaryAccent700, fontWeight: "700", fontSize: 16}}>Don&apos;t have an account?</Text>
         <Link href="./RegisterScreen" style={styles.registerText}>Register!</Link>
       </View>
 
@@ -234,10 +238,12 @@ const styles = StyleSheet.create({
 
   text: {
     width: 250,
-    borderWidth: 2,
+    borderWidth: 1.5,
     marginVertical: 5,
     borderRadius: 8,
-    borderColor: colors.textPrimary600,
+    color: colors.secondaryAccent900,
+    borderColor: colors.primaryAccent800,
+    fontWeight: "800"
   },
 
   button: {
@@ -248,8 +254,9 @@ const styles = StyleSheet.create({
 
   registerText: {
     textDecorationLine: "underline",
-    fontWeight: "bold",
+    fontWeight: "900",
     marginVertical: 5,
+    color: colors.secondaryAccent900,
   },
 
   errorText: {

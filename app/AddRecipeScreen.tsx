@@ -203,7 +203,7 @@ const AddRecipeScreen = () => {
             <View style={styles.container}>
                 {/* public switch */}
                 <View>
-                    <Text style={{marginLeft: "auto"}}>
+                    <Text style={[styles.text, {marginLeft: "auto"}]}>
                         {
                             isPublic ? "Mark as: Public" : "Mark as: Private"
                         }
@@ -217,7 +217,7 @@ const AddRecipeScreen = () => {
                 {/*recipe ownership toggle  */}
                 <View style={styles.checkboxOuter}>
                         <View>
-                            <Text>Are you the original creator of this recipe?</Text>
+                            <Text style={styles.text}>Are you the original creator of this recipe?</Text>
                         </View>
 
                         <View style={styles.checkbox}>
@@ -252,12 +252,13 @@ const AddRecipeScreen = () => {
 
                 <View>
                     <View style={styles.inputContainer}>
-                        <Text>Enter the name / title of your dish!</Text>
+                        <Text style={styles.text}>Enter the name / title of your dish!</Text>
                         <FormInput 
                             placeholder="recipe title"  
                             value={nameOfDish} 
                             width={380}
-                            onChangeText={(typedValue) => handleInputChange("nameOfDish", typedValue)} 
+                            onChangeText={(typedValue) => handleInputChange("nameOfDish", typedValue)}
+                            color={colors.secondaryAccent500} 
                         >
                         </FormInput>
                         {
@@ -266,23 +267,25 @@ const AddRecipeScreen = () => {
                     </View>
 
                     <View style={styles.inputContainer}>
-                        <Text>{`Enter name of recipe owner/creator (optional)`}</Text>
+                        <Text style={styles.text}>{`Enter name of recipe owner/creator (optional)`}</Text>
                         <FormInput 
                             placeholder="name of recipe owner (optional)"  
                             value={recipeOwner} 
                             width={380}
-                            onChangeText={(typedValue) => handleInputChange("recipeOwner", typedValue)} 
+                            onChangeText={(typedValue) => handleInputChange("recipeOwner", typedValue)}
+                            color={colors.secondaryAccent500} 
                         >
                         </FormInput>
                     </View>
 
                     <View style={styles.inputContainer}>
-                        <Text>Enter the dish&apos;s difficulty level</Text>
+                        <Text style={styles.text}>Enter the dish&apos;s difficulty level</Text>
                         <FormInput 
                             placeholder="e.g easy, intermediate, hard, etc"
                             value={difficultyLevel} 
                             width={380}
-                            onChangeText={(typedValue) => handleInputChange("difficultyLevel", typedValue)} 
+                            onChangeText={(typedValue) => handleInputChange("difficultyLevel", typedValue)}
+                            color={colors.secondaryAccent500} 
                         >
                         </FormInput>
                         {
@@ -291,12 +294,13 @@ const AddRecipeScreen = () => {
                     </View>
 
                     <View style={styles.inputContainer}>
-                        <Text>Enter estimated time to cook</Text>
+                        <Text style={styles.text}>Enter estimated time to cook</Text>
                         <FormInput 
                             placeholder="e.g 1 hr 30 min"
                             value={timeToCook} 
                             width={380}
                             onChangeText={(typedValue) => handleInputChange("timeToCook", typedValue)}
+                            color={colors.secondaryAccent500}
                         >
                         </FormInput>
 
@@ -306,23 +310,25 @@ const AddRecipeScreen = () => {
                     </View>
 
                     <View style={styles.inputContainer}>
-                        <Text>{`(Optional) if any special equipment is required, then enter them separated by commas`}</Text>
+                        <Text style={styles.text}>{`(Optional) if any special equipment is required, then enter them separated by commas`}</Text>
                         <FormInput 
                             placeholder="e.g. pressure cooker, sous vide machine, pasta maker, etc  "
                             value={specialEquipment} 
                             width={380}
                             onChangeText={(typedValue) => handleInputChange("specialEquipment", typedValue)}
+                            color={colors.secondaryAccent500}
                         >
                         </FormInput>
                     </View>
 
                     <View style={styles.inputContainer}>
-                        <Text>Enter estimated amount of servings this recipe yields</Text>
+                        <Text style={styles.text}>Enter estimated amount of servings this recipe yields</Text>
                         <FormInput 
                             placeholder="e.g 3-4 servings"
                             value={numberOfServings} 
                             width={380}
-                            onChangeText={(typedValue) => handleInputChange("numberOfServings", typedValue)} 
+                            onChangeText={(typedValue) => handleInputChange("numberOfServings", typedValue)}
+                            color={colors.secondaryAccent500} 
                         >
                         </FormInput>
 
@@ -334,12 +340,13 @@ const AddRecipeScreen = () => {
                 
                 {/* Button to select an image */}
                 <View style={styles.selectImageContainer}>
-                    <Text>Select a photo of your dish (optional)</Text>
+                    <Text style={styles.text}>Select a photo of your dish (optional)</Text>
                     <CustomButton 
                         value="Choose Image" 
                         width={150} 
                         radius={10} 
                         onButtonPress={pickImage}
+                        color={colors.secondaryAccent500}
                     >
                     </CustomButton>
                     {
@@ -362,7 +369,14 @@ const AddRecipeScreen = () => {
             {/* button to go to next screen to continue the form */}
             <View style={styles.buttonsContainer}>
                 <View style={styles.buttonContainer}>
-                    <CustomButton value="Cancel" width={100} radius={20} onButtonPress={() => cancelRecipeCreation()}></CustomButton>
+                    <CustomButton 
+                        value="Cancel" 
+                        width={100} 
+                        radius={20}
+                        onButtonPress={() => cancelRecipeCreation()}
+                        color={colors.secondaryAccent500}
+                    >
+                    </CustomButton>
                 </View>
                 <View style={styles.buttonContainer}>
                     <CustomButton value="Next" width={100} radius={20} onButtonPress={continueToAddIngredients}></CustomButton>
@@ -434,4 +448,9 @@ const styles = StyleSheet.create({
     checkbox: {
         flexDirection: "row",
     },
+
+    text: {
+        color: colors.primaryAccent800,
+        fontWeight: "600",
+    }
 });

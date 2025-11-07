@@ -9,8 +9,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 //import colors
 import colors from "../constants/colors";
 
-
-const AppBar = ({navigation}) => {
+const AppBar = ({navigation}: any) => {
     const router = useRouter();
 
     const navigateToAIOptionsScreen = () => {
@@ -24,7 +23,7 @@ const AppBar = ({navigation}) => {
                 <Pressable
                     onPress={() => navigation.toggleDrawer()}
                     >
-                    <Feather name="menu" size={24} color={colors.secondaryAccent500} />
+                    <Feather name="menu" size={24} color={colors.secondaryAccent900} />
                 </Pressable>
 
                 <Text style={styles.title}>Kitchenary</Text>
@@ -67,6 +66,7 @@ const styles = StyleSheet.create({
     },
 
     title: {
-        color: colors.textPrimary500,
+        color: colors.primaryAccent900,
+        fontWeight: "600",
     }
 });

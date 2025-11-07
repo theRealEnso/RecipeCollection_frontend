@@ -54,7 +54,7 @@ const CustomDrawerContent = (props: any) => {
             </View>
 
             <View style={{marginVertical: 20,}}>
-                <Text style={styles.textSecondary}>{currentUser && `Welcome back, ${currentUser.firstName}! 👋`}</Text>
+                <Text style={styles.textSecondary}>Welcome back, <Text style={{color: colors.secondaryAccent900, fontSize: 16}}>{currentUser ? currentUser.firstName : ""} ! 👋</Text></Text>
             </View>
 
             <DrawerItem
