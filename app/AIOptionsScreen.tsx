@@ -7,6 +7,7 @@ import CustomButton from "./components/CustomButton";
 
 // import icon(s)
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import colors from "./constants/colors";
 
 const AIOptionsScreen = () => {
     const router = useRouter();
@@ -55,6 +56,8 @@ const AIOptionsScreen = () => {
                     value="Return to Home"
                     width={120}
                     onButtonPress={() => router.back()}
+                    color={colors.secondaryAccent500}
+                    radius={12}
                 >
                 </CustomButton>
             </View>

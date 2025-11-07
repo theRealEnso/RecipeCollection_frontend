@@ -13,7 +13,7 @@ const AppBar = ({navigation}: any) => {
     const router = useRouter();
 
     const navigateToAIOptionsScreen = () => {
-        router.push("./AIOptionsScreen")
+        router.push("/AIOptionsScreen");
     };
 
     return (

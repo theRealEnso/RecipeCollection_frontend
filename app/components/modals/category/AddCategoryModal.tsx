@@ -74,7 +74,13 @@ const AddCategoryModal = ({setShowAddCategoryModal}: AddModalProps) => {
 
                     <View style={styles.buttonsContainer}>
                         <View style={styles.buttonOuterContainer}>
-                            <CustomButton width={100} value="Cancel" onButtonPress={hideAddModal}></CustomButton>
+                            <CustomButton 
+                                width={100} 
+                                value="Cancel" 
+                                onButtonPress={hideAddModal}
+                                color={colors.secondaryAccent500}
+                            >
+                            </CustomButton>
                         </View>
 
                         <View style={styles.buttonOuterContainer}>
