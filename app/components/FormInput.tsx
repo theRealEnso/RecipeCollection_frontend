@@ -19,7 +19,7 @@ const FormInput = ({placeholder, value, width, onChangeText, multiline, color}: 
                 styles.text, {width: width, borderColor: color ? color : colors.primaryAccent600}
             ]} 
             placeholder={placeholder}
-            placeholderTextColor={colors.primaryAccent800}
+            placeholderTextColor={colors.primaryAccent600}
             value={value}
             onChangeText={onChangeText}
             multiline={multiline}

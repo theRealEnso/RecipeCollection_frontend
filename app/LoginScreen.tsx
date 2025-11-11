@@ -103,6 +103,7 @@ export default function LoginScreen() {
   };
 
   // console.log(errorMessage);
+  // console.log(typeof errorMessage);
 
   return (
     <View style={styles.container}>
@@ -165,7 +166,11 @@ export default function LoginScreen() {
 
       {
         errorMessage && (
-          <Text style={styles.errorText}>{errorMessage}</Text>
+          <Text style={styles.errorText}>
+            {
+              errorMessage === "AxiosError: Request failed with status code 401" ? `Invalid or missing user credentials` : `${errorMessage}`
+            }
+          </Text>
         )
       }
     </View>

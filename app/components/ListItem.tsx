@@ -62,9 +62,9 @@ const ListItem = ({subItemName, subItemId, onEdit, onDelete, itemId, setItemId}:
                             </View>
                             <View style={{marginHorizontal: 5}}>
                                 <CustomButton
-                                    value={<FontAwesome name="remove" size={15} color="black" />}
+                                    value={<FontAwesome name="remove" size={15} color={colors.primaryAccent800} />}
                                     width={30}
-                                    color={colors.primaryAccent900}
+                                    color={colors.secondaryAccent500}
                                     radius={15}
                                     onButtonPress={() => onDelete(subItemId)}
                                 >
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
 
     listItem: {
         borderRadius: 15,
-        backgroundColor: colors.primaryAccent600,
+        backgroundColor: colors.primaryAccent000,
         paddingHorizontal: 10,
         paddingVertical: 5,
         width: 250,

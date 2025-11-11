@@ -247,7 +247,7 @@ const CookingInstructionsScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
-                <Text style={styles.header}>Cooking Instructions</Text>
+                <Text style={styles.header}>{`Cooking Instructions for ${nameOfDish}`}</Text>
             </View>
 
             {
@@ -286,6 +286,7 @@ const CookingInstructionsScreen = () => {
                                         <View style={{width: 5}}></View>
                                     )}
                                     showsVerticalScrollIndicator={false}
+                                    contentContainerStyle={{height: 400}}
                                 >
                                 </FlatList>
                             ) : (
@@ -358,12 +359,14 @@ const styles = StyleSheet.create({
 
     headerContainer: {
         // marginBottom: 5,
+        padding: 20,
     },
 
     header: {
         color: colors.primaryAccent500,
         fontWeight: "bold",
         fontSize: 30,
+        // padding: 10,
     },
 
     tipsContainer: {

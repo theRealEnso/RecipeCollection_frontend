@@ -7,7 +7,7 @@ import { RecipeContext } from "@/context/RecipeContext";
 import { UserContext } from "@/context/UserContext";
 
 import { getGeneratedRecipeResult, getRecipeGenerationJobStatus, startRecipeGenerationJob } from "@/api/recipes";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 //import component(s)
 import CustomButton from "./components/CustomButton";
@@ -36,7 +36,7 @@ const RecipeFromImageScreen = () => {
     const [navigationReady, setNavigationReady] = useState<boolean>(false);
 
     const pollStartedAtRef = useRef<number>(0); // use this ref to track global timer
-    const pollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null); // timer for polling
+    const pollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null); // ref to track timer for polling
 
     const { accessToken } = useContext(UserContext);
     
@@ -49,7 +49,7 @@ const RecipeFromImageScreen = () => {
         selectedImageUrl, // use to display in Image tag to render image on device
         selectedImageSize,
         base64Url, // use to send to api endpoint that handles recipe generation
-        setRecipe,
+        setGeneratedRecipe,
         resetRecipeState
     } = useContext(RecipeContext);
 
@@ -76,13 +76,13 @@ const RecipeFromImageScreen = () => {
         if(!result.canceled){
             const asset = result.assets[0];
             // console.log(asset);
-            const base64_url = asset.base64;
+            // const base64_url = asset.base64;
             const fileUri = asset.uri; // local uri link
             const imageName = asset.fileName || fileUri.split("/").pop();
-            const originalFileType = getFileType(fileUri);
+            // const originalFileType = getFileType(fileUri);
 
             //if sending base64 to cloudinary, then we need to add correct prefix to the base64 string so that it is in a format that cloudinary will accept
-            const base64WithPrefix = `data:${originalFileType};base64,${base64_url}`;
+            // const base64WithPrefix = `data:${originalFileType};base64,${base64_url}`;
 
             const imageContext = ImageManipulator.ImageManipulator.manipulate(fileUri);
             imageContext.resize({
@@ -102,7 +102,7 @@ const RecipeFromImageScreen = () => {
             console.log(originalFileData);
 
             const originalFileSize = originalFileData.size;
-            console.log(originalFileSize);
+            // console.log(originalFileSize); // confirm `size` does indeed exist
 
             // console.log("the original file uri is: ", fileUri);
             // console.log("the modified and compressed file uri is: ", finalImage);
@@ -115,17 +115,18 @@ const RecipeFromImageScreen = () => {
         }
     };
 
-    const recipeGenerationStatusQuery = useQuery({
-        queryKey: ["jobStatus", jobId], // initially created with empty jobId
-        queryFn: () => getRecipeGenerationJobStatus(accessToken, jobId),
-        enabled: false, // tell react query to not automatically fetch, we will manually control
-    });
+    // don't use because useQuery will initialize jobId when it's still an empty string
+    // const recipeGenerationStatusQuery = useQuery({
+    //     queryKey: ["jobStatus", jobId], // initially created with empty jobId
+    //     queryFn: () => getRecipeGenerationJobStatus(accessToken, jobId),
+    //     enabled: false, // tell react query to not automatically fetch, we will manually control
+    // });
 
     // define mutation to start the recipe generation job
     const startRecipeGenerationMutation = useMutation({
         mutationFn: () => startRecipeGenerationJob(accessToken, base64Url),
         onSuccess: (data) => {
-            console.log(data)
+            console.log(data) // get back job id from this endpoint
             // setJobId(data.job_id);
             // need to write some code that starts polling the server continuously
             startPollingForUpdates(data.job_id);
@@ -180,7 +181,7 @@ const RecipeFromImageScreen = () => {
                 // console.log(generatedRecipe);
                 setIsLoading(false);
                 setUploadProgress(100);
-                setRecipe(generatedRecipe.recipe);
+                setGeneratedRecipe(generatedRecipe.recipe);
                 setNavigationReady(true);
                 return;
             };
@@ -197,7 +198,7 @@ const RecipeFromImageScreen = () => {
         poll();
     };
 
-        const stopPollingForUpdates = () => {
+    const stopPollingForUpdates = () => {
         if(pollTimerRef.current){
             clearTimeout(pollTimerRef.current);
             pollTimerRef.current = null;
@@ -374,7 +375,7 @@ const styles = StyleSheet.create({
 //             // console.log(data);
 //             setUploadProgress(null);
 //             console.log(data.recipe);
-//             setRecipe(data.recipe);
+//             setGeneratedRecipe(data.recipe);
 //             setIsLoading(false);
 //             setNavigationReady(true);
 //         },

@@ -57,6 +57,6 @@ const styles = StyleSheet.create({
     },
 
     text: {
-        color: colors.primaryAccent500
+        color: colors.secondaryAccent900,
     }
 })

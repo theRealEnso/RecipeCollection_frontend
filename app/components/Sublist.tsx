@@ -86,7 +86,7 @@ const Sublist = ({ name, id, itemId, setItemId, deleteList }: SublistProps) => {
             <View style={styles.trashIcon}>
                 <MaterialCommunityIcons name="delete-forever" size={32} color="red" onPress={() => deleteList(id)} />
             </View>
-            <View style={{ marginTop: 25, marginBottom: 10, alignItems: "center" }}>
+            <View style={{ marginTop: 25, marginBottom: 10, alignItems: "center", width: "80%", paddingHorizontal: 20,}}>
                 <Text style={styles.listLabel}>{`Ingredients for ${name}`}</Text>
             </View>
 
@@ -178,6 +178,6 @@ const styles = StyleSheet.create({
     
     trashIcon: {
         position: "absolute",
-        left: 350,
+        left: 380,
     },
 });

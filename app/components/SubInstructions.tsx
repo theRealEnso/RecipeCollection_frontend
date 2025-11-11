@@ -97,9 +97,9 @@ const SubInstructions = ({name, id,}: SubInstructionsProp) => {
                     </View>
                     <View style={{marginHorizontal: 5}}>
                         <CustomButton
-                            value={<MaterialIcons name="add-task" size={24} color="black" />}
+                            value={<MaterialIcons name="add-task" size={24} color={colors.primaryAccent800} />}
                             width={40}
-                            color={colors.primaryAccent900}
+                            color={colors.secondaryAccent500}
                             radius={20}
                             onButtonPress={addInstructions}
                         >
@@ -144,7 +144,7 @@ export default SubInstructions;
 
 const styles = StyleSheet.create({
     outerContainer: {
-        height: "100%",
+        height: 300,
         width: width,
         flex: 1,
         padding: 30,

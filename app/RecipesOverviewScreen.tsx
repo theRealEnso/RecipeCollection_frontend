@@ -120,10 +120,11 @@ const styles = StyleSheet.create({
     },
 
     buttonContainer: {
-        marginBottom: 20,
+        marginVertical: 20,
         flexDirection: "row",
         justifyContent: "space-between",
         paddingHorizontal: 50,
+        paddingVertical: 10,
     },
 
     icon: {

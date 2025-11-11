@@ -98,8 +98,6 @@ const MultipleIngredientsList = () => {
                     <Text style={styles.tips}>{`* Create separate lists here by typing in the name of the list, then press the "+" button`}</Text>
                     <Text style={styles.tips}>{`* Tap on a list item to make changes. Press in the "X" icon to remove item from the list`}</Text>
                     <Text style={styles.tips}>{`* Swipe left or right on the list to view other lists that you have added`}</Text>
-                    <Text style={styles.tips}>{`* Tap on the trash icon at the top right to delete the list`}</Text>
-                    <Text style={styles.tips}>* You can also create your main list of ingredients here and name it something like Final Dish</Text>
                 </View>
                 
                 <View style={styles.ingredientInputOuterContainer}>

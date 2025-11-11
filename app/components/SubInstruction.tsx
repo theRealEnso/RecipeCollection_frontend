@@ -68,9 +68,9 @@ const SubInstruction = ({sublistName, sublistId, instruction, instructionId, onE
                                 </View>
                                 <View style={{marginHorizontal: 5}}>
                                     <CustomButton
-                                        value={<Ionicons name="trash" size={20} color="black" />}
+                                        value={<Ionicons name="trash" size={20} color={colors.primaryAccent800} />}
                                         width={40}
-                                        color={colors.primaryAccent900}
+                                        color={colors.secondaryAccent500}
                                         radius={20}
                                         onButtonPress={() => onDelete(instructionId)}
                                     >
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
 
     listItem: {
         borderRadius: 15,
-        backgroundColor: colors.primaryAccent600,
+        backgroundColor: colors.primaryAccent000,
         paddingHorizontal: 10,
         paddingVertical: 5,
         width: "85%",

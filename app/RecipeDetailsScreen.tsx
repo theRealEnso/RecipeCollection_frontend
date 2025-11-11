@@ -9,6 +9,7 @@ import colors from "./constants/colors";
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 // import component(s)
+import CustomButton from "./components/CustomButton";
 
 //import type(s)
 import { CookingInstructions, Ingredient, ListName, RecipeSubInstructions, SubIngredient } from "@/types/Recipe";
@@ -208,15 +209,16 @@ const RecipeDetailsScreen = (
 
                         
                     </View>
-                    {/* <View>
+                    <View>
                         <CustomButton
                             onButtonPress={() => router.back()}
                             value="Go Back"
                             width={100}
+                            radius={12}
                         >
 
                         </CustomButton>
-                    </View> */}
+                    </View>
                 </View>
             </ScrollView>
         );
@@ -251,6 +253,7 @@ const styles = StyleSheet.create({
         color: colors.secondaryAccent900,
         fontWeight: "bold",
         marginVertical: 20,
+        padding: 15,
     },
 
     subHeader: {
