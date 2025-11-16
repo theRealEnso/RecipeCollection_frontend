@@ -61,7 +61,9 @@ export const RecipeContext = createContext<RecipeContextTypes>({
     isPublic: false,
     setIsPublic: () => {},
     isClaimed: false,
-    setIsClaimed: () => {}
+    setIsClaimed: () => {},
+    searchRecipesInput: "",
+    setSearchRecipesInput: () => {},
 });
 
 export const RecipeProvider = ({children}: RecipeProviderProps) => {
@@ -81,6 +83,7 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
     const [selectedImageName, setSelectedImageName] = useState<string>("");
     const [selectedImageSize, setSelectedImageSize] = useState<number>(0);
     const [base64Url, setBase64Url] = useState<string>("");
+    const [searchRecipesInput, setSearchRecipesInput] = useState<string>("");
     const [recipeForm, setRecipeForm] = useState<RecipeForm>({
         recipeOwner: "",
         nameOfDish: "",
@@ -208,6 +211,8 @@ export const RecipeProvider = ({children}: RecipeProviderProps) => {
         setIsPublic,
         isClaimed,
         setIsClaimed,
+        searchRecipesInput,
+        setSearchRecipesInput,
     };
 
     return <RecipeContext.Provider value={value}>{children}</RecipeContext.Provider>

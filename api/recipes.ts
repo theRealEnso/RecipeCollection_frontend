@@ -83,7 +83,42 @@ export const getUserSearchedRecipes = async (accessToken: string, searchQuery: s
         console.error(error);
         throw new Error(error as any);
     };
-}; 
+};
+
+type GetPublicRecipesPageParams = {
+    accessToken: string;
+    limit: number;
+    cursor?: string | null;
+    q?: string;
+    signal?: AbortSignal;
+};
+
+export const getAllPublicRecipesPaged = async (
+    {
+        accessToken, 
+        limit, 
+        cursor, 
+        q, 
+        signal
+    }: GetPublicRecipesPageParams) => {
+    try {
+        const params = new URLSearchParams();
+        params.set("limit", String(limit));
+        if(cursor) params.set("cursor", cursor);
+        if(q) params.set("q", q.trim());
+
+        const { data } = await axios.get(`${RECIPES_ENDPOINT}/public-recipes/paged?${params.toString()}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+            signal
+        });
+
+        return data;
+    } catch(error){
+        console.error(error);
+    };
+};
 
 export const generateCloudinarySignature = async (accessToken: string) => {
     try {

@@ -51,6 +51,8 @@ export type RecipeContextTypes = {
     setSubInstructions: React.Dispatch<React.SetStateAction<RecipeSubInstructions[]>>;
     resetRecipeState: () => void;
     setGeneratedRecipe: (recipe: RecipeData) => void;
+    searchRecipesInput: string;
+    setSearchRecipesInput: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export type ListName = {
