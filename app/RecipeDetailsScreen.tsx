@@ -43,6 +43,7 @@ const RecipeDetailsScreen = (
         const [showToast, setShowToast] = useState<boolean>(false);
 
         const toastAnimation = useRef(new Animated.Value(0)).current;
+        const heartAnimation = useRef(new Animated.Value(1)).current;
 
         const showAddedToast = () => {
             setShowToast(true);
@@ -64,9 +65,26 @@ const RecipeDetailsScreen = (
             });
         };
 
+        const animateHeart = () => {
+            Animated.timing(heartAnimation, {
+                toValue: 1.3,
+                duration: 200,
+                useNativeDriver: true,
+            }).start(() => {
+                setTimeout(() => {
+                    Animated.timing(heartAnimation, {
+                        toValue: 1,
+                        duration: 200,
+                        useNativeDriver: true,
+                    }).start()
+                })
+            })
+        };
+
         // function that toggles favorite / unfavorite
         const handleFavorited = () => {
             let favorited = !isFavorited // on first render, isFavorited = false, so favorited is flipped true now
+            animateHeart();
             setIsFavorited(favorited); // isFavorited will flip to true on the next render
 
             // will execute immediately instead of next re-render because favorited is true in this cycle
@@ -87,12 +105,14 @@ const RecipeDetailsScreen = (
                                 <Text style={styles.favoriteText}>Add to favorites</Text>
                             </View>
                             <View style={{marginHorizontal: 5}}>
-                                <MaterialIcons 
-                                    name={isFavorited ? "favorite" : "favorite-outline"} 
-                                    size={32} 
-                                    color={isFavorited ? colors.secondaryAccent900 : colors.primaryAccent900  } 
-                                    onPress={handleFavorited} 
-                                />
+                                <Animated.View style={{transform: [{scale: heartAnimation}]}}>
+                                    <MaterialIcons 
+                                        name={isFavorited ? "favorite" : "favorite-outline"} 
+                                        size={32} 
+                                        color={isFavorited ? colors.secondaryAccent900 : colors.primaryAccent900  } 
+                                        onPress={handleFavorited} 
+                                    />
+                                </Animated.View>
                             </View>
                         </View>
 
