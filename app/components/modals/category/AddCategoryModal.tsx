@@ -25,7 +25,7 @@ const AddCategoryModal = ({setShowAddCategoryModal}: AddModalProps) => {
 
     const [textInput, setTextInput] = useState<string>("");
 
-    const addCategoryMutation = useMutation({
+    const addCategory = useMutation({
         mutationFn: addCuisineCategory,
         onSuccess: (data) => {
             if(data){
@@ -46,7 +46,7 @@ const AddCategoryModal = ({setShowAddCategoryModal}: AddModalProps) => {
     const handleAddCategory = () => {
         if(!accessToken) return;
 
-        addCategoryMutation.mutate({
+        addCategory.mutate({
             accessToken,
             categoryText: formatString(textInput),
         });
@@ -95,7 +95,7 @@ const AddCategoryModal = ({setShowAddCategoryModal}: AddModalProps) => {
                 </View>
 
                 {
-                    addCategoryMutation.isPending && <ActivityIndicator color={colors.primaryAccent500}></ActivityIndicator>
+                    addCategory.isPending && <ActivityIndicator color={colors.primaryAccent500}></ActivityIndicator>
                 }
             </View>
         </Modal>

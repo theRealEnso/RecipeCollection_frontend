@@ -36,7 +36,7 @@ const ConfirmDeletionModal = (
         setShowWarningModal(false);
     };
 
-    const deleteCategoryMutation = useMutation({
+    const deleteCategory = useMutation({
         mutationFn: deleteCuisineCategory,
         onSuccess: async (data) => {
             // console.log(`Category successfully deleted: ${data}`);
@@ -44,14 +44,14 @@ const ConfirmDeletionModal = (
             setShowWarningModal(false);
         },
         onError: (error) => {
-            console.error(`Error deleting category: ${error}`)
+            console.error(`Error deleting category: ${error}`);
         },
     });
 
     const handleDeleteCategory = () => {
         if(!accessToken || ! selectedTileId) return;
 
-        deleteCategoryMutation.mutate({
+        deleteCategory.mutate({
             accessToken,
             categoryId: selectedTileId,
         });
@@ -80,7 +80,7 @@ const ConfirmDeletionModal = (
                                 width={100} 
                                 value="Confirm" 
                                 onButtonPress={handleDeleteCategory}
-                                mutationPending={deleteCategoryMutation.isPending}
+                                mutationPending={deleteCategory.isPending}
                             />
                         </View>
                     </View>

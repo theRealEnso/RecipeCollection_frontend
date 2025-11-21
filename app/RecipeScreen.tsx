@@ -72,11 +72,12 @@ const RecipeScreen = () => {
         }
         
         {/* navigation buttons */}
-        <View style={{marginBottom: 20,}}>
+        <View style={{padding: 10}}>
             <CustomButton
                 value="Go back"
                 width={100}
                 onButtonPress={() => router.back()}
+                radius={12}
             />
         </View>
     </View>
@@ -90,5 +91,6 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         marginTop: 50,
+        marginBottom: 10,
     },
 });

@@ -1,4 +1,5 @@
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useRef, useState } from "react";
+import { Animated, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
 // import { useRouter } from "expo-router";
 
@@ -7,9 +8,9 @@ import colors from "./constants/colors";
 
 // import icon(s)
 import AntDesign from '@expo/vector-icons/AntDesign';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 // import component(s)
-import CustomButton from "./components/CustomButton";
 
 //import type(s)
 import { CookingInstructions, Ingredient, ListName, RecipeSubInstructions, SubIngredient } from "@/types/Recipe";
@@ -38,189 +39,267 @@ const RecipeDetailsScreen = (
         subInstructions, 
         sublists,
     }: RecipeDetailsProps) => {
+        const [isFavorited, setIsFavorited] = useState<boolean>(false);
+        const [showToast, setShowToast] = useState<boolean>(false);
+
+        const toastAnimation = useRef(new Animated.Value(0)).current;
+
+        const showAddedToast = () => {
+            setShowToast(true);
+
+            Animated.timing(toastAnimation, {
+                toValue: 1,
+                duration: 2000,
+                useNativeDriver: true,
+            }).start(() => {
+                setTimeout(() => {
+                    Animated.timing(toastAnimation, {
+                        toValue: 0,
+                        duration: 2000,
+                        useNativeDriver: true,
+                    }).start(() => {
+                        setShowToast(false);
+                    })
+                }, 1000);
+            });
+        };
+
+        // function that toggles favorite / unfavorite
+        const handleFavorited = () => {
+            let favorited = !isFavorited // on first render, isFavorited = false, so favorited is flipped true now
+            setIsFavorited(favorited); // isFavorited will flip to true on the next render
+
+            // will execute immediately instead of next re-render because favorited is true in this cycle
+            if(favorited){
+                showAddedToast();
+            } else {
+                showAddedToast();
+            }
+        };
 
         return (
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={styles.mainContentContainer}>
-                    {/* header */}
-                    <View style={{alignItems: "center"}}>
-                        <Text style={styles.header}>{nameOfDish}</Text>
-                        {
-                            recipeOwner && recipeOwner.length > 0 && (
-                                <Text style={styles.author}>Courtesy of {recipeOwner}</Text>
-                            )
-                        }
-                    </View>
-
-                    {/* image container */}
-                    <View style={styles.imageContainer}>
-                        <Image src={imageUrl} style={styles.image} />
-                    </View>
-
-                    {/* display dish ingredients */}
-                    <View style={styles.ingredientsContainer}>
-                        <Text style={styles.subHeader}>Ingredients</Text>
-                        {
-                            // if we only have a single ingredient list, then just display each ingredient name
-                            ingredients.length > 0 ? (
-                                <View style={styles.ingredientsContainer}>
-                                    {
-                                        ingredients.map((ingredient) => {
-                                            return (
-                                                <View key={ingredient.ingredient_id} style={styles.ingredientItem}>
-                                                    <View style={{marginHorizontal: 5}}>
-                                                       <AntDesign name="star" size={8} color={colors.secondaryAccent500} /> 
-                                                    </View>
-                                                    <View style={{marginHorizontal: 5}}>
-                                                        <Text style={styles.text}>{ingredient.nameOfIngredient}</Text>
-                                                    </View>
-                                                </View>
-                                            )
-                                        })
-                                    }
-                                </View>
-
-                            ) : (
-                                //however, if our recipe contains sub-ingredients, then display sublist with their respective ingredients
-                                <View>
-                                    {
-                                        sublists.map((sublist) => {
-                                            const filteredIngredients = subIngredients.filter((ingredient) => ingredient.sublistName === sublist.name);
-
-                                            return (
-                                                <View key={sublist.id} style={{maxWidth: "70%", marginVertical: 10,}}>
-                                                    <View style={{marginBottom: 10, alignItems: "center",}}>
-                                                        <Text style={styles.sublistHeader}>{sublist.name}</Text>
-                                                    </View>
-                                                    <View>
-                                                        {
-                                                            filteredIngredients.length > 0 ? (
-                                                                filteredIngredients.map((ingredient) => {
-                                                                    return (
-                                                                        <View 
-                                                                            key={ingredient.nameOfIngredient} 
-                                                                            style={styles.ingredientItem}
-                                                                        >
-                                                                            <View style={{paddingHorizontal: 2}}> 
-                                                                                <AntDesign name="star" size={8} color={colors.secondaryAccent500} />
-                                                                            </View>
-
-                                                                            <View style={{paddingHorizontal: 2}}>
-                                                                                <Text style={styles.text}>{ingredient.nameOfIngredient}</Text>
-                                                                            </View>
-                                                                            
-                                                                        </View>
-                                                                    )
-                                                                })
-                                                            ) : (
-                                                                <Text>No ingredients for this section</Text>
-                                                            )
-                                                        }
-                                                    </View>
-                                                </View>
-                                            )
-                                        })
-                                    }
-                                </View>
-
-                            )    
-                        }
-                    </View>
-
-                    {/* Display special equipment */}
-                    <View style={{alignItems: "center", marginVertical: 20,}}>
-                        <View>
-                            <Text style={styles.subHeader}>Special Equipment</Text>
+            <View style={{flex: 1}}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={styles.mainContentContainer}>
+                        {/* favorited icon / button */}
+                        <View style={styles.favoritesContainer}>
+                            <View style={{marginHorizontal: 5}}>
+                                <Text style={styles.favoriteText}>Add to favorites</Text>
+                            </View>
+                            <View style={{marginHorizontal: 5}}>
+                                <MaterialIcons 
+                                    name={isFavorited ? "favorite" : "favorite-outline"} 
+                                    size={32} 
+                                    color={isFavorited ? colors.secondaryAccent900 : colors.primaryAccent900  } 
+                                    onPress={handleFavorited} 
+                                />
+                            </View>
                         </View>
-                        <View>
+
+
+                        {/* header */}
+                        <View style={{alignItems: "center"}}>
+                            <Text style={styles.header}>{nameOfDish}</Text>
                             {
-                                specialEquipment.length > 0 ? (
-                                    <Text style={[styles.text, {marginVertical: 10}]}>{specialEquipment}</Text>
-                                ) : (
-                                    <Text style={[styles.text, {marginVertical: 10}]}>None</Text>
+                                recipeOwner && recipeOwner.length > 0 && (
+                                    <Text style={styles.author}>Courtesy of {recipeOwner}</Text>
                                 )
                             }
                         </View>
-                    </View>
 
-                    {/* display cooking and prep instructions */}
-                    <View style={styles.instructionContainer}>
-                        <View>
-                            <Text style={styles.subHeader}>Cooking Instructions</Text>
+                        {/* image container */}
+                        <View style={styles.imageContainer}>
+                            <Image src={imageUrl} style={styles.image} />
                         </View>
-                        
 
-                        <View>
-                            {/* for single instruction lists, just render each instruction */}
+                        {/* display dish ingredients */}
+                        <View style={styles.ingredientsContainer}>
+                            <Text style={styles.subHeader}>Ingredients</Text>
                             {
-                                cookingInstructions.length > 0 ? (
-                                    <View>
-                                       {
-                                        cookingInstructions.map((instruction) => {
-                                            return (
-                                                <View key={instruction.instruction_id} style={styles.instructionItem}>
-                                                    <View style={{marginHorizontal: 5}}>
-                                                        <AntDesign name="star" size={8} color={colors.secondaryAccent500} />
-                                                    </View>
-                                                    <View style={{marginHorizontal: 5}}>
-                                                        <Text>{instruction.instruction}</Text>
-                                                    </View>
-                                                    
-                                                </View>
-                                            )
-                                        })
-                                       } 
-                                    </View>
-                                ): (
-                                    <View>
+                                // if we only have a single ingredient list, then just display each ingredient name
+                                ingredients.length > 0 ? (
+                                    <View style={styles.ingredientsContainer}>
                                         {
-                                          sublists.map((sublist) => {
-                                            const filteredInstructions = subInstructions.filter((instruction) => instruction.sublistName === sublist.name);
-
-                                            return (
-                                                <View key={sublist.id} style={styles.sublistContainer}>
-                                                    <View>
-                                                        <Text style={styles.sublistHeader}>{sublist.name}</Text>
+                                            ingredients.map((ingredient) => {
+                                                return (
+                                                    <View key={ingredient.ingredient_id} style={styles.ingredientItem}>
+                                                        <View style={{marginHorizontal: 5}}>
+                                                        <AntDesign name="star" size={8} color={colors.secondaryAccent500} /> 
+                                                        </View>
+                                                        <View style={{marginHorizontal: 5}}>
+                                                            <Text style={styles.text}>{ingredient.nameOfIngredient}</Text>
+                                                        </View>
                                                     </View>
-                                                    <View>
-                                                        {filteredInstructions.map((instruction) => {
-                                                            return (
-                                                                <View key={instruction.instruction_id} style={styles.instructionItem}>
-                                                                    <View style={{paddingHorizontal: 5}}>
-                                                                        <AntDesign name="star" size={8} color={colors.secondaryAccent500} />
-                                                                    </View>
-                                                                    <View style={{maxWidth: "95%", paddingHorizontal: 5}}>
-                                                                        <Text style={styles.text}>{instruction.instruction}</Text>
-                                                                    </View>
-                                                                </View>
-                                                            )
-                                                        })}
-                                                    </View>
-                                                </View>
-                                            )
-                                          })  
+                                                )
+                                            })
                                         }
                                     </View>
-                                )
-                            }
 
-                            {/* however, for instructions tied specifically to each sub list or sub component, then group them together */}
+                                ) : (
+                                    //however, if our recipe contains sub-ingredients, then display sublist with their respective ingredients
+                                    <View>
+                                        {
+                                            sublists.map((sublist) => {
+                                                const filteredIngredients = subIngredients.filter((ingredient) => ingredient.sublistName === sublist.name);
+
+                                                return (
+                                                    <View key={sublist.id} style={{maxWidth: "70%", marginVertical: 10,}}>
+                                                        <View style={{marginBottom: 10, alignItems: "center",}}>
+                                                            <Text style={styles.sublistHeader}>{sublist.name}</Text>
+                                                        </View>
+                                                        <View>
+                                                            {
+                                                                filteredIngredients.length > 0 ? (
+                                                                    filteredIngredients.map((ingredient) => {
+                                                                        return (
+                                                                            <View 
+                                                                                key={ingredient.nameOfIngredient} 
+                                                                                style={styles.ingredientItem}
+                                                                            >
+                                                                                <View style={{paddingHorizontal: 2}}> 
+                                                                                    <AntDesign name="star" size={8} color={colors.secondaryAccent500} />
+                                                                                </View>
+
+                                                                                <View style={{paddingHorizontal: 2}}>
+                                                                                    <Text style={styles.text}>{ingredient.nameOfIngredient}</Text>
+                                                                                </View>
+                                                                                
+                                                                            </View>
+                                                                        )
+                                                                    })
+                                                                ) : (
+                                                                    <Text>No ingredients for this section</Text>
+                                                                )
+                                                            }
+                                                        </View>
+                                                    </View>
+                                                )
+                                            })
+                                        }
+                                    </View>
+
+                                )    
+                            }
                         </View>
 
-                        
-                    </View>
-                    <View>
-                        <CustomButton
-                            onButtonPress={() => router.back()}
-                            value="Go Back"
-                            width={100}
-                            radius={12}
-                        >
+                        {/* Display special equipment */}
+                        <View style={{alignItems: "center", marginVertical: 20,}}>
+                            <View>
+                                <Text style={styles.subHeader}>Special Equipment</Text>
+                            </View>
+                            <View>
+                                {
+                                    specialEquipment.length > 0 ? (
+                                        <Text style={[styles.text, {marginVertical: 10}]}>{specialEquipment}</Text>
+                                    ) : (
+                                        <Text style={[styles.text, {marginVertical: 10}]}>None</Text>
+                                    )
+                                }
+                            </View>
+                        </View>
 
-                        </CustomButton>
+                        {/* display cooking and prep instructions */}
+                        <View style={styles.instructionContainer}>
+                            <View>
+                                <Text style={styles.subHeader}>Cooking Instructions</Text>
+                            </View>
+                            
+
+                            <View>
+                                {/* for single instruction lists, just render each instruction */}
+                                {
+                                    cookingInstructions.length > 0 ? (
+                                        <View>
+                                        {
+                                            cookingInstructions.map((instruction) => {
+                                                return (
+                                                    <View key={instruction.instruction_id} style={styles.instructionItem}>
+                                                        <View style={{marginHorizontal: 5}}>
+                                                            <AntDesign name="star" size={8} color={colors.secondaryAccent500} />
+                                                        </View>
+                                                        <View style={{marginHorizontal: 5}}>
+                                                            <Text style={styles.text}>{instruction.instruction}</Text>
+                                                        </View>
+                                                        
+                                                    </View>
+                                                )
+                                            })
+                                        } 
+                                        </View>
+                                    ): (
+                                        <View>
+                                            {
+                                            sublists.map((sublist) => {
+                                                const filteredInstructions = subInstructions.filter((instruction) => instruction.sublistName === sublist.name);
+
+                                                return (
+                                                    <View key={sublist.id} style={styles.sublistContainer}>
+                                                        <View>
+                                                            <Text style={styles.sublistHeader}>{sublist.name}</Text>
+                                                        </View>
+                                                        <View>
+                                                            {filteredInstructions.map((instruction) => {
+                                                                return (
+                                                                    <View key={instruction.instruction_id} style={styles.instructionItem}>
+                                                                        <View style={{paddingHorizontal: 5}}>
+                                                                            <AntDesign name="star" size={8} color={colors.secondaryAccent500} />
+                                                                        </View>
+                                                                        <View style={{maxWidth: "95%", paddingHorizontal: 5}}>
+                                                                            <Text style={styles.text}>{instruction.instruction}</Text>
+                                                                        </View>
+                                                                    </View>
+                                                                )
+                                                            })}
+                                                        </View>
+                                                    </View>
+                                                )
+                                            })  
+                                            }
+                                        </View>
+                                    )
+                                }
+
+                                {/* however, for instructions tied specifically to each sub list or sub component, then group them together */}
+                            </View>
+
+                            
+                        </View>
                     </View>
-                </View>
-            </ScrollView>
+                </ScrollView>
+
+                {/* conditionally render the animated component */}
+                {
+                    showToast && isFavorited ? (
+                        <Animated.View
+                            style={[styles.toast, {
+                                opacity: toastAnimation, 
+                                transform: [
+                                {translateY: toastAnimation.interpolate({
+                                    inputRange: [0, 1],
+                                    outputRange: [-10, 0]
+                                })}
+                            ]}]}
+                        >
+                            <Text style={styles.toastText}>Successfully added to favorites!</Text>
+                        </Animated.View>
+                    ) : 
+
+                    (
+                        <Animated.View
+                            style={[styles.toast, {
+                                opacity: toastAnimation, 
+                                transform: [
+                                {translateY: toastAnimation.interpolate({
+                                    inputRange: [0, 1],
+                                    outputRange: [-10, 0]
+                                })}
+                            ]}]}
+                        >
+                            <Text style={styles.toastText}>Successfully removed from favorites!</Text>
+                        </Animated.View>
+                    )
+                }
+            </View>
         );
 };
 
@@ -230,7 +309,7 @@ const styles = StyleSheet.create({
     mainContentContainer: {
         alignItems: "center",
         flex: 1,
-        paddingVertical: 30,
+        padding: 10,
     },
 
     imageContainer: {
@@ -311,5 +390,33 @@ const styles = StyleSheet.create({
         color: colors.primaryAccent800,
         fontSize: 16,
         fontWeight: "700",
-    }
+    },
+
+    favoritesContainer: {
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        alignItems: "center",
+        marginLeft: "auto",
+        marginVertical: 20,
+    },
+
+    favoriteText: {
+        fontSize: 18,
+        color: colors.primaryAccent900,
+    },
+
+    toast: {
+        position: "absolute",
+        top: 70,
+        right: 20,
+        alignSelf: "center",
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 8,
+        backgroundColor: colors.primaryAccent900,
+    },
+
+    toastText: {
+        color: "#fff",
+    },
 });

@@ -102,7 +102,7 @@ const RecipeFromImageScreen = () => {
             console.log(originalFileData);
 
             const originalFileSize = originalFileData.size;
-            // console.log(originalFileSize); // confirm `size` does indeed exist
+            // console.log(originalFileSize); // confirms `size` does indeed exist
 
             // console.log("the original file uri is: ", fileUri);
             // console.log("the modified and compressed file uri is: ", finalImage);
@@ -123,7 +123,7 @@ const RecipeFromImageScreen = () => {
     // });
 
     // define mutation to start the recipe generation job
-    const startRecipeGenerationMutation = useMutation({
+    const startRecipeGeneration = useMutation({
         mutationFn: () => startRecipeGenerationJob(accessToken, base64Url),
         onSuccess: (data) => {
             console.log(data) // get back job id from this endpoint
@@ -210,7 +210,7 @@ const RecipeFromImageScreen = () => {
         try {
             setIsLoading(true);
             setUploadProgress(0);
-            startRecipeGenerationMutation.mutate();
+            startRecipeGeneration.mutate();
 
         } catch(error){
             console.error(error);

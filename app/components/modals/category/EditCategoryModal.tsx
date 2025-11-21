@@ -34,7 +34,7 @@ const EditCategoryModal = (
     
     const { accessToken } = useContext(UserContext);
 
-    const editCategoryMutation = useMutation({
+    const editCategory = useMutation({
         mutationFn: editCuisineCategory,
         onSuccess: (data) => {
             // console.log(data);
@@ -47,7 +47,7 @@ const EditCategoryModal = (
     });
 
     const handleSaveEdit = async () => {
-        editCategoryMutation.mutate({
+        editCategory.mutate({
             accessToken,
             categoryText: textInput,
             categoryId: selectedTileId,
@@ -93,7 +93,7 @@ const EditCategoryModal = (
                 </View>
 
                 {
-                    editCategoryMutation.isPending && <ActivityIndicator color={colors.primaryAccent500}></ActivityIndicator>
+                    editCategory.isPending && <ActivityIndicator color={colors.primaryAccent500}></ActivityIndicator>
                 }
             </View>
         </Modal>
