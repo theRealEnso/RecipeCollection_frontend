@@ -15,6 +15,7 @@ import AddCategoryModal from "../components/modals/category/AddCategoryModal";
 
 // import icon(s)
 import Feather from '@expo/vector-icons/Feather';
+import Fontisto from '@expo/vector-icons/Fontisto';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 // import colors
@@ -136,6 +137,27 @@ const CustomDrawerContent = (props: any) => {
             />
 
             <DrawerItem 
+                label="Favorites"
+                labelStyle={
+                    activeItem === "Favorites"
+                    ? {color: "white", paddingLeft: 18} 
+                    : {color: "black", paddingLeft: 18}
+                }
+                onPress={() => {
+                    setActiveItem("Favorites");
+                    navigation.navigate("FavoritesScreen");
+                }}
+                icon={({focused}) => <Fontisto name="favorite" size={24} color={focused || activeItem === "Favorites" ? colors.secondaryAccent500 : "black"} />}
+                // activeBackgroundColor={colors.primaryAccent900}
+                // activeTintColor={colors.primaryAccent900}
+                // inactiveBackgroundColor="white"
+                style={
+                    activeItem === "Favorites" 
+                    ? {backgroundColor: colors.primaryAccent700} 
+                    : {backgroundColor: colors.backgroundPrimary}
+                }
+            />
+            <DrawerItem 
                 label="Discover"
                 labelStyle={
                     activeItem === "Discover"
@@ -205,6 +227,14 @@ const AuthenticatedLayout = () => {
                 }} 
             />
 
+            <Drawer.Screen
+                name="FavoritesScreen"
+                options={{
+                    title: "Favorites",
+                    drawerLabel: "Favorites",
+                    
+                }} 
+            />
             <Drawer.Screen
                 name="DiscoverScreen"
                 options={{

@@ -97,6 +97,7 @@ export type RecipeData = RecipeForm & {
     isPublic: boolean;
     ownerUserId: string;
     isClaimed: boolean;
+    claimedByUserId: string | null;
     createdAt: Date;
     updatedAt: Date;
     __v: number

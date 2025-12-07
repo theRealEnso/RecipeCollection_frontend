@@ -4,6 +4,7 @@ export type User = {
     lastName: string;
     email: string;
     picture: string;
+    favoriteRecipes: string[];
 };
 
 export type UserInfoFromServer = {

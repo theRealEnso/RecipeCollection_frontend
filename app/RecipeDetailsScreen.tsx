@@ -1,7 +1,14 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { Animated, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
 // import { useRouter } from "expo-router";
+
+// import context(s)
+import { UserContext } from "@/context/UserContext";
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+// import axios helper function(s)
+import { addFavoriteRecipe, removeFavoriteRecipe } from "@/api/recipes";
 
 // import colors
 import colors from "./constants/colors";
@@ -13,7 +20,12 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 // import component(s)
 
 //import type(s)
-import { CookingInstructions, Ingredient, ListName, RecipeSubInstructions, SubIngredient } from "@/types/Recipe";
+import {
+    CookingInstructions,
+    Ingredient, ListName,
+    RecipeSubInstructions,
+    SubIngredient
+} from "@/types/Recipe";
 
 type RecipeDetailsProps = {
     recipeOwner: string;
@@ -25,6 +37,7 @@ type RecipeDetailsProps = {
     cookingInstructions: CookingInstructions[];
     subInstructions: RecipeSubInstructions[];
     sublists: ListName[];
+    id: string;
 };
 
 const RecipeDetailsScreen = (
@@ -38,12 +51,45 @@ const RecipeDetailsScreen = (
         cookingInstructions,
         subInstructions, 
         sublists,
+        id,
     }: RecipeDetailsProps) => {
-        const [isFavorited, setIsFavorited] = useState<boolean>(false);
+        const queryClient = useQueryClient();
+        const { accessToken, currentUser, setCurrentUser } = useContext(UserContext);
+
+        console.log(currentUser);
+        const user = currentUser ? currentUser : null;
+
+        const isInitiallyFavorited = !!(user && user.favoriteRecipes.includes(id));
+
+        const [isFavorited, setIsFavorited] = useState<boolean>(isInitiallyFavorited);
         const [showToast, setShowToast] = useState<boolean>(false);
 
         const toastAnimation = useRef(new Animated.Value(0)).current;
         const heartAnimation = useRef(new Animated.Value(1)).current;
+
+        const addToFavorites = useMutation({
+            mutationFn: () => addFavoriteRecipe(accessToken, id),
+            onSuccess: (data) => {
+                console.log(data);
+                queryClient.invalidateQueries({queryKey: ["favoriteRecipes", user?.id ]});
+                setCurrentUser((previous) => previous && {...previous, favoriteRecipes: data.favoriteRecipes});
+            },
+            onError: (error) => {
+                console.error(error);
+            }
+        });
+
+        const removeFromFavorites = useMutation({
+            mutationFn: () => removeFavoriteRecipe(accessToken, id),
+            onSuccess: (data) => {
+                console.log(data);
+                queryClient.invalidateQueries({queryKey: ["favoriteRecipes", user?.id ]});
+                setCurrentUser((previous) => previous && {...previous, favoriteRecipes: data.favoriteRecipes});
+            },
+            onError: (error) => {
+                console.error(error);
+            }
+        });
 
         const showAddedToast = () => {
             setShowToast(true);
@@ -77,23 +123,27 @@ const RecipeDetailsScreen = (
                         duration: 200,
                         useNativeDriver: true,
                     }).start()
-                })
+                }, 10)
             })
         };
 
         // function that toggles favorite / unfavorite
         const handleFavorited = () => {
-            let favorited = !isFavorited // on first render, isFavorited = false, so favorited is flipped true now
+            let favorited = !isFavorited // on first render, isFavorited = true, so favorited is flipped to false now
             animateHeart();
             setIsFavorited(favorited); // isFavorited will flip to true on the next render
 
-            // will execute immediately instead of next re-render because favorited is true in this cycle
+            // will execute immediately instead of next re-render because favorited is true in this render cycle
             if(favorited){
+                addToFavorites.mutate();
                 showAddedToast();
             } else {
+                removeFromFavorites.mutate();
                 showAddedToast();
             }
         };
+
+        console.log(id);
 
         return (
             <View style={{flex: 1}}>
@@ -102,7 +152,11 @@ const RecipeDetailsScreen = (
                         {/* favorited icon / button */}
                         <View style={styles.favoritesContainer}>
                             <View style={{marginHorizontal: 5}}>
-                                <Text style={styles.favoriteText}>Add to favorites</Text>
+                                <Text style={styles.favoriteText}>
+                                    {
+                                        isFavorited ? "Recipe favorited !" : "Add to favorites?"
+                                    }
+                                </Text>
                             </View>
                             <View style={{marginHorizontal: 5}}>
                                 <Animated.View style={{transform: [{scale: heartAnimation}]}}>

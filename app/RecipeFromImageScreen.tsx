@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// const generateRecipeFromImageMutation = useMutation({
+// const generateRecipeFromImage = useMutation({
 //         mutationFn: (
 //             {
 //                 accessToken,

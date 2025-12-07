@@ -29,6 +29,10 @@ const RecipeScreen = () => {
         staleTime: 0,
     });
 
+    const recipeId = _id.toString();
+
+    // console.log(recipeId);
+
     return (
     <View style={styles.container}>
         
@@ -60,6 +64,7 @@ const RecipeScreen = () => {
                             cookingInstructions={cookingInstructions}
                             subInstructions={subInstructions}
                             sublists={sublists}
+                            id={recipeId}
                         >
                         </RecipeDetailsScreen>
                     );

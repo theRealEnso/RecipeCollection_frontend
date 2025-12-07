@@ -21,7 +21,7 @@ const PAGE_ITEM_LIMIT = 20;
 const DiscoverScreen = () => {
     const { width: screenWidth } = useWindowDimensions();
 
-    const { accessToken, } = useContext(UserContext);
+    const { accessToken } = useContext(UserContext);
     const { searchRecipesInput } = useContext(RecipeContext);
 
 
@@ -29,6 +29,7 @@ const DiscoverScreen = () => {
         if(screenWidth >= 1024) return 4;
 
         if(screenWidth >= 768) return 3;
+        
         return 2;
     }, [screenWidth]);
 
@@ -75,6 +76,16 @@ const DiscoverScreen = () => {
 
     // flattening all pages to a single array of items so that it works with FlatList
     const recipes = activeQuery.data?.pages.flatMap((page) => page.items) ?? [];
+    // data.pages looks like:
+    //     data.pages = [
+    //   { items: [...20],         nextCursor: "C1" },
+    //   { items: [...next 20],    nextCursor: "C2" },
+    // ];
+
+    // data.pageParams = [
+    //   null,   // first page’s pageParam
+    //   "C1",   // second page used "C1"
+    // ];
 
     //function that fetches the next page when flatlist reaches the end of the page that user scrolls
     // Avoids spamming extra requests while fetch is happening or there is no next page
@@ -98,7 +109,7 @@ const DiscoverScreen = () => {
 
     if(activeQuery.isError){
         return (
-            <View style={styles.outerContainer}>
+            <View style={[styles.outerContainer, {alignItems: "center"}]}>
                 <Text style={styles.errorTitle}>Error loading public recipes</Text>
                 <Text style={styles.errorDetail}>{activeQuery.isError ?? "Please try again."}</Text>
             </View>
@@ -107,7 +118,7 @@ const DiscoverScreen = () => {
 
     if(recipes.length === 0 || !recipes.length){
         return (
-            <View style={styles.outerContainer}>
+            <View style={[styles.outerContainer, {alignItems: "center",}]}>
                 <SearchRecipesInput></SearchRecipesInput>
                 <Text>No recipes found!</Text>
             </View>
@@ -150,7 +161,6 @@ const DiscoverScreen = () => {
                 onRefresh={() => discoverQuery.refetch()}
             />
         </View>
-
     );
 };
 
@@ -182,5 +192,4 @@ const styles = StyleSheet.create({
         marginTop: 6,
         color: "#6B7280",
   },
-
 });

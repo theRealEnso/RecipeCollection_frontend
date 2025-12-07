@@ -18,7 +18,7 @@ import colors from './constants/colors';
 // define types
 type FormErrors = {
   email: string | null;
-  password: string | null
+  password: string | null;
 };
 
 export default function LoginScreen() {
@@ -60,7 +60,7 @@ export default function LoginScreen() {
 
   }, []);
 
-  const loginUserMutation = useMutation({
+  const signInUser = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
       if(data){
@@ -95,7 +95,7 @@ export default function LoginScreen() {
     let hasErrors = Object.values(formErrors).some((value) => value !== null);
     if(!hasErrors){
       try {
-        loginUserMutation.mutate({...formInputs});
+        signInUser.mutate({...formInputs});
       } catch(error){
         console.error(`Error: ${error}`);
       }
@@ -151,7 +151,7 @@ export default function LoginScreen() {
           <CustomButton 
             value="Login"
             width={250} 
-            mutationPending={loginUserMutation.isPending} 
+            mutationPending={signInUser.isPending} 
             onButtonPress={handleLoginSubmit}
             color={colors.primaryAccent700}
           >

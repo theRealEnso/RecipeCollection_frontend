@@ -87,7 +87,11 @@ const HomeScreen = () => {
                     !!debouncedSearchInput && !!userId 
                     ? (
                         searchedRecipesIsLoading ? (
-                            <ActivityIndicator color={colors.primaryAccent000} size={32} style={{flex: 1}}></ActivityIndicator>
+                            <ActivityIndicator 
+                                color={colors.primaryAccent000} 
+                                size={32} 
+                                style={{flex: 1}}>
+                            </ActivityIndicator>
                         ) : searchedRecipesError ? (
                             <Text>Error searching for recipes...</Text>
                         )

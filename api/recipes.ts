@@ -5,6 +5,7 @@ import { RecipeData } from "@/types/Recipe";
 
 const RECIPE_COLLECTION_ENDPOINT = process.env.EXPO_PUBLIC_RECIPE_COLLECTION_ENDPOINT_4;
 const RECIPES_ENDPOINT = `${RECIPE_COLLECTION_ENDPOINT}/recipes`;
+const USER_ENDPOINT = `${RECIPE_COLLECTION_ENDPOINT}/auth`
 
 // define types
 type CreateRecipeProps = {
@@ -148,6 +149,8 @@ export const createCloudinaryURL = async ({accessToken, base64Url}: {accessToken
     };
 };
 
+// ******   axios helper functions for AI workloads *****
+
 export const startRecipeGenerationJob = async (accessToken: string, base64Url: string) => {
     try {
         const { data } = await axios.post(`${RECIPES_ENDPOINT}/start-recipe-generation`, {base64Image: base64Url}, {
@@ -190,7 +193,51 @@ export const getGeneratedRecipeResult = async (accessToken: string, jobId: strin
     };
 };
 
-// legacy function
+// ********** axios helper functions for favoriting, unfavoriting, and fetching favorited recipes  **********
+
+export const addFavoriteRecipe = async (accessToken: string, recipeId: string) => {
+    try {
+        const { data } = await axios.post(`${USER_ENDPOINT}/me/favorites/${recipeId}`, null, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+
+        return data;
+    } catch(error){
+        console.error(error);
+    }
+};
+
+export const removeFavoriteRecipe = async (accessToken: string, recipeId: string) => {
+    try {
+         const { data } = await axios.delete(`${USER_ENDPOINT}/me/favorites/${recipeId}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+         });
+         
+         return data;
+    } catch(error){
+        console.error(error);
+    };
+};
+
+export const getFavoritedRecipes = async (accessToken: string) => {
+    try {
+        const { data } = await axios.get(`${USER_ENDPOINT}/me/favorites`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+        });
+
+        return data;
+    } catch(error){
+        console.error(error);
+    };
+};
+
+// ********** legacy axios helper functions **********
 export const generateRecipeFromImage = async (accessToken: string, base64Url: string, selectedImageSize: number, updateProgress: (percent: number) => void) => {
     try {
         const { data } = await axios.post(`${RECIPES_ENDPOINT}/generate-recipe-from-image`, {base64Image: base64Url}, {
@@ -216,3 +263,5 @@ export const generateRecipeFromImage = async (accessToken: string, base64Url: st
         console.error(error);
     };
 };
+
+

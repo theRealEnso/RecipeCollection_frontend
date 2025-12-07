@@ -1,5 +1,5 @@
 import * as SecureStore from "expo-secure-store";
-import { createContext, FC, ReactNode, useEffect, useState, } from "react";
+import React, { createContext, FC, ReactNode, useEffect, useState, } from "react";
 
 //import types
 import { User } from "@/types/User";
@@ -10,6 +10,7 @@ type UserProviderProps = {
 
 type UserContextTypes = {
     currentUser: null | User;
+    setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
     handleSetUser: (user: User | null) => Promise<void>;
     isTokenVerified: boolean;
     setIsTokenVerified: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,6 +25,7 @@ type UserContextTypes = {
 
 export const UserContext = createContext<UserContextTypes>({
     currentUser: null,
+    setCurrentUser: () => {},
     handleSetUser: async () => {},
     isTokenVerified: false,
     setIsTokenVerified: () => {},
@@ -84,6 +86,7 @@ export const UserProvider: FC<UserProviderProps> = ({children}) => {
 
     const value = {
         currentUser,
+        setCurrentUser,
         handleSetUser,
         isTokenVerified,
         setIsTokenVerified,
