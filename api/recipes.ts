@@ -237,6 +237,22 @@ export const getFavoritedRecipes = async (accessToken: string) => {
     };
 };
 
+// ********** axios helpers for adding, editing, and removing reviews ********** 
+
+export const addRecipeReview = async (accessToken: string, rating: number, comment: string, recipeId: string) => {
+    try {
+        const { data } = await axios.post(`${RECIPES_ENDPOINT}/${recipeId}/reviews`, {rating, comment}, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+
+        return data;
+    } catch(error){
+        console.error(error);
+    };
+};
+
 // ********** legacy axios helper functions **********
 export const generateRecipeFromImage = async (accessToken: string, base64Url: string, selectedImageSize: number, updateProgress: (percent: number) => void) => {
     try {

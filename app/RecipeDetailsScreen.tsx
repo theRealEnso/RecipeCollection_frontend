@@ -1,5 +1,5 @@
 import { useContext, useRef, useState } from "react";
-import { Animated, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Animated, Image, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 // import { useRouter } from "expo-router";
 
@@ -8,7 +8,11 @@ import { UserContext } from "@/context/UserContext";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 // import axios helper function(s)
-import { addFavoriteRecipe, removeFavoriteRecipe } from "@/api/recipes";
+import {
+    addFavoriteRecipe,
+    addRecipeReview,
+    removeFavoriteRecipe,
+} from "@/api/recipes";
 
 // import colors
 import colors from "./constants/colors";
@@ -18,6 +22,8 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 // import component(s)
+import StarRating from "react-native-star-rating-widget";
+import CustomButton from "./components/CustomButton";
 
 //import type(s)
 import {
@@ -63,10 +69,13 @@ const RecipeDetailsScreen = (
 
         const [isFavorited, setIsFavorited] = useState<boolean>(isInitiallyFavorited);
         const [showToast, setShowToast] = useState<boolean>(false);
+        const [rating, setRating] = useState<number>(0);
+        const [comment, setComment] = useState<string>("");
 
         const toastAnimation = useRef(new Animated.Value(0)).current;
         const heartAnimation = useRef(new Animated.Value(1)).current;
 
+        // define mutations
         const addToFavorites = useMutation({
             mutationFn: () => addFavoriteRecipe(accessToken, id),
             onSuccess: (data) => {
@@ -90,6 +99,18 @@ const RecipeDetailsScreen = (
                 console.error(error);
             }
         });
+
+        const addReview = useMutation({
+            mutationFn: () => addRecipeReview(accessToken, rating, comment, id),
+            onSuccess: (data) => {
+                queryClient.invalidateQueries({queryKey: ["recipeData", id]});
+                setComment("");
+                setRating(0);
+            },
+            onError: (error) => {
+                console.error(error);
+            }
+        })
 
         const showAddedToast = () => {
             setShowToast(true);
@@ -144,6 +165,7 @@ const RecipeDetailsScreen = (
         };
 
         console.log(id);
+        // console.log(rating);
 
         return (
             <View style={{flex: 1}}>
@@ -277,7 +299,6 @@ const RecipeDetailsScreen = (
                             <View>
                                 <Text style={styles.subHeader}>Cooking Instructions</Text>
                             </View>
-                            
 
                             <View>
                                 {/* for single instruction lists, just render each instruction */}
@@ -335,8 +356,48 @@ const RecipeDetailsScreen = (
 
                                 {/* however, for instructions tied specifically to each sub list or sub component, then group them together */}
                             </View>
+                        </View>
 
+                        {/* ratings and reviews section */}
+                        <View>
+                            <View style={{alignItems: "center"}}>
+                                <Text style={[styles.reviewHeaderText, {marginTop: 30}]}>Let us what you think about</Text>
+                                <Text style={[styles.reviewHeaderText, {alignItems: "center", justifyContent: "center", marginBottom: 30,}]}>this recipe!</Text>
+                                <Text style={{fontSize: 18, color: colors.primaryAccent900}}>Leave a review</Text>
+
+                                <StarRating 
+                                    rating={rating}
+                                    onChange={(rating) => setRating(rating)}
+                                    maxStars={5}
+                                    step="full"
+                                    style={{marginVertical: 10}}
+                                >
+                                </StarRating>
+
+                                <TextInput
+                                    multiline={true}
+                                    numberOfLines={4}
+                                    placeholder="Write your review..."
+                                    value={comment}
+                                    onChangeText={(text) => setComment(text)}
+                                    style={styles.commentBox}
+                                    textAlignVertical="top"
+                                >
+                                </TextInput>
+                            </View>
                             
+                            <View style={styles.postButtonContainer}>
+                                <CustomButton
+                                    value="Post"
+                                    width={100}
+                                    radius={10}
+                                    color={colors.secondaryAccent700}
+                                    onButtonPress={() => addReview.mutate()}
+                                    mutationPending={addReview.isPending}
+                                >
+
+                                </CustomButton>
+                            </View>
                         </View>
                     </View>
                 </ScrollView>
@@ -450,6 +511,10 @@ const styles = StyleSheet.create({
     instructionContainer: {
         alignItems: "center",
         justifyContent: "center",
+        borderBottomWidth: 2,
+        borderColor: "gray",
+        paddingBottom: 30,
+        paddingHorizontal: 10,
     },
 
     instructionItem: {
@@ -493,4 +558,31 @@ const styles = StyleSheet.create({
     toastText: {
         color: "#fff",
     },
+
+    reviewHeaderText: {
+        fontSize: 28,
+        color: colors.secondaryAccent700,
+        paddingHorizontal: 40,
+        // marginVertical: 20,
+    },
+
+    commentBox: {
+        width: "70%",
+        maxWidth: "70%",
+        height: 125,
+        borderRadius: 10,
+        borderColor: colors.textPrimary500,
+        borderWidth: 2,
+        padding: 10,
+    },
+
+    postButtonContainer: {
+        // width: "70%",
+        marginVertical: 10,
+        alignItems: "flex-end",
+        paddingRight: 65,
+        // justifyContent: "flex-end",
+        // borderWidth: 2,
+        // borderColor: "black",
+    }
 });
