@@ -54,11 +54,11 @@ const RecipesOverviewScreen = () => {
                     data && data.categoryRecipes.length > 0 ? (
                         <RecipeCardList recipesData={data.categoryRecipes}></RecipeCardList>
                     ) : isLoading ? (
-                        <View>
+                        <View style={{justifyContent: "center"}}>
                             <Text>Fetching categories...</Text>
                         </View>
                     ) : error ? (
-                        <View>
+                        <View style={{justifyContent: "center"}}>
                             <Text>Error fetching categories!</Text>
                         </View>
                     ) : (
@@ -139,5 +139,6 @@ const styles = StyleSheet.create({
 
     emptyMessage: {
         padding: 30,
+        justifyContent: "center",
     }
 });

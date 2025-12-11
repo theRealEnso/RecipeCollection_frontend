@@ -1,5 +1,15 @@
 import { useContext, useRef, useState } from "react";
-import { Animated, Image, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+    Animated,
+    FlatList,
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
+    useWindowDimensions
+} from "react-native";
 
 // import { useRouter } from "expo-router";
 
@@ -24,14 +34,29 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 // import component(s)
 import StarRating from "react-native-star-rating-widget";
 import CustomButton from "./components/CustomButton";
+import UserReview from "./components/UserReview";
 
 //import type(s)
 import {
     CookingInstructions,
-    Ingredient, ListName,
+    Ingredient,
+    ListName,
     RecipeSubInstructions,
     SubIngredient
 } from "@/types/Recipe";
+
+export type Review = {
+    user: {
+        firstName: string;
+        lastName: string;
+        image: string;
+    }
+    rating: number;
+    comment: string;
+    createdAt: Date;
+    updatedAt: Date;
+    _id: string
+};
 
 type RecipeDetailsProps = {
     recipeOwner: string;
@@ -44,6 +69,9 @@ type RecipeDetailsProps = {
     subInstructions: RecipeSubInstructions[];
     sublists: ListName[];
     id: string;
+    reviews: Review[],
+    averageRating: number,
+    ratingCount: number,
 };
 
 const RecipeDetailsScreen = (
@@ -58,11 +86,15 @@ const RecipeDetailsScreen = (
         subInstructions, 
         sublists,
         id,
+        reviews,
+        averageRating,
+        ratingCount,
     }: RecipeDetailsProps) => {
+        const {width: screenWidth} = useWindowDimensions();
         const queryClient = useQueryClient();
         const { accessToken, currentUser, setCurrentUser } = useContext(UserContext);
 
-        console.log(currentUser);
+        // console.log(currentUser);
         const user = currentUser ? currentUser : null;
 
         const isInitiallyFavorited = !!(user && user.favoriteRecipes.includes(id));
@@ -70,6 +102,7 @@ const RecipeDetailsScreen = (
         const [isFavorited, setIsFavorited] = useState<boolean>(isInitiallyFavorited);
         const [showToast, setShowToast] = useState<boolean>(false);
         const [rating, setRating] = useState<number>(0);
+        const [avgRating, setAvgRating] = useState<number>(averageRating);
         const [comment, setComment] = useState<string>("");
 
         const toastAnimation = useRef(new Animated.Value(0)).current;
@@ -164,7 +197,7 @@ const RecipeDetailsScreen = (
             }
         };
 
-        console.log(id);
+        // console.log(id);
         // console.log(rating);
 
         return (
@@ -357,12 +390,17 @@ const RecipeDetailsScreen = (
                                 {/* however, for instructions tied specifically to each sub list or sub component, then group them together */}
                             </View>
                         </View>
+                        
+                        {/* empty container with bottom border for cleaner looking separation from reviews section */}
+                        <View style={{borderBottomWidth: 2, borderColor: "gray", height: 50, width: 150,}}>
+
+                        </View>
 
                         {/* ratings and reviews section */}
                         <View>
                             <View style={{alignItems: "center"}}>
-                                <Text style={[styles.reviewHeaderText, {marginTop: 30}]}>Let us what you think about</Text>
-                                <Text style={[styles.reviewHeaderText, {alignItems: "center", justifyContent: "center", marginBottom: 30,}]}>this recipe!</Text>
+                                <Text style={[styles.reviewHeaderText, {marginTop: 30}]}>Let us know what you think</Text>
+                                <Text style={[styles.reviewHeaderText, {alignItems: "center", justifyContent: "center", marginBottom: 30,}]}>about this recipe!</Text>
                                 <Text style={{fontSize: 18, color: colors.primaryAccent900}}>Leave a review</Text>
 
                                 <StarRating 
@@ -370,7 +408,7 @@ const RecipeDetailsScreen = (
                                     onChange={(rating) => setRating(rating)}
                                     maxStars={5}
                                     step="full"
-                                    style={{marginVertical: 10}}
+                                    style={{marginVertical: 25}}
                                 >
                                 </StarRating>
 
@@ -395,10 +433,71 @@ const RecipeDetailsScreen = (
                                     onButtonPress={() => addReview.mutate()}
                                     mutationPending={addReview.isPending}
                                 >
-
                                 </CustomButton>
                             </View>
                         </View>
+
+                        {/* empty container with bottom border for cleaner looking separation between sections */}
+                        <View style={{borderBottomWidth: 2, borderColor: "gray", height: 50, width: 150,}}></View>
+
+                        {/* section to display all reviews for recipe */}
+                        {
+                            reviews.length > 0 ?
+                            (
+                                <View style={{marginTop: 20,}}>
+                                    <View style={{alignItems: "center", justifyContent: "center", marginVertical: 20,}}>
+                                        <Text style={styles.reviewHeaderText}>What others are saying</Text>
+                                    </View>
+
+                                    
+                                    <View style={{flexDirection: "row", maxWidth: "80%", width: 350, alignItems: "center", marginBottom: 20,}}>
+                                        <View>
+                                            <Text style={{fontSize: 20}}>
+                                                {
+                                                    ratingCount === 1 ? "1 Review" : `${ratingCount} Reviews`
+                                                }
+                                            </Text>
+                                        </View>
+
+                                        <View style={{flexDirection: "row"}}>
+                                            <StarRating
+                                                rating={averageRating}
+                                                onChange={() => setAvgRating(averageRating)}
+                                                maxStars={5}
+                                                step="full"
+                                                starSize={16}
+                                                style={{marginHorizontal: 10}}
+                                            >
+                                            </StarRating>
+                                            <Text>{`${averageRating}/5 stars`}</Text>
+                                        </View>
+
+                                    </View>
+
+                                    <FlatList
+                                        data={reviews}
+                                        keyExtractor={(item) => item._id.toString()}
+                                        renderItem={({item}) => <UserReview item={item}></UserReview>}
+                                        horizontal={true}
+                                        contentContainerStyle={
+                                            {
+                                                borderRadius: 4, 
+                                                marginBottom: 10, 
+                                                backgroundColor: colors.primaryAccent000,
+                                                width: screenWidth * .80,
+                                            }
+                                        }
+                                    >
+                                    </FlatList>
+                                </View>
+                            ) :
+
+                            (
+                                <View style={{marginTop: 20,}}>
+                                    <Text style={styles.reviewHeaderText}>No reviews yet. Be the first!</Text>
+                                </View>
+                            )
+                        }
                     </View>
                 </ScrollView>
 
@@ -511,10 +610,8 @@ const styles = StyleSheet.create({
     instructionContainer: {
         alignItems: "center",
         justifyContent: "center",
-        borderBottomWidth: 2,
-        borderColor: "gray",
-        paddingBottom: 30,
         paddingHorizontal: 10,
+        paddingBottom: 20,
     },
 
     instructionItem: {
@@ -577,12 +674,8 @@ const styles = StyleSheet.create({
     },
 
     postButtonContainer: {
-        // width: "70%",
-        marginVertical: 10,
+        marginTop: 10,
         alignItems: "flex-end",
         paddingRight: 65,
-        // justifyContent: "flex-end",
-        // borderWidth: 2,
-        // borderColor: "black",
     }
 });

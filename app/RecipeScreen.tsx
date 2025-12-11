@@ -51,6 +51,9 @@ const RecipeScreen = () => {
                         cookingInstructions,
                         subInstructions, 
                         sublists,
+                        reviews,
+                        averageRating,
+                        ratingCount,
                     } = data.recipeDetails;
 
                     return (
@@ -65,6 +68,9 @@ const RecipeScreen = () => {
                             subInstructions={subInstructions}
                             sublists={sublists}
                             id={recipeId}
+                            reviews={reviews}
+                            averageRating={averageRating}
+                            ratingCount={ratingCount}
                         >
                         </RecipeDetailsScreen>
                     );
@@ -77,13 +83,25 @@ const RecipeScreen = () => {
         }
         
         {/* navigation buttons */}
-        <View style={{padding: 10}}>
-            <CustomButton
-                value="Go back"
-                width={100}
-                onButtonPress={() => router.back()}
-                radius={12}
-            />
+        <View style={{flexDirection: "row", padding: 10}}>
+            <View style={{marginHorizontal: 10}}>
+                <CustomButton
+                    value="Go back"
+                    width={100}
+                    onButtonPress={() => router.back()}
+                    radius={12}
+                />
+            </View>
+
+            <View style={{marginHorizontal: 10}}>
+                <CustomButton
+                    value="Return to Home"
+                    width={130}
+                    onButtonPress={() => router.push("/(authenticated)/HomeScreen")}
+                    radius={12}
+                    color={colors.secondaryAccent500}
+                />
+            </View>
         </View>
     </View>
     );

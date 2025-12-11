@@ -31,7 +31,7 @@ const RecipeCardList = ({recipesData}: RecipesData) => {
             </FlatList>
         </View>
 
-    )
+    );
 };
 
 export default RecipeCardList;
