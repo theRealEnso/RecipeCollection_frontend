@@ -20,6 +20,7 @@ const colors = {
   textPrimary600: "#151526", // stronger headings
   textPrimary700: "#0E0E1A", // strongest / over imagery
   textSecondary500: "#70708A",
+  textSecondary600: "#424242",
 
   // background (off-white lilac so UI stays modern & airy)
   backgroundPrimary: "#F8F7FC",

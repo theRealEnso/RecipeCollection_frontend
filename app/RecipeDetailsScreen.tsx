@@ -34,6 +34,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 // import component(s)
 import StarRating from "react-native-star-rating-widget";
 import CustomButton from "./components/CustomButton";
+import EditMenu from "./components/EditMenu";
 import UserReview from "./components/UserReview";
 
 //import type(s)
@@ -104,6 +105,9 @@ const RecipeDetailsScreen = (
         const [rating, setRating] = useState<number>(0);
         const [avgRating, setAvgRating] = useState<number>(averageRating);
         const [comment, setComment] = useState<string>("");
+        const [showEditMenu, setShowEditMenu] = useState<boolean>(false);
+        const [userReviewId, setUserReviewId] = useState<string>("");
+        const [isEditing, setIsEditing] = useState<boolean>(false);
 
         const toastAnimation = useRef(new Animated.Value(0)).current;
         const heartAnimation = useRef(new Animated.Value(1)).current;
@@ -242,74 +246,72 @@ const RecipeDetailsScreen = (
                         </View>
 
                         {/* display dish ingredients */}
-                        <View style={styles.ingredientsContainer}>
-                            <Text style={styles.subHeader}>Ingredients</Text>
-                            {
-                                // if we only have a single ingredient list, then just display each ingredient name
-                                ingredients.length > 0 ? (
-                                    <View style={styles.ingredientsContainer}>
-                                        {
-                                            ingredients.map((ingredient) => {
-                                                return (
-                                                    <View key={ingredient.ingredient_id} style={styles.ingredientItem}>
-                                                        <View style={{marginHorizontal: 5}}>
-                                                        <AntDesign name="star" size={8} color={colors.secondaryAccent500} /> 
-                                                        </View>
-                                                        <View style={{marginHorizontal: 5}}>
-                                                            <Text style={styles.text}>{ingredient.nameOfIngredient}</Text>
-                                                        </View>
+                        <Text style={styles.subHeader}>Ingredients</Text>
+                        {
+                            // if we only have a single ingredient list, then just display each ingredient name
+                            ingredients.length > 0 ? (
+                                <View style={styles.ingredientsContainer}>
+                                    {
+                                        ingredients.map((ingredient) => {
+                                            return (
+                                                <View key={ingredient.ingredient_id} style={styles.ingredientItem}>
+                                                    <View style={{marginHorizontal: 5}}>
+                                                    <AntDesign name="star" size={8} color={colors.secondaryAccent500} /> 
                                                     </View>
-                                                )
-                                            })
-                                        }
-                                    </View>
+                                                    <View style={{marginHorizontal: 5}}>
+                                                        <Text style={styles.text}>{ingredient.nameOfIngredient}</Text>
+                                                    </View>
+                                                </View>
+                                            )
+                                        })
+                                    }
+                                </View>
 
-                                ) : (
-                                    //however, if our recipe contains sub-ingredients, then display sublist with their respective ingredients
-                                    <View>
-                                        {
-                                            sublists.map((sublist) => {
-                                                const filteredIngredients = subIngredients.filter((ingredient) => ingredient.sublistName === sublist.name);
+                            ) : (
+                                //however, if our recipe contains sub-ingredients, then display sublist with their respective ingredients
+                                <View style={styles.ingredientsContainer}>
+                                    {
+                                        sublists.map((sublist) => {
+                                            const filteredIngredients = subIngredients.filter((ingredient) => ingredient.sublistName === sublist.name);
 
-                                                return (
-                                                    <View key={sublist.id} style={{maxWidth: "70%", marginVertical: 10,}}>
-                                                        <View style={{marginBottom: 10, alignItems: "center",}}>
-                                                            <Text style={styles.sublistHeader}>{sublist.name}</Text>
-                                                        </View>
-                                                        <View>
-                                                            {
-                                                                filteredIngredients.length > 0 ? (
-                                                                    filteredIngredients.map((ingredient) => {
-                                                                        return (
-                                                                            <View 
-                                                                                key={ingredient.nameOfIngredient} 
-                                                                                style={styles.ingredientItem}
-                                                                            >
-                                                                                <View style={{paddingHorizontal: 2}}> 
-                                                                                    <AntDesign name="star" size={8} color={colors.secondaryAccent500} />
-                                                                                </View>
-
-                                                                                <View style={{paddingHorizontal: 2}}>
-                                                                                    <Text style={styles.text}>{ingredient.nameOfIngredient}</Text>
-                                                                                </View>
-                                                                                
+                                            return (
+                                                <View key={sublist.id} style={{maxWidth: "70%", marginVertical: 10,}}>
+                                                    <View style={{marginBottom: 10, alignItems: "center",}}>
+                                                        <Text style={styles.sublistHeader}>{sublist.name}</Text>
+                                                    </View>
+                                                    <View>
+                                                        {
+                                                            filteredIngredients.length > 0 ? (
+                                                                filteredIngredients.map((ingredient) => {
+                                                                    return (
+                                                                        <View 
+                                                                            key={ingredient.nameOfIngredient} 
+                                                                            style={styles.ingredientItem}
+                                                                        >
+                                                                            <View style={{paddingHorizontal: 2}}> 
+                                                                                <AntDesign name="star" size={8} color={colors.secondaryAccent500} />
                                                                             </View>
-                                                                        )
-                                                                    })
-                                                                ) : (
-                                                                    <Text>No ingredients for this section</Text>
-                                                                )
-                                                            }
-                                                        </View>
-                                                    </View>
-                                                )
-                                            })
-                                        }
-                                    </View>
 
-                                )    
-                            }
-                        </View>
+                                                                            <View style={{paddingHorizontal: 2}}>
+                                                                                <Text style={styles.text}>{ingredient.nameOfIngredient}</Text>
+                                                                            </View>
+                                                                            
+                                                                        </View>
+                                                                    )
+                                                                })
+                                                            ) : (
+                                                                <Text>No ingredients for this section</Text>
+                                                            )
+                                                        }
+                                                    </View>
+                                                </View>
+                                            )
+                                        })
+                                    }
+                                </View>
+
+                            )    
+                        }
 
                         {/* Display special equipment */}
                         <View style={{alignItems: "center", marginVertical: 20,}}>
@@ -477,8 +479,19 @@ const RecipeDetailsScreen = (
                                     <FlatList
                                         data={reviews}
                                         keyExtractor={(item) => item._id.toString()}
-                                        renderItem={({item}) => <UserReview item={item}></UserReview>}
-                                        horizontal={true}
+                                        renderItem={
+                                            ({item}) => 
+                                            <UserReview 
+                                                item={item} 
+                                                setShowMenu={setShowEditMenu} 
+                                                setId={setUserReviewId} 
+                                                isEditing={isEditing} 
+                                                setIsEditing={setIsEditing}
+                                                recipeId={id}
+                                                >
+                                            </UserReview>
+                                        }
+                                        horizontal={false}
                                         contentContainerStyle={
                                             {
                                                 borderRadius: 4, 
@@ -533,6 +546,20 @@ const RecipeDetailsScreen = (
                         </Animated.View>
                     )
                 }
+
+                {/* conditionally render the edit menu */}
+                {
+                    showEditMenu && (
+                        <View style={{position: "absolute", bottom: 10,}}>
+                            <EditMenu 
+                                setShowMenu={setShowEditMenu} 
+                                userReviewId={userReviewId} 
+                                setIsEditing={setIsEditing}
+                            >
+                            </EditMenu>
+                        </View>
+                    )
+                }
             </View>
         );
 };
@@ -583,10 +610,9 @@ const styles = StyleSheet.create({
     },
 
     ingredientsContainer: {
-        alignItems: "center",
-        // justifyContent: "center",
         marginVertical: 10,
         // maxWidth: "90%",
+        paddingHorizontal: 30,
     },
 
     sublistContainer: {

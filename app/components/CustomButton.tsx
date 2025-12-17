@@ -7,6 +7,7 @@ import colors from "../constants/colors";
 type CustomButtonProps = {
     value: string | ReactNode;
     width: number;
+    height?: number;
     onButtonPress?: () => void;
     mutationPending?: boolean;
     color?: string;
@@ -17,7 +18,8 @@ type CustomButtonProps = {
 
 const CustomButton = ({
     value, 
-    width, 
+    width,
+    height, 
     onButtonPress, 
     mutationPending,
     color,
@@ -26,7 +28,7 @@ const CustomButton = ({
     textPadding,
 }: CustomButtonProps) => {
     return (
-        <View style={[styles.buttonOuterContainer, {width: width, borderRadius: radius}]}>
+        <View style={[styles.buttonOuterContainer, {width: width, height: height, borderRadius: radius, alignItems: "center", justifyContent: "center"}]}>
             <Pressable 
                 style={
                     ({pressed}) => pressed  
@@ -34,7 +36,8 @@ const CustomButton = ({
                             styles.pressable, 
                             styles.pressed, 
                             {
-                                width: width, 
+                                width: width,
+                                height: height, 
                                 borderColor: color ? color : colors.primaryAccent500, 
                                 backgroundColor: color ? color : colors.primaryAccent500,
                                 borderRadius: radius ? radius : 12,
@@ -44,9 +47,12 @@ const CustomButton = ({
                             styles.pressable, 
                             {
                                 width: width,
+                                height: height,
                                 borderColor: color ? color : colors.primaryAccent500, 
                                 backgroundColor: color ? color : colors.primaryAccent500,
                                 borderRadius: radius ? radius : 12,
+                                alignItems: "center",
+                                justifyContent: "center",
                             },
 
                         ]
@@ -57,7 +63,7 @@ const CustomButton = ({
             {
                 mutationPending
                 ? <ActivityIndicator color="#fff"></ActivityIndicator>
-                : <Text style={[{color: "#fff"}, {fontSize: textSize ? textSize : 14, padding: textPadding ? textPadding : 2, fontWeight: "600"}]}>{value}</Text>
+                : <Text style={[{color: "#fff"}, {fontSize: textSize ? textSize : 14, padding: textPadding ? textPadding : 2, fontWeight: "600", alignItems: "center", justifyContent: "center"}]}>{value}</Text>
             }
             </Pressable>
         </View>
