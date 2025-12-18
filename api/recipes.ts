@@ -253,6 +253,20 @@ export const addRecipeReview = async (accessToken: string, rating: number, comme
     };
 };
 
+export const deleteRecipeReview = async (accessToken: string, recipeId: string) => {
+    try {
+        const { data } = await axios.delete(`${RECIPES_ENDPOINT}/${recipeId}/reviews`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+
+        return data;
+    } catch(error){
+        console.error(error);
+    };
+};
+
 // ********** legacy axios helper functions **********
 export const generateRecipeFromImage = async (accessToken: string, base64Url: string, selectedImageSize: number, updateProgress: (percent: number) => void) => {
     try {

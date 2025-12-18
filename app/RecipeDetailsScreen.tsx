@@ -33,6 +33,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 // import component(s)
 import StarRating from "react-native-star-rating-widget";
+import ConfirmReviewDeletion from "./components/ConfirmReviewDeletion";
 import CustomButton from "./components/CustomButton";
 import EditMenu from "./components/EditMenu";
 import UserReview from "./components/UserReview";
@@ -108,6 +109,7 @@ const RecipeDetailsScreen = (
         const [showEditMenu, setShowEditMenu] = useState<boolean>(false);
         const [userReviewId, setUserReviewId] = useState<string>("");
         const [isEditing, setIsEditing] = useState<boolean>(false);
+        const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
 
         const toastAnimation = useRef(new Animated.Value(0)).current;
         const heartAnimation = useRef(new Animated.Value(1)).current;
@@ -552,12 +554,27 @@ const RecipeDetailsScreen = (
                     showEditMenu && (
                         <View style={{position: "absolute", bottom: 10,}}>
                             <EditMenu 
-                                setShowMenu={setShowEditMenu} 
+                                setShowMenu={setShowEditMenu}
+                                showEditMenu={showEditMenu} 
                                 userReviewId={userReviewId} 
                                 setIsEditing={setIsEditing}
+                                setShowDeleteModal={setShowDeleteModal}
                             >
                             </EditMenu>
                         </View>
+                    )
+                }
+
+                {/* conditionally render the confirm deletion modal */}
+                {
+                    showDeleteModal && (
+                        <ConfirmReviewDeletion
+                            showDeleteModal={showDeleteModal}
+                            setShowDeleteModal={setShowDeleteModal}
+                            recipeId={id}
+                        >
+
+                        </ConfirmReviewDeletion>
                     )
                 }
             </View>
