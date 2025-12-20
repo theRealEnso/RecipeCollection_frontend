@@ -3,7 +3,7 @@ import React, { useContext, useState } from "react";
 // import context(s)
 import { UserContext } from "@/context/UserContext";
 
-import { Image, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, TextInput, View, useWindowDimensions } from "react-native";
 
 import { addRecipeReview } from "@/api/recipes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -36,6 +36,8 @@ const formatterUS = new Intl.DateTimeFormat("en-us", {
 });
 
 const UserReview = ({item, setShowMenu, setId, isEditing, setIsEditing, recipeId}: ItemProps) => {
+    const {width: screenWidth} = useWindowDimensions();
+
     const queryClient = useQueryClient();
     const [updatedComment, setUpdatedComment] = useState<string>(item.comment);
     const [pressed, setPressed] = useState<boolean>(false);
@@ -60,7 +62,7 @@ const UserReview = ({item, setShowMenu, setId, isEditing, setIsEditing, recipeId
     // console.log(typeof item.user._id);
     // console.log(recipeId);
     return (
-        <View style={[styles.reviewContainer, {width: "100%"}]}>
+        <View style={[styles.reviewContainer, {width: screenWidth * .90}]}>
             <View style={{padding: 10,}}>
                 <View style={{flexDirection: "row"}}>
                     <Image 
@@ -182,8 +184,7 @@ export default UserReview;
 
 const styles = StyleSheet.create({
     reviewContainer: {
-        marginVertical: 10,
-        // backgroundColor: "#9499a1",
+        backgroundColor: colors.primaryAccent000,
         borderRadius: 6,
         borderBottomWidth: 1,
         borderColor: "white"

@@ -108,6 +108,7 @@ export const getAllPublicRecipesPaged = async (
         if(cursor) params.set("cursor", cursor);
         if(q) params.set("q", q.trim());
 
+        //params.toString() => "limit=20&cursor=<some_string>&q<query_string>"
         const { data } = await axios.get(`${RECIPES_ENDPOINT}/public-recipes/paged?${params.toString()}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`

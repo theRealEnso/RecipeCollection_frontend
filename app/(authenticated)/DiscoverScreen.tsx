@@ -78,8 +78,8 @@ const DiscoverScreen = () => {
     const recipes = activeQuery.data?.pages.flatMap((page) => page.items) ?? [];
     // data.pages looks like:
     //     data.pages = [
-    //   { items: [...20],         nextCursor: "C1" },
-    //   { items: [...next 20],    nextCursor: "C2" },
+    //   { items: [...20], nextCursor: "C1", },
+    //   { items: [...next 20], nextCursor: "C2", },
     // ];
 
     // data.pageParams = [
@@ -148,7 +148,7 @@ const DiscoverScreen = () => {
                 columnWrapperStyle={numColumns > 1 ? styles.rowGap : undefined}
                 showsVerticalScrollIndicator={false}
 
-                onEndReachedThreshold={0.4}
+                onEndReachedThreshold={0.3}
                 onEndReached={handleEndReached}
                 ListFooterComponent={
                     discoverQuery.isFetchingNextPage ? (
