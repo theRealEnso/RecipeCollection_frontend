@@ -97,7 +97,7 @@ const DiscoverScreen = () => {
 
     if(activeQuery.isLoading){
         return (
-            <View style={styles.outerContainer}>
+            <View style={[styles.outerContainer, {marginVertical: 10,}]}>
                 <View style={{alignItems: "center", justifyContent: "center"}}>
                     <Text>Loading public recipes...</Text>
                     <ActivityIndicator size={32} color={colors.primaryAccent900}></ActivityIndicator>

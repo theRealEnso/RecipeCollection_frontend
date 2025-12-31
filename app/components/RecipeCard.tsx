@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 
 //import types
 import { RecipeDataProps } from "./RecipeCardList";
@@ -13,6 +13,7 @@ type Recipe = {
 };
 
 const RecipeCard = ({recipe}: Recipe) => {
+    const { width: screenWidth, height: screenHeight } = useWindowDimensions();
     const router = useRouter();
 
     const { _id } = recipe;
@@ -27,11 +28,11 @@ const RecipeCard = ({recipe}: Recipe) => {
     };
 
     return (
-        <View style={styles.container}> 
+        <View style={[styles.container, {width: screenWidth * .90}]}> 
             <Pressable onPress={navigateToRecipeScreen}>
                 {/* image container */}
                 <View style={styles.imageContainer}>
-                    <Image src={recipe.imageUrl} style={styles.image}></Image>
+                    <Image src={recipe.imageUrl} style={[styles.image, {width: screenWidth *.9,}]}></Image>
                 </View>
 
                 <View style={styles.dishTitleContainer}>
@@ -65,7 +66,6 @@ export default RecipeCard;
 const styles = StyleSheet.create({
     container: {
         borderRadius: 20,
-        width: 350,
         backgroundColor: "white",
         alignItems: "center",
         justifyContent: "center",
@@ -81,14 +81,13 @@ const styles = StyleSheet.create({
     imageContainer: {
         alignItems: "center",
         justifyContent: "center",
-        paddingTop: 4,
 
     },
 
     image: {
         height: 250,
-        width: 340,
-        borderRadius: 20,
+        // width: 340,
+        borderRadius: 10,
         objectFit: "cover",
     },
 

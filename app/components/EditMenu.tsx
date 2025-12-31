@@ -17,7 +17,7 @@ type EditMenuProps = {
     showEditMenu: boolean;
     setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
     setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
-    userReviewId: string;
+    userReviewId: string | null;
     setShowDeleteModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 

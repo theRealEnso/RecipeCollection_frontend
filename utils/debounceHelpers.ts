@@ -3,7 +3,8 @@ import { useCallback, useEffect, useState } from "react";
 // define debounce function (helper)
 export const debounce = <T,>(func: (value: T) => void, delay: number) => {
     let timeoutId: ReturnType<typeof setTimeout>;
-    return (value: T) => { // the returned debounced function that wraps the original function that was passed in and accepts the original arguments. Not executed yet
+    // the returned debounced function that wraps the original function that was passed in and accepts the original arguments. Not executed yet
+    return (value: T) => {
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => {
             //func and delay are "remembered" here due to closures

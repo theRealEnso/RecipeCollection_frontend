@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { getDetailedRecipe } from "@/api/recipes";
 import { useQuery } from "@tanstack/react-query";
 
+import { RecipeContext } from "@/context/RecipeContext";
 import { UserContext } from "@/context/UserContext";
 
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
@@ -21,10 +22,12 @@ const RecipeScreen = () => {
     const { accessToken, currentUser } = useContext(UserContext);
     const userId = currentUser ? currentUser.id : null;
 
+    const { setSearchRecipesInput } = useContext(RecipeContext);
+
     const {data, isLoading, error} = useQuery({
         queryKey: ["recipeData", _id],
         queryFn: () => getDetailedRecipe(accessToken, _id as string),
-        enabled: !!_id && !!userId,
+        enabled: !!_id && !!userId && !!accessToken,
         gcTime: 0,
         staleTime: 0,
     });
@@ -38,8 +41,9 @@ const RecipeScreen = () => {
         
         {
             isLoading ? 
-            (<ActivityIndicator color={colors.primaryAccent000} size={24}></ActivityIndicator>)
-            : data && data.recipeDetails && Object.keys(data.recipeDetails).length > 0 ? (
+            (
+                <ActivityIndicator color={colors.primaryAccent000} size={24}/>
+            ) : data && data.recipeDetails && Object.keys(data.recipeDetails).length > 0 ? (
                 (() => {
                     const {
                         recipeOwner, 
@@ -51,7 +55,6 @@ const RecipeScreen = () => {
                         cookingInstructions,
                         subInstructions, 
                         sublists,
-                        reviews,
                         averageRating,
                         ratingCount,
                     } = data.recipeDetails;
@@ -68,7 +71,6 @@ const RecipeScreen = () => {
                             subInstructions={subInstructions}
                             sublists={sublists}
                             id={recipeId}
-                            reviews={reviews}
                             averageRating={averageRating}
                             ratingCount={ratingCount}
                         >
@@ -97,7 +99,10 @@ const RecipeScreen = () => {
                 <CustomButton
                     value="Return to Home"
                     width={130}
-                    onButtonPress={() => router.push("/(authenticated)/HomeScreen")}
+                    onButtonPress={() => {
+                        setSearchRecipesInput("");
+                        router.push("/(authenticated)/HomeScreen")
+                    }}
                     radius={12}
                     color={colors.secondaryAccent500}
                 />

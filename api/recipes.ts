@@ -94,6 +94,13 @@ type GetPublicRecipesPageParams = {
     signal?: AbortSignal;
 };
 
+type GetRecipeReviewsPageParams = {
+    accessToken: string;
+    recipeId: string;
+    limit: number;
+    cursor: string | null;
+};
+
 export const getAllPublicRecipesPaged = async (
     {
         accessToken, 
@@ -120,6 +127,30 @@ export const getAllPublicRecipesPaged = async (
     } catch(error){
         console.error(error);
     };
+};
+
+export const getRecipeReviewsPaged = async ({
+    accessToken,
+    recipeId,
+    limit,
+    cursor
+}: GetRecipeReviewsPageParams) => {
+    try {
+        const params = new URLSearchParams();
+        params.set("limit", String(limit));
+        if(cursor) params.set("cursor", cursor);
+
+        const { data } = await axios.get(`${RECIPES_ENDPOINT}/${recipeId}/reviews/paged/?${params.toString()}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+
+        return data;
+    } catch(error){
+        console.error(error);
+        throw error;
+    }
 };
 
 export const generateCloudinarySignature = async (accessToken: string) => {

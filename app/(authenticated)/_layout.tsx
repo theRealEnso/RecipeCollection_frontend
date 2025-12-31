@@ -4,6 +4,8 @@ import { useContext, useEffect, useState } from "react";
 
 import { useRouter } from "expo-router";
 
+import { useQueryClient } from "@tanstack/react-query";
+
 import { Image, StyleSheet, Text, View, } from "react-native";
 
 // import context(s);
@@ -22,6 +24,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import colors from "../constants/colors";
 
 const CustomDrawerContent = (props: any) => {
+    const queryClient = useQueryClient();
     const router = useRouter();
     const navigation = props.navigation;
 
@@ -183,7 +186,10 @@ const CustomDrawerContent = (props: any) => {
 
             <DrawerItem
                 label="Sign Out"
-                onPress={logOut}
+                onPress={() => {
+                    queryClient.clear();
+                    logOut();
+                }}
                 icon={({focused}) => <Feather name="log-out" size={24} color={focused ? colors.primaryAccent500 : "black"} />}
             />
             

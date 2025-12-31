@@ -7,7 +7,7 @@ import { Image, StyleSheet, Text, TextInput, View } from 'react-native';
 
 // import api function to login user
 import { loginUser } from '@/api/userAuth';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 // import component(s)
 import CustomButton from './components/CustomButton';
@@ -22,6 +22,8 @@ type FormErrors = {
 };
 
 export default function LoginScreen() {
+  const queryClient = useQueryClient();
+
   const {handleSetUser, handleSetTokens, accessToken,} = useContext(UserContext);
   const [navigationReady, setNavigationReady] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -63,6 +65,8 @@ export default function LoginScreen() {
   const signInUser = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
+      queryClient.clear();
+      
       if(data){
         handleSetUser(data.user);
         handleSetTokens(data.access_token, data.refresh_token);
