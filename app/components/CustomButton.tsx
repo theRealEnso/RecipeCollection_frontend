@@ -38,8 +38,8 @@ const CustomButton = ({
                             {
                                 width: width,
                                 height: height, 
-                                borderColor: color ? color : colors.primaryAccent500, 
-                                backgroundColor: color ? color : colors.primaryAccent500,
+                                borderColor: color ? color : "white", 
+                                backgroundColor: color ? color : "white",
                                 borderRadius: radius ? radius : 12,
                             }
                         ] 
@@ -48,8 +48,8 @@ const CustomButton = ({
                             {
                                 width: width,
                                 height: height,
-                                borderColor: color ? color : colors.primaryAccent500, 
-                                backgroundColor: color ? color : colors.primaryAccent500,
+                                borderColor: color ? color : "white", 
+                                backgroundColor: color ? color : "white",
                                 borderRadius: radius ? radius : 12,
                                 alignItems: "center",
                                 justifyContent: "center",

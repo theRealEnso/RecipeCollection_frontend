@@ -12,14 +12,11 @@ import { createNewRecipe } from "@/api/recipes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // import component(s)
-import CookingInstructionsList from "./components/CookingInstructionsList";
 import CustomButton from "./components/CustomButton";
 import SubInstructions from "./components/SubInstructions";
 import UploadSpinnerModal from "./components/modals/spinnerModal";
 
 //import icons
-import Entypo from '@expo/vector-icons/Entypo';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 // import colors
 import colors from "./constants/colors";
@@ -198,7 +195,7 @@ const CookingInstructionsScreen = () => {
         mutationFn: createNewRecipe,
         onSuccess: (data) => {
             if(data){
-                console.log(data);
+                // console.log(data);
                 resetRecipeState(); // clear recipe form 
                 queryClient.invalidateQueries({queryKey: ["categoryRecipes"]}); // force refetch of recipes to display updated list
                 router.push({
@@ -250,58 +247,25 @@ const CookingInstructionsScreen = () => {
                 <Text style={styles.header}>{`Cooking Instructions for ${nameOfDish}`}</Text>
             </View>
 
-            {
-                sublistNames.length > 0 ? (
-                <View style={{padding: 20,}}>
-                    <View style={styles.tipsContainer}>
-                        <View style={{marginRight: 5,}}>
-                            <Text style={styles.tipsHeader}>Tips</Text>
-                        </View>
-                        <View style={{marginRight: 5,}}>
-                            <FontAwesome5 name="lightbulb" size={24} color="black" />
-                        </View>
-                    </View>
-                        <Text style={styles.tips}>{`* Swipe left or right on the screen to move between lists of instructions for each of your individual sub recipes`}</Text>
-                        <Text style={styles.tips}>{`* Tap on individual instruction items to make edits to that instruction `}</Text>
-                    </View>
-                ) : null
-            }
-
             <View style={styles.sublistContainer}>
                 {
                     sublistNames && 
                         sublistNames.length > 0 ?
                             (
                                 <FlatList
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    pagingEnabled={true}
                                     data={sublistNames}
                                     keyExtractor={(item) => item.id}
                                     renderItem={({item}) => (
                                         <SubInstructions name={item.name} key={item.id} id={item.id}></SubInstructions>
                                     )}
-                                    // to add gap between each sublist
-                                    ItemSeparatorComponent={() => (
-                                        <View style={{width: 5}}></View>
-                                    )}
                                     showsVerticalScrollIndicator={false}
-                                    contentContainerStyle={{height: 400}}
                                 >
                                 </FlatList>
                             ) : (
-                                <CookingInstructionsList></CookingInstructionsList>
+                                <View style={styles.noListMessage}>
+                                    <Text>No lists exists to add cooking instructions to!</Text>
+                                </View>
                             )
-                }
-
-                {
-                    sublistNames.length > 0 && (
-                        <View style={styles.arrowContainer}>
-                            <Entypo name="arrow-long-left" size={50} color={colors.primaryAccent900} />
-                            <Text style={{fontSize: 24, fontWeight: "bold", color: colors.primaryAccent900}}>Swipe</Text>
-                            <Entypo name="arrow-long-right" size={50} color={colors.primaryAccent900} />
-                        </View>
-                    )
                 }
             </View>
 
@@ -322,7 +286,8 @@ const CookingInstructionsScreen = () => {
                     <CustomButton 
                         value="Create Recipe" 
                         width={120}
-                        radius={60} 
+                        radius={60}
+                        color={colors.primaryAccent700} 
                         onButtonPress={handleCreateRecipe}
                         mutationPending={isLoading} // display spinner
                         >
@@ -369,22 +334,6 @@ const styles = StyleSheet.create({
         // padding: 10,
     },
 
-    tipsContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-    },
-
-    tipsHeader: {
-        fontSize: 16,
-        color: colors.primaryAccent600,
-        fontWeight: "bold",
-    },
-
-    tips: {
-        fontSize: 16,
-        marginVertical: 5,
-    },
-
     buttonNavContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -396,10 +345,8 @@ const styles = StyleSheet.create({
         flex: 12,
     },
 
-    arrowContainer: {
-        marginBottom: 30,
-        flexDirection: "row",
+    noListMessage: {
         alignItems: "center",
-        justifyContent: "space-around",
-  },
+        justifyContent: "center",
+    },
 });

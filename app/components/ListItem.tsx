@@ -3,12 +3,14 @@ import {
     StyleSheet,
     Text,
     TextInput,
-    TouchableWithoutFeedback,
-    View,
+    View
 } from "react-native";
 
 // import icon(s)
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import Entypo from '@expo/vector-icons/Entypo';
+import Feather from '@expo/vector-icons/Feather';
+import Fontisto from '@expo/vector-icons/Fontisto';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 //import component(s)
 import CustomButton from "./CustomButton";
@@ -35,46 +37,78 @@ const ListItem = ({subItemName, subItemId, onEdit, onDelete, itemId, setItemId}:
         setIngredient(subItemName);
     };
 
-    const handleTextSubmit = (itemId: string) => {
+    const updateIngredient = (itemId: string) => {
         onEdit(itemId, ingredient);
         setItemId("");
     };
 
     return (
-        <TouchableWithoutFeedback onPress={() => setItemId("")}>
-            <View style={styles.container}>
-                {
-                    itemId === subItemId 
-                    ? (
-                        <View style={styles.textInputContainer}>
-                            <TextInput 
-                                style={styles.textInput} 
-                                value={ingredient}
-                                onChangeText={(typedValue) => setIngredient(typedValue)}
-                                onSubmitEditing={() => handleTextSubmit(itemId)}
-                            >
-                            </TextInput>
-                        </View>
-                    ) : (
-                        <View style={styles.container}>
-                            <View style={styles.listItem}>
-                                <Text style={{color: "white"}} onPress={pressSubItem}>{subItemName}</Text>
-                            </View>
-                            <View style={{marginHorizontal: 5}}>
+        <View style={styles.container}>
+            {
+                itemId === subItemId 
+                ? (
+                    <View style={styles.textInputContainer}>
+                        <TextInput 
+                            style={styles.textInput} 
+                            value={ingredient}
+                            onChangeText={(typedValue) => setIngredient(typedValue)}
+                        >
+                        </TextInput>
+
+                        <View style={{flexDirection: "row", alignItems: "center"}}>
+                            <View>
                                 <CustomButton
-                                    value={<FontAwesome name="remove" size={15} color={colors.primaryAccent800} />}
-                                    width={30}
-                                    color={colors.secondaryAccent500}
+                                    value={<Feather name="check" size={22} color={colors.primaryAccent900} />}
+                                    width={40}
+                                    radius={15}
+                                    onButtonPress={() => updateIngredient(itemId)}
+                                >
+                                </CustomButton>
+                            </View>
+                            <View>
+                                <CustomButton
+                                    value={<Fontisto name="close-a" size={16} color={colors.secondaryAccent900} />}
+                                    width={40}
+                                    radius={15}
+                                    onButtonPress={() => setItemId("")}
+                                >
+                                </CustomButton>
+                            </View>
+                        </View>
+                    </View>
+                ) : (
+                    <View style={styles.container}>
+                        <View style={styles.ingredientContainer}>
+                            <Text style={styles.ingredientItem}>{subItemName}</Text>
+                        </View>
+
+                        {/* icons */}
+                        <View style={{marginHorizontal: 5, flexDirection: "row", alignItems: "center"}}>
+                            <View>
+                                <CustomButton
+                                    value={<Entypo name="edit" size={22} color="black" />}
+                                    width={40}
+                                    radius={15}
+                                    onButtonPress={() => pressSubItem()}
+                                >
+                                </CustomButton>
+                            </View>
+
+                            <View>
+                                <CustomButton
+                                    value={<MaterialCommunityIcons name="delete" size={26} color={colors.secondaryAccent900} />}
+                                    width={40}
                                     radius={15}
                                     onButtonPress={() => onDelete(subItemId)}
                                 >
                                 </CustomButton>
                             </View>
                         </View>
-                    )
-                }
-            </View>
-        </TouchableWithoutFeedback>
+                    </View>
+                )
+            }
+        </View>
+       
     );
 };
 
@@ -82,35 +116,49 @@ export default ListItem;
 
 const styles = StyleSheet.create({
     container: {
+        width: "100%",
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-evenly",
-        marginTop: 5,
+        justifyContent: "space-between",
+        // borderWidth: 2,
+        // borderColor: "red",
+
     },
 
-    listItem: {
-        borderRadius: 15,
-        backgroundColor: colors.primaryAccent000,
+    ingredientContainer: {
         paddingHorizontal: 10,
         paddingVertical: 5,
-        width: 250,
-        alignItems: "center",
-        justifyContent: "center",
+    },
+
+    ingredientItem: {
+        color: colors.primaryAccent900, 
+        fontWeight: "400", 
+        fontSize: 16,
     },
 
     textInputContainer: {
         marginTop: 10,
+        paddingHorizontal: 5,
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "space-between",
+        flexDirection: "row",
+        maxWidth: "100%",
+        width: "100%",
+        // borderColor: "red",
+        // borderWidth: 2,
 
     },
 
     textInput: {
-        borderWidth: 2,
+        borderBottomWidth: 2,
         borderRadius: 10,
         borderColor: colors.primaryAccent600,
-        paddingHorizontal: 15,
+        // paddingHorizontal: 15,
         paddingVertical: 5,
-        width: 200,
+        maxWidth: "90%",
+        width: "75%",
+        fontSize: 16,
+        fontWeight: 400,
+        color: colors.secondaryAccent900,
     },
 });

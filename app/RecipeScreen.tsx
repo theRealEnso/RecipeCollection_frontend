@@ -92,6 +92,7 @@ const RecipeScreen = () => {
                     width={100}
                     onButtonPress={() => router.back()}
                     radius={12}
+                    color={colors.secondaryAccent600}
                 />
             </View>
 
@@ -104,7 +105,7 @@ const RecipeScreen = () => {
                         router.push("/(authenticated)/HomeScreen")
                     }}
                     radius={12}
-                    color={colors.secondaryAccent500}
+                    color={colors.primaryAccent600}
                 />
             </View>
         </View>

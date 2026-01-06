@@ -117,7 +117,11 @@ const RecipeDetailsScreen = (
         const toastAnimation = useRef(new Animated.Value(0)).current;
         const heartAnimation = useRef(new Animated.Value(1)).current;
 
-        //  *****   define mutations    *****
+        /*
+        =============================================================
+                        *****   define mutations    *****
+        =============================================================            
+        */
         const recipeReviewsQuery = useInfiniteQuery({
             initialPageParam: null,
             queryKey: ["recipeReviews", id],
@@ -172,6 +176,12 @@ const RecipeDetailsScreen = (
             },
         });
 
+        /*
+        ================================================================
+        *   to show toast animation and animate heart when favoriting *
+        ================================================================
+        */
+
         const showAddedToast = () => {
             setShowToast(true);
 
@@ -208,7 +218,11 @@ const RecipeDetailsScreen = (
             })
         };
 
-        // function that toggles favoriting / unfavoriting recipe
+        /*
+        ================================================================
+                    *****   toggle favoriting   *****
+        ================================================================
+        */
         const handleFavorited = () => {
             let favorited = !isFavorited // on first render, isFavorited = true, so favorited is flipped to false now
             animateHeart();

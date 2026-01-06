@@ -8,10 +8,11 @@ type FormInputProps = {
     width: number;
     onChangeText: (value: string) => void;
     multiline?: boolean;
+    numLines?: number;
     color?: string;
 };
 
-const FormInput = ({placeholder, value, width, onChangeText, multiline, color}: FormInputProps) => {
+const FormInput = ({placeholder, value, width, onChangeText, color, multiline, numLines}: FormInputProps) => {
 
     return (
         <TextInput 
@@ -23,6 +24,8 @@ const FormInput = ({placeholder, value, width, onChangeText, multiline, color}: 
             value={value}
             onChangeText={onChangeText}
             multiline={multiline}
+            numberOfLines={numLines}
+            textAlignVertical="top"
         >
         </TextInput>
     )

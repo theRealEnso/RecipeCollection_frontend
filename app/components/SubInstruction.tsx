@@ -1,17 +1,19 @@
 import { useState } from "react";
 import {
-    KeyboardAvoidingView,
-    Platform,
     StyleSheet,
     Text,
     TextInput,
-    TouchableWithoutFeedback,
-    View,
+    View
 } from "react-native";
 
 // import component(s)
-import Ionicons from '@expo/vector-icons/Ionicons';
 import CustomButton from "./CustomButton";
+
+// import icon(s)
+import Entypo from '@expo/vector-icons/Entypo';
+import Feather from '@expo/vector-icons/Feather';
+import Fontisto from '@expo/vector-icons/Fontisto';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 // import colors
 import colors from "../constants/colors";
@@ -32,92 +34,125 @@ type SubIngredientProps = {
 const SubInstruction = ({sublistName, sublistId, instruction, instructionId, onEdit, onDelete, instructionID, setInstructionID}: SubIngredientProps) => {
     const [instructionText, setInstructionText] = useState<string>("");
     
-    const pressSubInstruction = () => {
+    const editSubInstruction = () => {
         setInstructionID(instructionId);
         setInstructionText(instruction);
     };
 
-    const handleTextSubmit = (instructionId: string) => {
+    const handleInstructionUpdate = (instructionId: string) => {
         onEdit(instructionId, instructionText);
         setInstructionID("");
     };
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={{flex: 1}}
-        >
-            <TouchableWithoutFeedback onPress={() => setInstructionID("")}>
-                <View style={styles.container}>
-                    {
-                        instructionId === instructionID 
-                        ? (
-                            <View style={styles.textInputContainer}>
-                                <TextInput 
-                                    style={styles.textInput} 
-                                    value={instructionText}
-                                    onChangeText={(typedValue) => setInstructionText(typedValue)}
-                                    onSubmitEditing={() => handleTextSubmit(instructionId)}
+        <View style={{flex: 1}}>
+            {
+                instructionId === instructionID 
+                ? (
+                    <View style={styles.textInputContainer}>
+                        <TextInput 
+                            style={styles.textInput} 
+                            value={instructionText}
+                            onChangeText={(typedValue) => setInstructionText(typedValue)}
+                        >
+                        </TextInput>
+
+                        <View style={styles.iconsContainer}>
+                            <View>
+                                <CustomButton
+                                    value={<Feather name="check" size={22} color={colors.primaryAccent900} />}
+                                    width={40}
+                                    radius={20}
+                                    onButtonPress={() => handleInstructionUpdate(instructionId)}
                                 >
-                                </TextInput>
+                                </CustomButton>
                             </View>
-                        ) : (
-                            <View style={styles.container}>
-                                <View style={styles.listItem}>
-                                    <Text style={{color: "white"}} onPress={pressSubInstruction}>{instruction}</Text>
-                                </View>
-                                <View style={{marginHorizontal: 5}}>
-                                    <CustomButton
-                                        value={<Ionicons name="trash" size={20} color={colors.primaryAccent800} />}
-                                        width={40}
-                                        color={colors.secondaryAccent500}
-                                        radius={20}
-                                        onButtonPress={() => onDelete(instructionId)}
-                                    >
-                                    </CustomButton>
-                                </View>
+                            <View>
+                                <CustomButton
+                                    value={<Fontisto name="close-a" size={16} color={colors.secondaryAccent900} />}
+                                    width={40}
+                                    radius={20}
+                                    onButtonPress={() => setInstructionID("")}
+                                >
+                                </CustomButton>
                             </View>
-                        )
-                    }
-                </View>
-            </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+                        </View>
+
+                    </View>
+                ) : (
+                    <View style={styles.instructionsContainer}>
+                        <Text style={styles.instructionText}>{instruction}</Text>
+                    
+                        <View style={styles.iconsContainer}>
+                            <View>
+                                <CustomButton
+                                    value={<Entypo name="edit" size={22} color="black" />}
+                                    width={40}
+                                    radius={20}
+                                    onButtonPress={() => editSubInstruction()}
+                                >
+                                </CustomButton>
+                            </View>
+                            <View>
+                                <CustomButton
+                                    value={<Ionicons name="trash" size={22} color={colors.secondaryAccent900} />}
+                                    width={40}
+                                    radius={20}
+                                    onButtonPress={() => onDelete(instructionId)}
+                                >
+                                </CustomButton>
+                            </View>
+                        </View>
+
+                    </View>
+                )
+            }
+        </View>
+          
+
     );
 };
 
 export default SubInstruction;
 
 const styles = StyleSheet.create({
-    container: {
+    instructionsContainer: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-evenly",
+        justifyContent: "space-between",
         marginTop: 5,
-    },
-
-    listItem: {
-        borderRadius: 15,
-        backgroundColor: colors.primaryAccent000,
         paddingHorizontal: 10,
-        paddingVertical: 5,
-        width: "85%",
-        alignItems: "center",
-        justifyContent: "center",
     },
 
     textInputContainer: {
         marginTop: 10,
+        flexDirection: "row",
         alignItems: "center",
-        justifyContent: "center",
-
+        justifyContent: "space-between",
+        padding: 10,
     },
 
-    textInput: {
-        borderWidth: 2,
+        textInput: {
+        borderBottomWidth: 2,
         borderRadius: 10,
         borderColor: colors.primaryAccent600,
-        paddingHorizontal: 15,
+        // paddingHorizontal: 15,
         paddingVertical: 5,
-        width: 200,
+        maxWidth: "90%",
+        width: "75%",
+        fontSize: 16,
+        fontWeight: 400,
+        color: colors.secondaryAccent900,
     },
+
+
+    instructionText: {        
+        color: colors.textPrimary600,
+        fontWeight: "400",
+        fontSize: 16,
+    },
+
+    iconsContainer: {
+        flexDirection: "row",
+    }
 });

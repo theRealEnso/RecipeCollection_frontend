@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 
 // import component(s)
 import RecipeCard from "./RecipeCard";
@@ -21,16 +21,14 @@ type RecipesData = {
 
 const RecipeCardList = ({recipesData}: RecipesData) => {
     return (
-        <View style={styles.container}>
-            <FlatList
-                data={recipesData}
-                keyExtractor={(item) => item._id}
-                renderItem={({item}) => (<RecipeCard recipe={item}></RecipeCard>)}
-                showsVerticalScrollIndicator={false}
-            >
-            </FlatList>
-        </View>
-
+        <FlatList
+            data={recipesData}
+            keyExtractor={(item) => item._id}
+            renderItem={({item}) => (<RecipeCard recipe={item}></RecipeCard>)}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.container}
+        >
+        </FlatList>
     );
 };
 

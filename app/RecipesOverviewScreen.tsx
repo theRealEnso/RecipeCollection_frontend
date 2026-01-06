@@ -86,7 +86,14 @@ const RecipesOverviewScreen = () => {
                     </CustomButton>
                 </View>
                 <View>
-                    <CustomButton value="Add a recipe!" width={100} radius={20} onButtonPress={navigateToAddRecipe}></CustomButton>
+                    <CustomButton 
+                        value="Add a recipe!" 
+                        width={120}
+                        radius={20}
+                        onButtonPress={navigateToAddRecipe}
+                        color={colors.primaryAccent700}
+                    >
+                    </CustomButton>
                 </View>
                 
             </View>

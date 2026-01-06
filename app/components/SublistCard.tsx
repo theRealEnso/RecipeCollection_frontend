@@ -1,21 +1,19 @@
 import { RecipeContext } from "@/context/RecipeContext";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 
-import { Dimensions, FlatList, StyleSheet, Text, TextInput, View } from "react-native";
+import { FlatList, StyleSheet, Text, TextInput, View, useWindowDimensions } from "react-native";
 
 //import component(s)
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import colors from "../constants/colors";
 import CustomButton from "./CustomButton";
 import ListItem from "./ListItem";
 
 //import icons
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Octicons from '@expo/vector-icons/Octicons';
 
 // import utility function(s)
 import { generateUUID } from "@/utils/generateUUID";
-
-const { width } = Dimensions.get("window");
 
 type SublistProps = {
     name: string;
@@ -25,8 +23,10 @@ type SublistProps = {
     deleteList: (listId: string) => void
 };
 
-const Sublist = ({ name, id, itemId, setItemId, deleteList }: SublistProps) => {
-    const { subIngredients, setSubIngredients } = useContext(RecipeContext);
+const SublistCard = ({ name, id, itemId, setItemId, deleteList }: SublistProps) => {
+    const { width: screenWidth } = useWindowDimensions();
+    const { sublistNames, subIngredients, setSubIngredients } = useContext(RecipeContext);
+    
     const subIngredientsRef = useRef(null); // to set up scrolling to end of flatlist
 
     const [input, setInput] = useState("");
@@ -73,51 +73,55 @@ const Sublist = ({ name, id, itemId, setItemId, deleteList }: SublistProps) => {
     );
 
     //handle automatic scroll to end when items are added to the list
-    useEffect(() => {
-        if(subIngredientsRef.current){
-            subIngredientsRef.current.scrollToEnd({
-                animated: true
-            });
-        };
-    }, [subIngredients])
+    // useEffect(() => {
+    //     if(subIngredientsRef.current){
+    //         subIngredientsRef.current.scrollToEnd({
+    //             animated: true
+    //         });
+    //     };
+    // }, [subIngredients])
 
     return (
-        <View style={styles.container}>
-            <View style={styles.trashIcon}>
-                <MaterialCommunityIcons name="delete-forever" size={32} color="red" onPress={() => deleteList(id)} />
-            </View>
-            <View style={{ marginTop: 25, marginBottom: 10, alignItems: "center", width: "80%", paddingHorizontal: 20,}}>
-                <Text style={styles.listLabel}>{`Ingredients for ${name}`}</Text>
-            </View>
-
-            <View style={styles.inputContainer}>
-                <View style={{marginHorizontal: 5}}>
-                    <TextInput
-                        placeholder="Add ingredient name and quantity"
-                        value={input}
-                        onChangeText={handleInputChange}
-                        style={styles.textInputStyles}
+        <View style={[styles.container, {width: screenWidth * .90}]}>
+            <View>
+                <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+                    <Text style={styles.listName}>{name}</Text>
+                    <Octicons 
+                        name="trash" 
+                        size={24} 
+                        color={colors.textSecondary600} 
+                        style={{paddingHorizontal: 15}}
+                        onPress={() => deleteList(id)} 
                     />
                 </View>
-                <View style={{marginHorizontal: 5}}>
-                    <CustomButton
-                        value={<MaterialIcons name="add-task" size={24} color="black" />}
-                        width={40}
-                        color={colors.primaryAccent900}
-                        radius={20}
-                        onButtonPress={addIngredient}
-                    />
+                
+
+                <View style={styles.inputContainer}>
+                    <View style={{marginHorizontal: 5, maxWidth: "90%", width: "85%"}}>
+                        <TextInput
+                            placeholder="Add ingredient (e.g. 3 tbsp cumin seeds)"
+                            value={input}
+                            onChangeText={handleInputChange}
+                            style={styles.textInputStyles}
+                        />
+                    </View>
+                    
+
+                    <View style={{marginHorizontal: 5}}>
+                        <CustomButton
+                            value={<FontAwesome6 name="add" size={24} color="white" />}
+                            width={40}
+                            color={colors.primaryAccent700}
+                            radius={6}
+                            onButtonPress={addIngredient}
+                        />
+                    </View>
                 </View>
             </View>
 
             {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
             <FlatList
-                ref={subIngredientsRef}
-                nestedScrollEnabled={true}
-                showsVerticalScrollIndicator={false}
-                scrollEnabled={true}
-                keyboardShouldPersistTaps="handled"
                 data={filteredSubIngredients}
                 extraData={subIngredients}
                 keyExtractor={(item) => item.ingredient_id}
@@ -131,41 +135,53 @@ const Sublist = ({ name, id, itemId, setItemId, deleteList }: SublistProps) => {
                         setItemId={setItemId}
                     />
                 )}
-                
+                ref={subIngredientsRef}
+                showsVerticalScrollIndicator={false}
             />
         </View>
     );
 };
 
-export default Sublist;
+export default SublistCard;
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 5,
-        height: "100%",
-        width: width,
-        borderRadius: 10,
         backgroundColor: "white",
-        padding: 5,
+        borderRadius: 16,
+        padding: 16,
+        marginVertical: 12,
+        marginHorizontal: 8,
+        shadowColor: "#000",
+        shadowOpacity: 0.06,
+        shadowRadius: 10,
+        elevation: 4,
         alignItems: "center",
-        // overflow: "hidden",
-        position: "relative",
+    },
+
+    listName: {
+        padding: 10,
+        fontSize: 20,
+        fontWeight: "bold",
+        color: colors.secondaryAccent900,
+        marginBottom: 10,
     },
 
     inputContainer: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-evenly",
+        justifyContent: "center",
+        marginBottom: 10,
     },
 
     textInputStyles: {
         borderRadius: 10,
         borderColor: colors.textPrimary600,
-        borderWidth: 2,
-        paddingHorizontal: 15,
+        borderWidth: 1,
+        borderTopWidth: 1.25,
+        paddingHorizontal: 20,
         paddingVertical: 10,
-        width: width * 0.6,
     },
+
     listLabel: {
         color: colors.textPrimary700,
         fontWeight: "bold",

@@ -1,9 +1,7 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { Dimensions, FlatList, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { useContext, useRef, useState } from "react";
+import { FlatList, StyleSheet, Text, TextInput, View, useWindowDimensions } from "react-native";
 
 //import components
-// import FormInput from "./FormInput";
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CustomButton from "./CustomButton";
 import SubInstruction from "./SubInstruction";
 
@@ -13,7 +11,8 @@ import { RecipeContext } from "@/context/RecipeContext";
 // import colors
 import colors from "../constants/colors";
 
-//import type definitions
+//import icon(s)
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 //import utility function to generate random ID
 import { generateUUID } from "@/utils/generateUUID";
@@ -23,9 +22,8 @@ type SubInstructionsProp = {
     id: string;
 };
 
-const { width } = Dimensions.get("window");
-
 const SubInstructions = ({name, id,}: SubInstructionsProp) => {
+    const {width: screenWidth} = useWindowDimensions();
 
     const subInstructionsRef = useRef(null);
     const {subInstructions, setSubInstructions} = useContext(RecipeContext);
@@ -70,37 +68,39 @@ const SubInstructions = ({name, id,}: SubInstructionsProp) => {
 
     const filteredSubInstructions = subInstructions.filter((subInstruction) => subInstruction.sublistId === id);
 
-    useEffect(() => {
-        if(subInstructionsRef.current){
-            subInstructionsRef.current.scrollToEnd({
-                animated: true,
-            });
-        };
-    }, [subInstructions]);
+    // useEffect(() => {
+    //     if(subInstructionsRef.current){
+    //         subInstructionsRef.current.scrollToEnd({
+    //             animated: true,
+    //         });
+    //     };
+    // }, [subInstructions]);
     
     return (
-        <View style={styles.outerContainer}>
-            <Pressable style={styles.container}>
+        <View style={[styles.outerContainer, {width: screenWidth}]}>
+            <View style={[styles.container, {width: screenWidth * .9}]}>
                 <View style={{marginBottom: 10,}}>
-                    <Text style={styles.listLabel}>{`Prep/cooking instructions for ${name}`}</Text>
+                    <Text style={styles.listLabel}>{`Instructions for ${name}`}</Text>
                 </View>
 
                 <View style={styles.inputContainer}>
-                    <View style={{width: "80%", marginHorizontal: 5}}>
+                    <View style={{width: "80%"}}>
                         <TextInput 
-                            placeholder="Add food handling instructions" 
+                            placeholder="Add prep/cooking instructions" 
                             value={input}
                             onChangeText={(typedValue) => handleInputChange(typedValue) }
                             style={styles.textInputStyles}
+                            multiline={true}
+                            numberOfLines={3}
                         >
                         </TextInput>
                     </View>
-                    <View style={{marginHorizontal: 5}}>
+                    <View style={{marginRight: 10,}}>
                         <CustomButton
-                            value={<MaterialIcons name="add-task" size={24} color={colors.primaryAccent800} />}
+                            value={<FontAwesome6 name="add" size={24} color="white" />}
                             width={40}
-                            color={colors.secondaryAccent500}
-                            radius={20}
+                            color={colors.primaryAccent600}
+                            radius={10}
                             onButtonPress={addInstructions}
                         >
                         </CustomButton>
@@ -129,13 +129,13 @@ const SubInstructions = ({name, id,}: SubInstructionsProp) => {
                                     >
                                     </SubInstruction>
                                 )}
-                                // contentContainerStyle={{alignItems: "center"}}
                                 showsVerticalScrollIndicator={false}
+                                scrollEnabled={false}
                             >
                             </FlatList>
                         )
                 }
-            </Pressable>
+            </View>
         </View>
     )
 };
@@ -144,10 +144,8 @@ export default SubInstructions;
 
 const styles = StyleSheet.create({
     outerContainer: {
-        height: 300,
-        width: width,
         flex: 1,
-        padding: 30,
+        alignItems: "center",
     },
 
     container: {
@@ -156,7 +154,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         backgroundColor: "white",
         padding: 15,
-        width: "100%",
+        shadowColor: "#000",
+        shadowOpacity: 0.06,
+        shadowRadius: 10,
+        elevation: 4,
     },
 
     textInputStyles: {
@@ -165,16 +166,21 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         paddingHorizontal: 15,
         paddingVertical: 10,
+        height: 70,
+        textAlignVertical: "top"
     },
 
     inputContainer: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        marginBottom: 10,
     },
 
     listLabel: {
-        color: colors.textPrimary700,
+        color: colors.secondaryAccent900,
         fontWeight: "bold",
+        fontSize: 20,
+        padding: 10,
     },
 });

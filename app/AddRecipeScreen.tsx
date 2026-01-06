@@ -19,9 +19,10 @@ import * as ImagePicker from "expo-image-picker";
 
 // import utility function(s);
 import { getFileType } from "@/utils/getFileType";
+
+
 import colors from "./constants/colors";
 
-// import colors from "@/app/constants/colors";
 
 //define types
 
@@ -199,7 +200,7 @@ const AddRecipeScreen = () => {
     };
 
     return (
-        <ScrollView style={{flex: 1, position: "relative"}}>
+        <ScrollView style={{flex: 1, position: "relative"}} showsVerticalScrollIndicator={false}>
             <View style={styles.container}>
                 {/* public switch */}
                 <View>
@@ -317,6 +318,8 @@ const AddRecipeScreen = () => {
                             width={380}
                             onChangeText={(typedValue) => handleInputChange("specialEquipment", typedValue)}
                             color={colors.secondaryAccent500}
+                            multiline={true}
+                            numLines={2}
                         >
                         </FormInput>
                     </View>
@@ -379,7 +382,14 @@ const AddRecipeScreen = () => {
                     </CustomButton>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <CustomButton value="Next" width={100} radius={20} onButtonPress={continueToAddIngredients}></CustomButton>
+                    <CustomButton 
+                        value="Next" 
+                        width={100} 
+                        radius={20} 
+                        onButtonPress={continueToAddIngredients}
+                        color={colors.primaryAccent800}
+                    >
+                    </CustomButton>
                 </View>
             </View>
         </ScrollView>
